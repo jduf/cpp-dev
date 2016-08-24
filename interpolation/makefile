@@ -3,11 +3,12 @@ EXEC=test
 test_SRCS=test.cpp RST.cpp Header.cpp IOFiles.cpp Interpolation.cpp Gnuplot.cpp Lapack.cpp Linux.cpp
 
 #-----------------------------------------------------------------
+include ../config.mk
 
 CXX = g++ -std=c++11
 
 ERRORS = -Wall -Wextra -pedantic
-OPTION = -fopenmp
+OPTION = $(CONFIG) -fopenmp
 LAPACK = -llapack -lblas
 
 BUILD=build

@@ -2,14 +2,14 @@ EXEC=test gnuplot2image
 
 test_SRCS=test.cpp Gnuplot.cpp IOFiles.cpp Header.cpp RST.cpp Linux.cpp
 gnuplot2image_SRCS=gnuplot2image.cpp Linux.cpp
-#gnuplot2image_SRCS=gnuplot2image.cpp Gnuplot.cpp Parseur.cpp IOFiles.cpp Header.cpp RST.cpp 
 
 #-----------------------------------------------------------------
+include ../config.mk
 
 CXX = g++ -std=c++11
 
 ERRORS = -Wall -Wextra -pedantic
-OPTION = 
+OPTION = $(CONFIG)
 
 BUILD=build
 

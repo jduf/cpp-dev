@@ -3,11 +3,12 @@ EXEC=diffdir
 diffdir_SRCS=diffdir.cpp Directory.cpp Parseur.cpp Linux.cpp
 
 #-----------------------------------------------------------------
+include ../config.mk
 
 CXX = g++ -std=c++11
 
 ERRORS = -Wall -Wextra -pedantic
-OPTION = 
+OPTION = $(CONFIG)
 
 BUILD=build
 

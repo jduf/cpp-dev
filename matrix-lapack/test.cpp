@@ -1,7 +1,6 @@
 /* @file test.cpp */
 
 #include "IOFiles.hpp"
-#include "Gnuplot.hpp"
 #include "Lapack.hpp"
 #include "Rand.hpp"
 #include "SymetricMatrix.hpp"

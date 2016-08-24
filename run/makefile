@@ -3,11 +3,12 @@ EXEC=run
 run_SRCS=run.cpp RST.cpp Header.cpp IOFiles.cpp Parseur.cpp Directory.cpp RSTFile.cpp Linux.cpp
 
 #-----------------------------------------------------------------
+include ../config.mk
 
 CXX = g++ -std=c++11
 
 ERRORS = -Wall -Wextra -pedantic
-OPTION = -fopenmp
+OPTION = $(CONFIG) -fopenmp
 
 BUILD=build
 

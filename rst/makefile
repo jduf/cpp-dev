@@ -5,11 +5,12 @@ test_SRCS=test.cpp RST.cpp Header.cpp IOFiles.cpp Directory.cpp RSTFile.cpp Linu
 rst2pdf_SRCS=rst2pdf.cpp Linux.cpp
 
 #-----------------------------------------------------------------
+include ../config.mk
 
 CXX = g++ -std=c++11
 
 ERRORS = -Wall -Wextra -pedantic
-OPTION = 
+OPTION = $(CONFIG)
 
 BUILD=build
 

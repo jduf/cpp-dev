@@ -3,11 +3,12 @@ EXEC=pstricks2pdf
 pstricks2pdf_SRCS=pstricks2pdf.cpp Parseur.cpp IOFiles.cpp Header.cpp RST.cpp Directory.cpp PSTricks.cpp Linux.cpp
 
 #-----------------------------------------------------------------
+include ../config.mk
 
 CXX = g++ -std=c++11
 
 ERRORS = -Wall -Wextra -pedantic
-OPTION = 
+OPTION = $(CONFIG)
 
 BUILD=build
 

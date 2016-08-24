@@ -1,20 +1,9 @@
 #ifndef DEF_LINUX
 #define DEF_LINUX
 
-/*{Description*/
-/*!The following macro are essential. They need to be set to the correct
- * path/executable in order to run.*/
-/*}*/
-#define MY_RST2HTML_STYLESHEET "/home/jdufour/travail/cpp-dev/rst/css/best.css"
-#define MY_BIN_RST2HTML "rst2html"
-#define MY_BIN_RST2LATEX "rst2latex"
-#define MY_BIN_PDFLATEX "pdflatex"
-#define MY_BIN_GNUPLOT "gnuplot"
-#define MY_BIN_LATEX "latex"
-#define MY_BIN_DVIPDF "dvipdf"
-#define MY_BIN_PDFCROP "pdfcrop"
-#define MY_BIN_PDF2PNG "convert"
-#define MY_BIN_HTMLBROWSER "/usr/bin/firefox"
+#ifndef DEF_CONFIG
+#pragma GCC warning "The macros defined in 'lib/config.mk' are essential, include this file in the makefile"
+#endif
 
 #include <cstdlib>
 #include <string>

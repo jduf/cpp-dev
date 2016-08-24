@@ -17,7 +17,7 @@ int main(int argc,char* argv[]){
 		Directory D;
 		Linux L;
 		std::string save_in("sim-info/");
-		L("mkdir " + save_in,false);
+		L.mkpath(save_in.c_str());
 
 		D.search_file_ext(ext,L.pwd(),false,false);
 		D.sort();
