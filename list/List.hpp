@@ -126,7 +126,7 @@ class List{
 
 		unsigned int const& size() const { return size_; }
 
-		std::string header_def() const { return "List("+my::tostring(size())+")"; }
+		std::string header_def() const { return "List("+my::tostring(size_)+")"; }
 
 	private:
 		mutable Node* target_ = NULL;
