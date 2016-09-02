@@ -386,9 +386,7 @@ void Matrix<Type>::set(){
 
 template<typename Type>
 void Matrix<Type>::set(Type const& val){
-	for(unsigned int i(0); i<size_; i++){
-		mat_[i] = val;
-	}
+	for(unsigned int i(0); i<size_; i++){ mat_[i] = val; }
 }
 
 template<typename Type>
