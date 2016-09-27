@@ -139,9 +139,8 @@ void Container::get(unsigned int i, Type &t) const {
 
 template<typename Type>
 Type Container::get(unsigned int i) const {
-	if(i<data_.size()){
-		return static_cast< GenericVariable<Type> *>(data_[i])->t_;
-	} else {
+	if(i<data_.size()){ return static_cast< GenericVariable<Type> *>(data_[i])->t_; }
+	else {
 		std::cerr<<__PRETTY_FUNCTION__<<" : "<<i<<"<"<< data_.size()<<"?" <<std::endl;
 		return Type();
 	}

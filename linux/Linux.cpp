@@ -103,8 +103,14 @@ std::string Linux::pdfcrop(std::string const& path, std::string const& filename)
 }
 
 std::string Linux::pdf2png(std::string const& infile, std::string const& outfile){
-	std::string cmd(MY_BIN_PDF2PNG);
+	std::string cmd(MY_BIN_CONVERT);
 	cmd+= " -density 500 -resize 20% " + infile + ".pdf " + outfile + ".png";
+	return cmd;
+}
+
+std::string Linux::pdf2jpg(std::string const& infile, std::string const& outfile){
+	std::string cmd(MY_BIN_CONVERT);
+	cmd+= " -density 150 -trim -quality 100 -flatten -sharpen 0x1.0 " + infile + ".pdf " + outfile + ".jpg";
 	return cmd;
 }
 

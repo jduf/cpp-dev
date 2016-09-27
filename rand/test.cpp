@@ -21,15 +21,18 @@ class TMP{
 		Rand<double> rnd_;
 };
 
+void small_double();
+
 int main(){
 	//check_basic();
 	//check_openmp_mt();
-	check_openmp_mt_time();
+	//check_openmp_mt_time();
 	
 	//check_minimal_number_mt();
 	//check_shuffle();
 	
 	//check_array();
+	small_double();
 }
 
 void check_basic(){
@@ -191,4 +194,11 @@ void check_array(){
 		std::cout<<tmp[i].get()<<" "<<test[i].get()<<std::endl;
 	}
 	delete[] tmp;
+}
+
+void small_double(){
+	Rand<double> rnd(0.0,1.0);
+	for(unsigned int i(0);i<20;i++){
+		std::cout<<rnd.get()<<std::endl;
+	}
 }

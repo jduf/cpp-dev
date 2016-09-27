@@ -57,7 +57,7 @@ void test_given_function(){
 	plot+="      'spline.dat' u 1:2:3 notitle,\\";
 	plot+="      f(x,y)";
 	plot.save_file();
-	//plot.create_image(true);
+	//plot.create_image(true,"png");
 }
 
 void test_211(){
@@ -92,7 +92,7 @@ void test_211(){
 	plot+="splot '211.dat' u 2:3:4 notitle,\\";
 	plot+="      'spline.dat' u 1:2:3 notitle";
 	plot.save_file();
-	plot.create_image(true,false);
+	plot.create_image(true,"png");
 }
 
 void test_212(){
@@ -127,5 +127,5 @@ void test_212(){
 	plot+="splot '212.dat' u 2:3:4 notitle,\\";
 	plot+="      'spline.dat' u 1:2:3 notitle";
 	plot.save_file();
-	plot.create_image(true,false);
+	plot.create_image(true,"png");
 }

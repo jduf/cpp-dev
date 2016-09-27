@@ -43,7 +43,7 @@ class Gnuplot{
 		void operator+=(std::string const& s);
 
 		void save_file();
-		void create_image(bool silent, bool png);
+		void create_image(bool const& silent, std::string const& format);
 
 	private:
 		std::string path_;		//!< path of the .gp, .png and .pdf files

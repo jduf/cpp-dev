@@ -24,7 +24,8 @@ int main(int argc,char* argv[]){
 				if(argc==3){
 					std::string option(argv[2]);
 					if(option=="png"){ command(Linux::pdf2png(texfile, path + filename),true); }
-					else { std::cerr<<__PRETTY_FUNCTION__<<" : unknown option (only possible is 'png')"<<std::endl; }
+					else if(option=="jpg"){ command(Linux::pdf2png(texfile, path + filename),true); }
+					else { std::cerr<<__PRETTY_FUNCTION__<<" : unknown option (only possible is 'png' or 'jpg')"<<std::endl; }
 				}
 				command("mv " + texfile + ".pdf " + path + filename + ".pdf",false);
 				command("rm " + texfile + "*",false);

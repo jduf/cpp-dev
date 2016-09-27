@@ -1,13 +1,18 @@
 #include "ParticleOnGrid.hpp"
 
-bool Measure::func(Measure const& a, Measure const& b) { 
-	unsigned int i(0);
-	while(i<a.x_.size()){
-		if(a.x_(i) > b.x_(i)){ return false; }
-		if(a.x_(i) < b.x_(i)){ return true; }
-		if(a.x_(i)== b.x_(i)){ i++; }
+unsigned int Measure::sort(Measure const& a, Measure const& b) { 
+	for(unsigned int i(0);i<a.x_.size();i++){
+		if(a.x_(i) - b.x_(i) > 1e-10 ){ return 0; }
+		if(a.x_(i) - b.x_(i) <-1e-10 ){ return 1; }
 	}
-	return false;
+	return 2;
+}
+
+void Measure::merge(std::shared_ptr<Measure> const& new_elem){ 
+	//std::cout<<"merge "<<x_<<" "<<new_elem->get_x()<<std::endl;
+	N_++;
+	s_ += new_elem.get()->get_fx(); 
+	ss_+= new_elem.get()->get_fx()*new_elem.get()->get_fx();
 }
 
 std::ostream& operator<<(std::ostream& flux, Measure const& m){
@@ -15,40 +20,44 @@ std::ostream& operator<<(std::ostream& flux, Measure const& m){
 	return flux;
 }
 
-ParticleOnGrid::~ParticleOnGrid(){
-#pragma omp critical
-	{
-		std::cout<<particle_history_<<std::endl;
-	}
-}
-
 void ParticleOnGrid::move(Vector<double> const& bx_all){
 	Particle::move(bx_all);
-	unsigned int n;
-	double dx(0.01);
-	for(unsigned int j(0);j<dof_;j++){
-		n=0;
-		if(std::abs(x_(j))<dx/2){ n=1; }
-		if(std::abs(x_(j)-min_(j))<dx/2){ n=2; }
-		if(std::abs(x_(j)-max_(j))<dx/2){ n=3; }
-		switch(n){
-			case 0:{ x_(j) = std::round(x_(j)/dx)*dx; }break;
-			case 1:{ x_(j) = 0; }break;
-			case 2:{ x_(j) = min_(j); }break;
-			case 3:{ x_(j) = max_(j); }break;
+	if(dx_>0.0){
+		for(unsigned int j(0);j<dof_;j++){
+			if(std::abs(x_(j))<dx_/2){ x_(j) = 0; }
+			else if(std::abs(x_(j)-min_(j))<dx_/2){ x_(j) = min_(j); }
+			else if(std::abs(x_(j)-max_(j))<dx_/2){ x_(j) = max_(j); }
+			else { x_(j) = std::round(x_(j)/dx_)*dx_; }
 		}
 	}
-	if(v_.norm_squared()<dx*dx){
-		init_Particle(100);
-		std::cerr<<"restart "<<this<<std::endl;
+	if(v_.norm_squared()<dx_*dx_){ init_Particle(100); }
+}
+
+bool ParticleOnGrid::update(std::shared_ptr<Measure> const& new_elem){
+	if(!history_.find_in_sorted_list(new_elem,Measure::sort)){
+		history_.add_after_target(new_elem);
 	}
+
+	fbx_ = 1e6;
+	Vector<double> x;
+	history_.set_target();
+	while(history_.target_next()){
+		if(!x.ptr() || history_.get().get_fx()<fbx_){
+			x = history_.get().get_x();
+			fbx_ = history_.get().get_fx();
+		}
+	}
+
+	if(x.ptr() && !my::are_equal(x_,x)){ 
+		bx_ = x; 
+		return true;
+	} else { return false; }
 }
 
-void ParticleOnGrid::update(double fx){
-	bx_ = x_;
-	fbx_ = fx;
-}
-
-void ParticleOnGrid::add_history(std::shared_ptr<Measure> const& m){
-	particle_history_.add_sort(m,Measure::func);
+void ParticleOnGrid::print() const {
+	Particle::print();
+	//history_.set_target();
+	//while(history_.target_next()){
+		//std::cout<<history_.get()<<std::endl;
+	//}
 }

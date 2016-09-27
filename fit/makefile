@@ -9,12 +9,11 @@ CXX = g++ -std=c++11
 
 ERRORS = -Wall -Wextra -pedantic
 OPTION = $(CONFIG)
-FIT = /home/jdufour/travail/cpp-dev/fit/
 
 BUILD=build
 
-CXXFLAGS = -I$(FIT) $(ERRORS) $(OPTION)
-LDFLAGS  = $(FIT)libcminpack.a $(ERRORS) $(OPTION)
+CXXFLAGS = $(ERRORS) $(OPTION)
+LDFLAGS  = libcminpack.a $(ERRORS) $(OPTION)
 
 SRCS=$(wildcard *.cpp)
 

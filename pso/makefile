@@ -1,8 +1,9 @@
 EXEC=test
 
-test_SRCS=test.cpp RST.cpp Header.cpp IOFiles.cpp FuncPSO.cpp ParticleOnGrid.cpp PSO.cpp Parseur.cpp
+test_SRCS=test.cpp RST.cpp Header.cpp IOFiles.cpp FuncPSO.cpp ParticleOnGrid.cpp PSO.cpp Parseur.cpp Gnuplot.cpp Linux.cpp
 
 #-----------------------------------------------------------------
+include ../config.mk
 
 CXX = g++ -std=c++11
 
@@ -11,7 +12,7 @@ OPTION = -fopenmp
 
 BUILD=build
 
-CXXFLAGS = $(ERRORS) $(OPTION)
+CXXFLAGS = $(ERRORS) $(OPTION) $(CONFIG)
 LDFLAGS  = $(ERRORS) $(OPTION)
 
 SRCS=$(wildcard *.cpp)

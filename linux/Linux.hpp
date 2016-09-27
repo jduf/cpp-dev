@@ -2,7 +2,7 @@
 #define DEF_LINUX
 
 #ifndef DEF_CONFIG
-#pragma GCC warning "The macros defined in 'lib/config.mk' are essential, include this file in the makefile"
+#pragma GCC warning "The macros defined in 'config.mk' are essential, include this file in the makefile"
 #endif
 
 #include <cstdlib>
@@ -45,6 +45,7 @@ class Linux{
 		static std::string dvipdf(std::string const& path, std::string const& filename);
 		static std::string pdfcrop(std::string const& path, std::string const& filename);
 		static std::string pdf2png(std::string const& infile, std::string const& outfile);
+		static std::string pdf2jpg(std::string const& infile, std::string const& outfile);
 		/*{*//*!Creates gnuplot plots
 			   Using a simple gnuplot file (with extension .gp) creates and
 			   .eps picture and .tex file which can be used to create .pdf

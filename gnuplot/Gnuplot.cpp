@@ -5,7 +5,7 @@ Gnuplot::Gnuplot(std::string const& path, std::string const& filename):
 	filename_(filename),
 	plot_(""),
 	multiplot_(false)
-{}
+{ my::ensure_trailing_slash(path_); }
 
 void Gnuplot::multiplot(){
 	plot_ += "set multiplot\n";
@@ -63,7 +63,7 @@ void Gnuplot::save_file(){
 	w_gp<<plot_<<IOFiles::endl;
 }
 
-void Gnuplot::create_image(bool silent, bool png){
+void Gnuplot::create_image(bool const& silent, std::string const& format){
 	std::string texfile(filename_);
 	size_t pos(texfile.find("."));
 	while(pos != std::string::npos){
@@ -75,7 +75,8 @@ void Gnuplot::create_image(bool silent, bool png){
 	command(Linux::gp2latex("/tmp/"+texfile,path_,filename_),silent);
 	if(!command.status()){
 		command(Linux::pdflatex("/tmp/",texfile),silent);
-		if(png){ command(Linux::pdf2png("/tmp/" + texfile, path_ + filename_),silent); }
+		if(format == "png"){ command(Linux::pdf2png("/tmp/" + texfile, path_ + filename_),silent); }
+		if(format == "jpg"){ command(Linux::pdf2jpg("/tmp/" + texfile, path_ + filename_),silent); }
 		command("mv /tmp/" + texfile + ".pdf " + path_ + filename_ + ".pdf",silent);
 		command("rm /tmp/" + texfile + ".* /tmp/" + texfile + "*-inc-eps-converted-to.pdf /tmp/" + texfile + "*-inc.eps",silent);
 	} else { std::cerr<<__PRETTY_FUNCTION__<<" : Linux::gp2latex(\"/tmp/\"+texfile,path_,filename_) returned an error ("<<command.status()<<")"<<std::endl; }
