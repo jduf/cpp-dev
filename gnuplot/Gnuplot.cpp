@@ -49,6 +49,10 @@ void Gnuplot::margin(std::string const& l, std::string const& r, std::string con
 	plot_ += "set bmargin at screen "+b+"\n";
 }
 
+void Gnuplot::margin(double const& l, double const& r, double const& t, double const& b){
+	margin(my::tostring(l),my::tostring(r),my::tostring(t),my::tostring(b));
+}
+
 void Gnuplot::label(std::string const& axis, std::string const& l, std::string const& options){ plot_ += "set "+axis+"label '"+l+"' "+options+"\n"; }
 void Gnuplot::label(std::string const& axis){ plot_ += "unset "+axis+"label\n"; }
 

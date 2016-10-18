@@ -29,6 +29,7 @@ class Gnuplot{
 		void range(std::string const& axis);
 
 		void margin(std::string const& l, std::string const& r, std::string const& t, std::string const& b);
+		void margin(double const& l, double const& r, double const& t, double const& b);
 
 		void tics(std::string const& axis, std::string const& t);
 		void tics(std::string const& axis, double const& t);
