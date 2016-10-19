@@ -94,7 +94,7 @@ class Vector{
 			bool is_sorted(Function cmp) const;
 		/*!Returns a Vector composed by vec_ ordered by index*/
 		Vector<Type> order(Vector<unsigned int> const& index) const;
-		/*!Returns a vec_[min:max]*/
+		/*!Returns a vec_[min:max)*/
 		Vector<Type> range(unsigned int min, unsigned int max) const;
 
 		/*!Returns the sum over all the elements in vec_*/
