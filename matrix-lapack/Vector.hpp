@@ -55,7 +55,7 @@ class Vector{
 		Vector<Type> operator-() const;
 		/*!Scalar product (no conjugate complex for complex type)*/
 		Type operator*(Vector<Type> const& vec) const;
-		/*!Multiplies two vectors and get a matrix*/
+		/*!Multiplies two vectors of same lenght to get a square matrix*/
 		Matrix<Type> operator^(Vector<Type> const& vec) const;
 
 		/*!Devides a vectors by a scalar*/
@@ -292,7 +292,8 @@ Type Vector<Type>::operator*(Vector<Type> const& vec) const {
 
 template<typename Type>
 Matrix<Type> Vector<Type>::operator^(Vector<Type> const& vec) const {
-	Matrix<Type> out(vec.size(),vec.size());
+	assert(vec.size_ == size_);
+	Matrix<Type> out(size_,size_);
 	for(unsigned int i(0);i<size_;i++){
 		for(unsigned int j(0);j<size_;j++){
 			out(i,j) = vec_[i] * vec.vec_[j];

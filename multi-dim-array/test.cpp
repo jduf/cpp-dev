@@ -14,10 +14,10 @@ unsigned int number_of_border_element(Vector<unsigned int> edges_length);
 
 int main(){
 	Rand<unsigned int> rnd_N(0,5);
-	unsigned int N(rnd_N.get());
+	unsigned int N(rnd_N());
 	Vector<unsigned int> v(N);
 	Rand<unsigned int> rnd_l(0,500);
-	for(unsigned int i(0);i<N;i++){ v(i) = rnd_l.get(); }
+	for(unsigned int i(0);i<N;i++){ v(i) = rnd_l(); }
 	v.set(4);
 	v(0) = 80;
 	v(1) = 10;

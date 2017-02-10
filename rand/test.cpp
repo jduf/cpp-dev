@@ -15,7 +15,7 @@ void check_array();
 class TMP{
 	public:
 		TMP():rnd_(0.0,1.0){}
-		double get() { return rnd_.get(); }
+		double operator()(){ return rnd_(); }
 
 	private:
 		Rand<double> rnd_;
@@ -38,7 +38,7 @@ int main(){
 void check_basic(){
 	Rand<unsigned int> rndui(0,10);
 	for(unsigned int i(0);i<20;i++){
-		std::cout<<rndui.get()<<std::endl;
+		std::cout<<rndui()<<std::endl;
 	}
 	std::cout<<std::endl;
 }
@@ -51,7 +51,7 @@ void check_openmp_mt(){
 		unsigned int thread(omp_get_thread_num());
 		Rand<double> rnd(0,1);
 		for(unsigned int j(0);j<m.row();j++){ 
-			m(j,thread)=rnd.get(); 
+			m(j,thread)=rnd(); 
 		}
 	}
 	std::cout<<m<<std::endl<<std::endl;
@@ -62,7 +62,7 @@ void check_openmp_mt(){
 		unsigned int thread(omp_get_thread_num());
 		Rand<double> rnd0(0,1);
 		Rand<double> rnd1(0,1);
-		for(unsigned int j(0);j<m.row();j++){ m(j,thread)=rnd1.get()-rnd0.get(); }
+		for(unsigned int j(0);j<m.row();j++){ m(j,thread)=rnd1()-rnd0(); }
 	}
 	std::cout<<m<<std::endl<<std::endl;
 
@@ -73,7 +73,7 @@ void check_openmp_mt(){
 		unsigned int thread(omp_get_thread_num());
 #pragma omp critical
 		{
-			for(unsigned int j(0);j<m.row();j++){ m(j,thread)=rnd_out.get(); }
+			for(unsigned int j(0);j<m.row();j++){ m(j,thread)=rnd_out(); }
 		}
 	}
 	std::cout<<m<<std::endl<<std::endl;
@@ -87,7 +87,7 @@ void check_openmp_mt(){
 #pragma omp parallel for num_threads(m.col())
 	for(unsigned int i=0;i<m.col();i++){ 
 		unsigned int thread(omp_get_thread_num());
-		for(unsigned int j(0);j<m.row();j++){ m(j,thread)=rnd_array[thread]->get(); }
+		for(unsigned int j(0);j<m.row();j++){ m(j,thread)=(*rnd_array[thread])(); }
 	}
 	std::cout<<m<<std::endl<<std::endl;
 	for(unsigned int i(0);i<N;i++){ delete rnd_array[i]; }
@@ -102,7 +102,7 @@ void check_openmp_mt(){
 #pragma omp parallel for num_threads(m.col())
 	for(unsigned int i=0;i<m.col();i++){ 
 		unsigned int thread(omp_get_thread_num());
-		for(unsigned int j(0);j<m.row();j++){ m(j,thread)=rnd_array_class.get(thread); }
+		for(unsigned int j(0);j<m.row();j++){ m(j,thread)=rnd_array_class(thread); }
 	}
 	std::cout<<m<<std::endl;
 }
@@ -127,7 +127,7 @@ void check_openmp_mt_time(){
 		t1 = std::chrono::high_resolution_clock::now();
 #pragma omp parallel for
 		for(unsigned int i=0;i<N;i++){ 
-			for(unsigned int j(0);j<iter;j++){ rnd_array[i]->get(); }
+			for(unsigned int j(0);j<iter;j++){ (*rnd_array[i])(); }
 		}
 		t2 = std::chrono::high_resolution_clock::now();
 		duration = std::chrono::duration_cast<std::chrono::microseconds>(t2-t1).count();
@@ -137,7 +137,7 @@ void check_openmp_mt_time(){
 		t1 = std::chrono::high_resolution_clock::now();
 #pragma omp parallel for 
 		for(unsigned int i=0;i<N;i++){ 
-			for(unsigned int j(0);j<iter;j++){ rnd_array_class.get(i); }
+			for(unsigned int j(0);j<iter;j++){ rnd_array_class(i); }
 		}
 		t2 = std::chrono::high_resolution_clock::now();
 		duration = std::chrono::duration_cast<std::chrono::microseconds>(t2-t1).count();
@@ -191,7 +191,7 @@ void check_array(){
 	TMP* tmp(new TMP[N]);
 	TMP* test(tmp);
 	for(unsigned int i(0);i<N;i++){
-		std::cout<<tmp[i].get()<<" "<<test[i].get()<<std::endl;
+		std::cout<<tmp[i]()<<" "<<test[i]()<<std::endl;
 	}
 	delete[] tmp;
 }
@@ -199,6 +199,6 @@ void check_array(){
 void small_double(){
 	Rand<double> rnd(0.0,1.0);
 	for(unsigned int i(0);i<20;i++){
-		std::cout<<rnd.get()<<std::endl;
+		std::cout<<rnd()<<std::endl;
 	}
 }

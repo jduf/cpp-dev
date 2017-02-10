@@ -15,7 +15,7 @@ double FuncPSO::f(Vector<double> const& x){
 
 bool FuncPSO::evaluate(unsigned int const& p){
 	std::shared_ptr<ParticleOnGrid> particle(std::dynamic_pointer_cast<ParticleOnGrid>(particle_[p]));
-	std::shared_ptr<Measure> sim(std::make_shared<Measure>(particle->get_x(),(random_?rnd_.get():0.0) + f(particle->get_x())));
+	std::shared_ptr<Measure> sim(std::make_shared<Measure>(particle->get_x(),(random_?rnd_():0.0) + f(particle->get_x())));
 #pragma omp critical(List__global)
 	{
 		List<Measure>::Node* sample(NULL);

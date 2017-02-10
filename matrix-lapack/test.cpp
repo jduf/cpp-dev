@@ -248,13 +248,13 @@ int main(){
 	//Rand<double> rnd(-1000,1000);
 	//for(unsigned int i(0);i<N;i++){
 		//for(unsigned int j(0);j<N;j++){
-			//T1(i,j)=rnd.get();
-			//T3(i,j)=std::complex<double>(rnd.get(),rnd.get());
+			//T1(i,j)=rnd();
+			//T3(i,j)=std::complex<double>(rnd(),rnd());
 		//}
 	//}
 	//for(unsigned int i(0);i<N;i++){
 		//for(unsigned int j(i);j<N;j++){
-			//T2(i,j)=rnd.get();
+			//T2(i,j)=rnd();
 			//T2(j,i)=T2(i,j);
 		//}
 	//}
@@ -337,12 +337,12 @@ int main(){
 	//Vector<double> b2(N);
 	//for(unsigned int i(0);i<N;i++){
 		//for(unsigned int j(i);j<N;j++){
-			//T1(i,j)=rnd.get();
+			//T1(i,j)=rnd();
 			//T1(j,i)=T1(i,j);
 			//T2(i,j)=T1(i,j);
 			//T2(j,i)=T1(i,j);
 		//}
-		//b1(i)=rnd.get();
+		//b1(i)=rnd();
 		//b2(i)=b1(i);
 	//}
 	////T1(0,0)=4;
@@ -375,8 +375,8 @@ int main(){
 	Rand<double> rnd(0,0.5);
 	for(unsigned int i(0);i<n;i++){
 		for(unsigned int j(0);j<n;j++){
-			H(i,j) = rnd.get();
-			O(i,j) = rnd.get();
+			H(i,j) = rnd();
+			O(i,j) = rnd();
 		}
 		H(i,i) += n/2;
 		O(i,i) += n/2;

@@ -25,7 +25,7 @@ class Rand{
 		/*}*/
 
 		/*!Gives the next random number*/
-		Type get() const { return dist_(mt_); }
+		Type operator()() const { return dist_(mt_); }
 
 	private:
 		mutable std::mt19937_64 mt_;
@@ -62,7 +62,7 @@ class RandArray{
 		 * [min,max] for unsigned int*/
 		void set(unsigned int const& i, Type const& min, Type const& max);
 		/*!Gives the next random number for the ith index*/
-		Type get(unsigned int const& i) const { assert(i<size_); return rnd_[i]->get(); }
+		Type operator()(unsigned int const& i) const { assert(i<size_); return (*rnd_[i])(); }
 
 	private:
 		unsigned int size_;

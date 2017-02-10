@@ -36,8 +36,8 @@ void Particle::init_Particle(double fx){
 	v_.set(dof_);
 
 	for(unsigned int i(0);i<dof_;i++){
-		x_(i) = rnd_.get()*(max_(i)-min_(i))+min_(i);
-		v_(i) = rnd_.get()*(rnd_.get()>0.5?(max_(i)-x_(i)):(min_(i)-x_(i)));
+		x_(i) = rnd_()*(max_(i)-min_(i))+min_(i);
+		v_(i) = rnd_()*(rnd_()>0.5?(max_(i)-x_(i)):(min_(i)-x_(i)));
 	}
 	bx_ = x_;
 	move(bx_);
@@ -46,9 +46,9 @@ void Particle::init_Particle(double fx){
 
 void Particle::move(Vector<double> const& bx_all){
 	for(unsigned int i(0);i<dof_;i++){
-		v_(i) = chi_*(v_(i) + cp_*rnd_.get()*(bx_(i)-x_(i)) + cg_*rnd_.get()*(bx_all(i)-x_(i)));
-		if(x_(i)+v_(i) > max_(i)){ v_(i) = log(1.0+rnd_.get()*(exp(max_(i)-x_(i))-1.0)); }
-		if(x_(i)+v_(i) < min_(i)){ v_(i) =-log(1.0+rnd_.get()*(exp(x_(i)-min_(i))-1.0)); }
+		v_(i) = chi_*(v_(i) + cp_*rnd_()*(bx_(i)-x_(i)) + cg_*rnd_()*(bx_all(i)-x_(i)));
+		if(x_(i)+v_(i) > max_(i)){ v_(i) = log(1.0+rnd_()*(exp(max_(i)-x_(i))-1.0)); }
+		if(x_(i)+v_(i) < min_(i)){ v_(i) =-log(1.0+rnd_()*(exp(x_(i)-min_(i))-1.0)); }
 		x_(i) = my::chop(x_(i)+v_(i));
 		assert( x_(i) <= max_(i) );
 		assert( x_(i) >= min_(i) );

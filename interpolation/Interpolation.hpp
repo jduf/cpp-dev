@@ -141,7 +141,7 @@ bool Interpolation<Type>::compute_weights(double& dx, unsigned int const& n){
 		double r1_ns;
 		Rand<double> rnd(-1.0,1.0);
 
-		for(unsigned int i(0);i<N_+dim_+1;i++){ weights_(i) = rnd.get(); }
+		for(unsigned int i(0);i<N_+dim_+1;i++){ weights_(i) = rnd(); }
 		for(unsigned int idx(0);idx<m.size();idx++){
 			m.get_idx(idx,row,col);
 			r0(row) -= m[idx]*weights_(col);
@@ -180,7 +180,7 @@ bool Interpolation<Type>::compute_weights(double& dx, unsigned int const& n){
 		unsigned int n_err(100);
 		Rand<unsigned int> rnd_idx(0,N_-1);
 		for(unsigned int i(0);i<n_err;i++){
-			idx = rnd_idx.get();
+			idx = rnd_idx();
 			dx += std::abs(y_[idx]-(*this)(c_[idx]));
 		}
 		dx /= n_err;
@@ -232,7 +232,7 @@ bool Interpolation<Type>::compute_weights(){
 			unsigned int n_err(100);
 			Rand<unsigned int> rnd_idx(0,N_-1);
 			for(unsigned int i(0);i<n_err;i++){
-				idx = rnd_idx.get();
+				idx = rnd_idx();
 				err += std::abs(y_[idx]-(*this)(c_[idx]));
 			}
 			err /= n_err;

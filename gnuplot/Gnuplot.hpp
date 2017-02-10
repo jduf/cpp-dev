@@ -1,8 +1,8 @@
 #ifndef GNUPLOT
 #define GNUPLOT
 
-#include"IOFiles.hpp"
-#include"Linux.hpp"
+#include "IOFiles.hpp"
+#include "Linux.hpp"
 
 class Gnuplot{
 	public:
@@ -44,7 +44,7 @@ class Gnuplot{
 		void operator+=(std::string const& s);
 
 		void save_file();
-		void create_image(bool const& silent, std::string const& format);
+		void create_image(bool const& silent, std::string const& format="");
 
 	private:
 		std::string path_;		//!< path of the .gp, .png and .pdf files

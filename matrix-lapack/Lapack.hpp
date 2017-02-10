@@ -568,8 +568,7 @@ double Lapack<Type>::norm(){
 template<typename Type>
 void Lapack<Type>::eigensystem(Vector<double>& EVal, bool compute_EVec){
 	if(mat_->row() != mat_->col()){ std::cerr<<__PRETTY_FUNCTION__<<" : matrix is not square"<<std::endl; }
-	char jobvr('N');
-	if(compute_EVec){ jobvr = 'V'; }
+	char jobvr(compute_EVec?'V':'N');
 	switch(matrix_type_){
 		case 'S':
 			{ syev(EVal,jobvr); } break;

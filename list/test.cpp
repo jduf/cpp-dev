@@ -141,7 +141,7 @@ int main(){
 		//List<int> a;
 		//Rand<int> rnd(0,100);
 		//auto cmp = [](int const& a, int const& b){ return a<b;};
-		//for(unsigned int i(0);i<30;i++){ a.add_sort(std::make_shared<int>(rnd.get()),cmp ); }
+		//for(unsigned int i(0);i<30;i++){ a.add_sort(std::make_shared<int>(rnd()),cmp ); }
 		//std::cout<<a<<std::endl;
 //
 		//IOFiles out("list_int.jdbin",true,false);
@@ -163,8 +163,8 @@ int main(){
 		//List<Vector<int> > a;
 		//Vector<int> tmp(2);
 		//for(unsigned int i(0);i<10;i++){
-			//tmp(0) = rnd.get();
-			//tmp(1) = rnd.get();
+			//tmp(0) = rnd();
+			//tmp(1) = rnd();
 			//a.add_sort(std::make_shared<Vector<int> >(tmp), func);
 			//std::cout<<a<<std::endl;
 		//}
@@ -189,8 +189,8 @@ int main(){
 		//std::shared_ptr<Vector<int> > tmp_shared;
 		//List<Vector<int> >::Node* target(NULL);
 		//for(unsigned int i(0);i<10;i++){
-			//tmp(0) = rnd.get();
-			//tmp(1) = rnd.get();
+			//tmp(0) = rnd();
+			//tmp(1) = rnd();
 			//tmp_shared = std::make_shared<Vector<int> >(tmp);
 			//if( a.find_in_sorted_list(tmp_shared, target, cmp_for_fuse) ){
 				//fuse(*target->get(),*tmp_shared);

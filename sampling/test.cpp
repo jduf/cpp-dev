@@ -37,7 +37,7 @@ void check_troyer(){
 	DataSet<double> H_correct;
 	H_correct.set(N+1,B,b,true);
 	do{
-		r = rnd.get();
+		r = rnd();
 		if(r <= n){n--;}
 		else{n++;}
 
@@ -101,7 +101,7 @@ void check_flip_coin(){
 		xtot=0.0;
 		do{ 
 			iter++;
-			x=rnd.get();
+			x=rnd();
 			H.set_x(x);
 			H.add_sample(); 
 			xtot += x;
@@ -229,7 +229,7 @@ void merge_two_sim_rnd(){
 	Data<double> H3;
 	H3.set(B,b,conv);
 	do{ 
-		tmp = rnd.get();
+		tmp = rnd();
 		iter++;
 		H1.set_x(tmp);
 		H1.add_sample(); 
@@ -239,7 +239,7 @@ void merge_two_sim_rnd(){
 	} while (iter<N1);
 	iter = 0;
 	do{ 
-		tmp = rnd.get();
+		tmp = rnd();
 		iter++;
 		H2.set_x(tmp);
 		H2.add_sample(); 

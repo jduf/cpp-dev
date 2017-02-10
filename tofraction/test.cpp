@@ -46,7 +46,7 @@ void test(double a){
 
 int main(){
 	Rand<double> rnd(-3,3);
-	double a(rnd.get());
+	double a(rnd());
 	test(1./6.);
 	test(1./3.);
 	test(1./7.);

@@ -32,8 +32,8 @@ void test_given_function(){
 	Vector<double> c_tmp(2);
 	double y_tmp;
 	for(unsigned int i(0);i<N;i++){
-		c_tmp(0) = min+dx*rnd.get();
-		c_tmp(1) = min+dx*rnd.get();
+		c_tmp(0) = min+dx*rnd();
+		c_tmp(1) = min+dx*rnd();
 		y_tmp = f(c_tmp);
 		s.add_data(c_tmp,y_tmp);
 		data<<c_tmp<<" "<<y_tmp<<IOFiles::endl;
