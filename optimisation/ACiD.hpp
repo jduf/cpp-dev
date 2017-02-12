@@ -27,19 +27,25 @@ class ACiD{
 			//return 5*x(0)*x(0)-6*x(0)*x(1)+5*x(1)*x(1);
 		}
 
+		unsigned int const& get_iter() const { return iter_; }
+
 	private:
 		unsigned int iter_;
 		unsigned int const N_;
-		double const c1_;
-		double const cc_;
 		double const k_suc_;
 		double const k_uns_;
-		Vector<double> pc_;
-		Vector<double> weights_;
-		Vector<double> pop_mean_;
+		double c1_;
+		double cp_;
+		double cmu_;
+		double muw_;
+		Vector<double> p_;
+		Vector<double> w_;
+		Vector<double> m_;
+		Vector<double> mold_;
 		Vector<double> sigma_;
 		Vector<double> D_;
 		Matrix<double> C_;
+		Matrix<double> Cmu_;
 		Matrix<double> Cold_;
 		Matrix<double> B_;
 		Matrix<double> Bo_;

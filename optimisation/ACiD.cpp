@@ -3,17 +3,17 @@
 ACiD::ACiD(unsigned int const& N, Vector<double> const& xa, Vector<double> const& xb):
 	iter_(0),
 	N_(N),
-	c1_(0.5/N_),
-	cc_(1.0/sqrt(N_)),
 	k_suc_(1.8),
 	k_uns_(0.5),
-	pc_(N_,0.0),
-	weights_(N_,1.0/N_),
-	pop_mean_(N_),
+	cmu_(0.0),
+	muw_(0.0),
+	p_(N_,0.0),
+	w_(N_),
+	m_(N_),
 	sigma_(N_),
 	D_(N_,1.0),
 	C_(N_,N_,0.0),
-	Cold_(N_,N_,0.0),
+	Cmu_(N_,N_),
 	B_(N_,N_),
 	Bo_(N_,N_),
 	invB_(N_,N_),
@@ -24,10 +24,14 @@ ACiD::ACiD(unsigned int const& N, Vector<double> const& xa, Vector<double> const
 	Rand<double> rnd(0.0,1.0);
 	Vector<double> v(N_);
 	double tmp(0.0);
+	double lnmu(0);
+	for(unsigned int d(1);d<N_+1;d++){ lnmu += log(d); }
+	lnmu = N_*log(N_+1) - lnmu;
+
 	for(unsigned int d(0);d<N_;d++){
+		w_(d) = (log(N_+1)-log(d+1))/lnmu;
 		C_(d,d) = 1.0;
-		Cold_(d,d) = 1.0;
-		pop_mean_(d) = xa(d) + rnd()*(xb(d) - xa(d));
+		m_(d) = xa(d) + rnd()*(xb(d) - xa(d));
 		sigma_(d) = (xb(d) - xa(d))/4.0;
 
 		for(unsigned int i(0);i<N_;i++){ v(i) = rnd(); }
@@ -43,16 +47,26 @@ ACiD::ACiD(unsigned int const& N, Vector<double> const& xa, Vector<double> const
 	}
 	invB_ = B_.transpose();
 
-	B_.set(N_,N_,0.0);
-	B_(0,0) = 1.0;
-	B_(1,1) = 1.0;
-	invB_ = B_;
-
 	//std::cout<<B_<<std::endl;
 	//std::cout<<std::endl;
 	//std::cout<<invB_<<std::endl;
 	//std::cout<<std::endl;
 	//std::cout<<(invB_*B_).chop()<<std::endl;
+	
+	muw_ = 1./w_.norm_squared();
+	cmu_ = 0.2*(muw_ - 2.0 + 1.0/muw_)/((N_+2)*(N_+2)+0.2*muw_);
+	c1_ = 0.2/((N+1.3)*(N+1.3)+muw_);
+	cp_ = 1.0/sqrt(N_);
+
+	while( c1_+cmu_ > 1){
+		c1_ *= 0.9;
+		cmu_ *= 0.9;
+		std::cerr<<"Warning : c1 and cmu have been changed : "<<c1_<<" "<<cmu_<<std::endl;
+	}
+
+	if(muw_<1){ 
+		std::cerr<<"weight problem : "<<1./w_.norm_squared()<<std::endl;
+	}
 }
 
 void ACiD::run(unsigned int const& maxiter, double& bf){
@@ -62,9 +76,7 @@ void ACiD::run(unsigned int const& maxiter, double& bf){
 	unsigned int d(0);
 	double f1(0.0);
 	double f2(0.0);
-	pop_mean_(0) = -3.1;
-	pop_mean_(1) = -4.1;
-	Vector<double> x(pop_mean_);
+	Vector<double> x(m_);
 	Vector<double> x1(N_);
 	Vector<double> x2(N_);
 	double bfold(bf);
@@ -76,10 +88,10 @@ void ACiD::run(unsigned int const& maxiter, double& bf){
 		}
 
 		//data<<x<<" "<<x1<<" "<<f1<<" "<<x2<<" "<<std::endl;
-		data<<x<<" "<<pop_mean_<<IOFiles::endl;
-		data<<x1<<" "<<pop_mean_<<IOFiles::endl;
-		data<<x<<" "<<pop_mean_<<IOFiles::endl;
-		data<<x2<<" "<<pop_mean_<<IOFiles::endl;
+		data<<x<<" "<<m_<<IOFiles::endl;
+		data<<x1<<" "<<m_<<IOFiles::endl;
+		data<<x<<" "<<m_<<IOFiles::endl;
+		data<<x2<<" "<<m_<<IOFiles::endl;
 
 		//x1 = x;
 		//x2 = x;
@@ -139,20 +151,44 @@ void ACiD::run(unsigned int const& maxiter, double& bf){
 }
 
 void ACiD::ACD_update(){
-	Vector<double> move(pop_*weights_ - pop_mean_);
-	pop_mean_ = pop_*weights_;
-	double norm_squared((invB_*move).norm_squared());
-	Vector<double> z(move*sqrt(N_/norm_squared));
+	/*in this algorithm mu=N because for each direction d in [1,N] two
+	 * measurments are made*/
+	Vector<double>* d_(new Vector<double>[N_+1]);
+	Vector<double> alpha_(N_+1);
+	Vector<double> l_(N_);
 
-	pc_ *= (1.0 - cc_);
+	mold_ = m_;
+	m_ = pop_*w_;
+	d_[N_] = m_-mold_;
+	double norm_squared((invB_*d_[N_]).norm_squared());
 	if(norm_squared<1e-10){
-		std::cout<<"warning 1 : "<<norm_squared<<std::endl;
-		std::cout<<"move : "<<move<<std::endl;
-		z.set(N_,0);
-	} else { pc_ += z*sqrt(cc_*(2.0-cc_)); }
+		std::cout<<"warning 1 : risk of division by 0 : "<<norm_squared<<std::endl;
+	}
 
-	C_ *= (1.0 - c1_);
-	C_ += pc_^pc_*c1_;
+	for(unsigned int i(0);i<N_;i++){
+		d_[i].set(N_,0.0);
+		for(unsigned int j(0);j<N_;j++){
+			d_[i](j) = pop_(i,j) - mold_(j);
+		}
+		l_(i) = sqrt((invB_*d_[i]).norm_squared());
+	}
+	double l(l_.median());
+	for(unsigned int i(0);i<N_;i++){
+		alpha_(i) = sqrt(N_)*std::max(l_(i)/2.0,l);
+	}
+	alpha_(N_) = sqrt(N_/norm_squared);
+
+	p_ *= (1.0 - cp_);
+	p_ += d_[N_]*alpha_(N_)*sqrt(cp_*(2.0-cp_)); 
+
+	Cmu_.set(N_,N_,0.0);
+	for(unsigned int i(0);i<N_;i++){
+		Cmu_ += d_[i]^d_[i]*w_(i)*alpha_(i)*alpha_(i);
+	}
+
+	C_ *= (1.0 - c1_ - cmu_);
+	C_ += p_^p_*c1_;
+	C_ += Cmu_ * cmu_;
 
 	Bo_ = C_;
 	Lapack<double> diag(Bo_,false,'S');
@@ -165,13 +201,12 @@ void ACiD::ACD_update(){
 			invB_(i,j) = Bo_(i,j)/D_(i);
 		}
 	}
-	Cold_ = C_;
 
 	//std::cout<<"----"<<std::endl;
 	//std::cout<<"pop"<<std::endl;
 	//std::cout<<pop_<<std::endl;
-	//std::cout<<"move"<<std::endl;
-	//std::cout<<move<<std::endl;
+	//std::cout<<"d"<<std::endl;
+	//std::cout<<d<<std::endl;
 	//std::cout<<"z"<<std::endl;
 	//std::cout<<z<<std::endl;
 	//std::cout<<"B"<<std::endl;
@@ -181,7 +216,7 @@ void ACiD::ACD_update(){
 	//std::cout<<"xmean"<<std::endl;
 	//std::cout<<xmean_<<std::endl;
 	//std::cout<<"pc"<<std::endl;
-	//std::cout<<pc_<<std::endl;
+	//std::cout<<p_<<std::endl;
 	//std::cout<<"C"<<std::endl;
 	//std::cout<<C_<<std::endl;
 	//std::cout<<"----"<<std::endl;

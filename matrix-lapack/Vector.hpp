@@ -105,6 +105,8 @@ class Vector{
 		Type mean() const;
 		/*!Returns the variance of the elements in vec_*/
 		Type variance() const;
+		/*!Returns the median of the elements in vec_*/
+		Type median() const;
 		/*!Returns the maximal value of vec_*/
 		Type max() const;
 		/*!Returns the minimal value of vec_*/
@@ -418,6 +420,13 @@ Type Vector<Type>::variance() const {
 	double v(0.0);
 	for(unsigned int i(0);i<size_;i++){ v+=(vec_[i]-m)*(vec_[i]-m); }
 	return v/size_;
+}
+
+template<typename Type>
+Type Vector<Type>::median() const {
+	Vector<Type> tmp(*this);
+	std::nth_element(tmp.ptr(),tmp.ptr()+size_/2,tmp.ptr()+size_);
+	return tmp(size_/2);
 }
 
 template<typename Type>

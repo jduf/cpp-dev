@@ -2,14 +2,18 @@
 #include "Gnuplot.hpp"
 
 int main(){
-	//IOFiles data("data.dat",true,false);
 	unsigned int N(2);
+	unsigned int iter(0);
 	Vector<double> xa(N,-5.0);
 	Vector<double> xb(N,5.0);
 
-	ACiD min(N,xa,xb);
-	double bf(1e10);
-	min.run(3000,bf);
+	for(unsigned int i(0);i<100;i++){
+		ACiD min(N,xa,xb);
+		double bf(1e10);
+		min.run(3000,bf);
+		iter += min.get_iter();
+	}
+	std::cout<<iter<<std::endl;
 
 	Gnuplot gp("./","plot");
 	gp.range("x",-5,5);
