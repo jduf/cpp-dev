@@ -6,31 +6,22 @@
 
 class ACiD{
 	public:
-		/*!Constructor for the creation of a .gp file in path/filename*/
-		ACiD(unsigned int const& N, Vector<double> const& xa, Vector<double> const& xb);
+		/*!Constructor*/
+		ACiD(unsigned int const& N, Vector<double> const& xa, Vector<double> const& xb, double const& beta);
 		/*!Default destructor*/
-		~ACiD() = default;
+		virtual ~ACiD();
 		/*{Forbidden*/
 		ACiD() = delete;
 		ACiD(ACiD const&) = delete;
 		ACiD(ACiD&&) = delete;
-		ACiD& operator=(ACiD);
+		ACiD& operator=(ACiD const&);
 		/*}*/
-		void run(unsigned int const& maxiter, double& bf);
+		void run(unsigned int const& maxiter);
 
-
-		double function(Vector<double> const& x){
-			double a(1.0);
-			double b(100.0);
-			iter_++;
-			return (a-x(0))*(a-x(0))+b*(x(1)-x(0)*x(0))*(x(1)-x(0)*x(0));
-			//return 5*x(0)*x(0)-6*x(0)*x(1)+5*x(1)*x(1);
-		}
-
-		unsigned int const& get_iter() const { return iter_; }
+		virtual double function(Vector<double> const& x) = 0;
+		unsigned int iter_ = 0;
 
 	private:
-		unsigned int iter_;
 		unsigned int const N_;
 		double const k_suc_;
 		double const k_uns_;
@@ -38,21 +29,24 @@ class ACiD{
 		double cp_;
 		double cmu_;
 		double muw_;
+		Vector<double>* d_;
+		Vector<double> l_;
 		Vector<double> p_;
 		Vector<double> w_;
+		Vector<double> D_;
 		Vector<double> m_;
 		Vector<double> mold_;
 		Vector<double> sigma_;
-		Vector<double> D_;
-		Matrix<double> C_;
-		Matrix<double> Cmu_;
-		Matrix<double> Cold_;
+		Vector<double> alpha_;
+		Vector<double> allf_;
+		Matrix<double> allx_;
 		Matrix<double> B_;
 		Matrix<double> Bo_;
 		Matrix<double> invB_;
+		Matrix<double> C_;
+		Matrix<double> Cmu_;
+		Matrix<double> Cold_;
 		Matrix<double> pop_;
-		Matrix<double> allx_;
-		Vector<double> allf_;
 
 		void ACD_update();
 };
