@@ -2,7 +2,7 @@
 #define DEF_LINUX
 
 #ifndef DEF_CONFIG
-#pragma GCC warning "The macros defined in 'config.mk' are essential, include this file in the makefile"
+#pragma GCC warning "The macros defined in 'lib/config.mk' are essential, include this file in the makefile"
 #endif
 
 #include <cstdlib>

@@ -29,11 +29,11 @@ class Rand{
 
 	private:
 		mutable std::mt19937_64 mt_;
-		mutable typename std::conditional<
+		mutable typename 
+			std::conditional<
 			std::is_integral<Type>::value,
 			std::uniform_int_distribution<Type>,
-			std::uniform_real_distribution<Type> >
-				::type dist_;
+			std::uniform_real_distribution<Type> >::type dist_;
 };
 
 template<typename Type>
@@ -109,4 +109,27 @@ void RandArray<Type>::set(unsigned int const& i, Type const& min, Type const& ma
 	if(rnd_[i]){ delete rnd_[i]; }
 	rnd_[i] = new Rand<Type>(min,max);
 }
+
+class RandGaussian{
+	public:
+		/*!Constructor for a gaussian (normal without argument) distribution*/
+		RandGaussian(double const& mean=0.0, double const& stddev=1.0):
+			mt_(std::random_device()()),
+			dist_(mean,stddev){}
+
+		/*!Default destructor*/
+		~RandGaussian() = default;
+		/*{Forbidden*/
+		RandGaussian(RandGaussian const&) = delete;
+		RandGaussian(RandGaussian&&) = delete;
+		RandGaussian& operator=(RandGaussian) = delete;
+		/*}*/
+
+		/*!Gives the next random number*/
+		double operator()() const { return dist_(mt_); }
+
+	private:
+		mutable std::mt19937_64 mt_;
+		mutable std::normal_distribution<>  dist_;
+};
 #endif

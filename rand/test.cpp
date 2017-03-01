@@ -1,7 +1,9 @@
 #include "Rand.hpp"
 #include "Vector.hpp"
+#include <map>
+#include <iomanip>
 #include <chrono>
-#include <omp.h>
+#include "omp.h"
 
 void check_basic();
 void check_openmp_mt();
@@ -11,6 +13,8 @@ void check_minimal_number_mt();
 void check_shuffle();
 
 void check_array();
+
+void check_gaussian();
 
 class TMP{
 	public:
@@ -32,7 +36,9 @@ int main(){
 	//check_shuffle();
 	
 	//check_array();
-	small_double();
+	//small_double();
+	
+	check_gaussian();
 }
 
 void check_basic(){
@@ -201,4 +207,17 @@ void small_double(){
 	for(unsigned int i(0);i<20;i++){
 		std::cout<<rnd()<<std::endl;
 	}
+}
+
+void check_gaussian(){
+	RandGaussian rnd(5,2);
+	
+    std::map<int, int> hist;
+    for(int n=0; n<100000; ++n) {
+        ++hist[std::round(rnd())];
+    }
+    for(auto p : hist) {
+        std::cout << std::fixed << std::setprecision(1) << std::setw(2)
+                  << p.first << ' ' << std::string(p.second/200, '*') << '\n';
+    }
 }

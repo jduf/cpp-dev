@@ -4,7 +4,7 @@
 #include "Directory.hpp" 
 #include "RSTFile.hpp" 
 
-#include <omp.h>
+#include "omp.h"
 
 int main(int argc,char* argv[]){
 	unsigned int min_args(2);

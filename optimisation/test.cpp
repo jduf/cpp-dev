@@ -1,4 +1,4 @@
-#include "ACiD.hpp"
+#include "RosenbockACiD.hpp"
 #include "Gnuplot.hpp"
 
 int main(){
@@ -8,7 +8,7 @@ int main(){
 	Vector<double> xb(N,5.0);
 
 	for(unsigned int i(0);i<100;i++){
-		ACiD min(N,xa,xb,7);
+		RosenbockACiD min(N,xa,xb,7);
 		min.run(3000);
 		iter += min.iter_;
 	}
