@@ -1,4 +1,4 @@
-DIRECTORY=$(shell find . -maxdepth 1 -type d -not -name "doxygen" -not -name ".*")
+DIRECTORY=$(shell find . -maxdepth 1 -type d -not -name "doxygen" -not -name "lib" -not -name ".*")
 
 all:$(DIRECTORY)
 

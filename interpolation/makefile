@@ -2,38 +2,39 @@ EXEC=test
 
 test_SRCS=test.cpp RST.cpp Header.cpp IOFiles.cpp Interpolation.cpp Gnuplot.cpp Lapack.cpp Linux.cpp
 
+JDLIB = ../lib
+BUILD = build
 #-----------------------------------------------------------------
-include ../config.mk
 
 CXX = g++ -std=c++11
 
-ERRORS = -Wall -Wextra -pedantic
-OPTION = $(CONFIG) -fopenmp
+OPTION = -fopenmp
 LAPACK = -llapack -lblas
+ERRORS = -Wall -Wextra -pedantic
 
-BUILD=build
+VPATH = $(JDLIB) .
+MYLIB = $(addprefix -I,$(VPATH))
+-include $(JDLIB)/config.mk
 
-CXXFLAGS = $(ERRORS) $(OPTION)
-LDFLAGS  = $(LAPACK) $(ERRORS) $(OPTION)
-
-SRCS=$(wildcard *.cpp)
+CXXFLAGS = $(MYLIB) $(ERRORS) $(OPTION) $(CONFIG)
+LDFLAGS  = $(MYLIB) $(ERRORS) $(OPTION) $(LAPACK)
 
 all: OPTION += -O3 -DNDEBUG
 all:$(EXEC)
 
-debug: OPTION += -ggdb 
+debug: OPTION += -ggdb
 debug:$(EXEC)
 
 .SECONDEXPANSION:
-$(EXEC): $$(patsubst %.cpp, $(BUILD)/%.o, $$($$@_SRCS)) 
+$(EXEC): $$(patsubst %.cpp, $(BUILD)/%.o, $$($$@_SRCS))
 	@echo Links $(notdir $^)
-	$(CXX) -o $@ $^ $(LDFLAGS) 
+	$(CXX) $^ $(LDFLAGS) -o $@
 
 $(BUILD)/%.o:%.cpp
 	@echo Creates $(notdir $@)
-	$(CXX) -MD -c $(CXXFLAGS) $< -o $@
+	$(CXX) $< $(CXXFLAGS) -MMD -c -o $@
 
--include $(addprefix $(BUILD)/,$(SRCS:.cpp=.d))
+-include $(wildcard $(BUILD)/*.d)
 
 clean:
 	rm -f $(BUILD)/* $(EXEC) spline.dat surf.dat plot.*

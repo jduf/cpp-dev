@@ -4,36 +4,38 @@ EXEC+=permutation
 young_SRCS=young.cpp YoungTableau.cpp
 permutation_SRCS=permutation.cpp Parseur.cpp IOFiles.cpp RST.cpp Header.cpp
 
+JDLIB = ../lib
+BUILD = build
 #-----------------------------------------------------------------
 
 CXX = g++ -std=c++11
 
+OPTION =
 ERRORS = -Wall -Wextra -pedantic
-OPTION = 
 
-BUILD=build
+VPATH = $(JDLIB) .
+MYLIB = $(addprefix -I,$(VPATH))
+-include $(JDLIB)/config.mk
 
-CXXFLAGS = $(ERRORS) $(OPTION)
-LDFLAGS  = $(ERRORS) $(OPTION)
-
-SRCS=$(wildcard *.cpp)
+CXXFLAGS = $(MYLIB) $(ERRORS) $(OPTION)
+LDFLAGS  = $(MYLIB) $(ERRORS) $(OPTION)
 
 all: OPTION += -O3 -DNDEBUG
 all:$(EXEC)
 
-debug: OPTION += -ggdb 
+debug: OPTION += -ggdb
 debug:$(EXEC)
 
 .SECONDEXPANSION:
-$(EXEC): $$(patsubst %.cpp, $(BUILD)/%.o, $$($$@_SRCS)) 
+$(EXEC): $$(patsubst %.cpp, $(BUILD)/%.o, $$($$@_SRCS))
 	@echo Links $(notdir $^)
-	$(CXX) -o $@ $^ $(LDFLAGS) 
+	$(CXX) $^ $(LDFLAGS) -o $@
 
 $(BUILD)/%.o:%.cpp
 	@echo Creates $(notdir $@)
-	$(CXX) -MD -c $(CXXFLAGS) $< -o $@
+	$(CXX) $< $(CXXFLAGS) -MMD -c -o $@
 
--include $(addprefix $(BUILD)/,$(SRCS:.cpp=.d))
+-include $(wildcard $(BUILD)/*.d)
 
 clean:
 	rm -f $(BUILD)/* $(EXEC)

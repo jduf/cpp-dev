@@ -1,7 +1,7 @@
 #ifndef DEF_FUNCPSO
 #define DEF_FUNCPSO
 
-#include"Gnuplot.hpp"
+#include "Gnuplot.hpp"
 #include "ParticleOnGrid.hpp"
 
 class FuncPSO : public Swarm<ParticleOnGrid> {
