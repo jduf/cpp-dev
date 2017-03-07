@@ -21,6 +21,7 @@ class ACiD{
 
 		void run(unsigned int const& maxiter);
 		virtual double function(Vector<double> const& x) = 0;
+		virtual bool stop(bool const& improve_overall) const { return !improve_overall; }
 		unsigned int iter_ = 0;
 
 		void save(IOFiles& out) const;

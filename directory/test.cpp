@@ -2,6 +2,6 @@
 
 int main(){
 	Directory d;
-	d.search_file_ext(".cpp","./",true,true);
-	d.print();
+	d.search_files_ext(".cpp","./../",true,true);
+	d.print(std::cout);
 }

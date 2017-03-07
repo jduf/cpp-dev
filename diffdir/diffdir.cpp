@@ -33,13 +33,13 @@ int main(int argc, char* argv[]){
 		Directory d2;
 		if(P.find("e",i,false)){
 			ext = P.get<std::string>(i);
-			d1.search_file_ext(ext,directory_name_1,true,false);
-			d2.search_file_ext(ext,directory_name_2,true,false);
+			d1.search_files_ext(ext,directory_name_1,true,false);
+			d2.search_files_ext(ext,directory_name_2,true,false);
 		}
 		if(P.find("k",i,false)){
 			keyword = P.get<std::string>(i);
-			d1.search_file(keyword,directory_name_1,true,false);
-			d2.search_file(keyword,directory_name_2,true,false);
+			d1.search_files(keyword,directory_name_1,true,false);
+			d2.search_files(keyword,directory_name_2,true,false);
 		}
 		d1.sort();
 		d2.sort();

@@ -5,11 +5,11 @@
 
 int main(){
 	Directory d;
-	d.search_file_ext(".jdbin","/home/jdufour/travail/cpp-dev/",false,false);
+	d.search_files_ext(".jdbin","/home/jdufour/travail/cpp-dev/",false,false);
 	std::string save_in("/home/jdufour/travail/cpp-dev/rst/output/");
 	std::string file;
 	Linux command;
-	d.print();
+	d.print(std::cout);
 	for(unsigned int i(0); i<d.size();i++){
 		file = d.get_path(i) + "/" + d.get_name(i) + d.get_ext(i);
 		IOFiles r(file,false,false);

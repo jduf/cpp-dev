@@ -53,7 +53,7 @@ class Particle{
 template<typename Type>
 class Swarm{
 	public:
-		Swarm(unsigned int const& Nparticles, unsigned int const& maxiter, unsigned int const& dof, double const& cg, double const& cp);
+		Swarm(unsigned int const& Nparticles, unsigned int const& maxsteps, unsigned int const& dof, double const& cg, double const& cp);
 		~Swarm() = default;
 		/*{Forbidden*/
 		Swarm() = delete;
@@ -70,7 +70,7 @@ class Swarm{
 
 	protected:
 		unsigned int const Nparticles_;//!< numbre of particles
-		unsigned int const maxiter_;   //!< maximum number of iteration
+		unsigned int const maxsteps_;   //!< maximum number of steps (particle's move)
 		std::vector<std::shared_ptr<Particle> > particle_;
 
 	private:
@@ -86,9 +86,9 @@ class Swarm{
 /*constructors and destructor*/
 /*{*/
 template<typename Type>
-Swarm<Type>::Swarm(unsigned int const& Nparticles, unsigned int const& maxiter, unsigned int const& dof, double const& cg, double const& cp):
+Swarm<Type>::Swarm(unsigned int const& Nparticles, unsigned int const& maxsteps, unsigned int const& dof, double const& cg, double const& cp):
 	Nparticles_(Nparticles),
-	maxiter_(maxiter),
+	maxsteps_(maxsteps),
 	particle_(Nparticles),
 	bparticle_(0)
 {
@@ -115,7 +115,7 @@ void Swarm<Type>::init_PSO(double const& fx){
 template<typename Type>
 void Swarm<Type>::minimize(){
 	if(int(Nparticles_)<=omp_get_max_threads()){
-		for(unsigned int i(0);i<maxiter_;i++){
+		for(unsigned int i(0);i<maxsteps_;i++){
 #pragma omp parallel for
 			for(unsigned int p=0;p<Nparticles_;p++){ next_step(p); }
 		}
@@ -123,7 +123,7 @@ void Swarm<Type>::minimize(){
 		unsigned int p(0);
 		unsigned int local_p(0);
 #pragma omp parallel for schedule(dynamic) private(local_p)
-		for(unsigned int i=0;i<maxiter_*Nparticles_;i++){
+		for(unsigned int i=0;i<maxsteps_*Nparticles_;i++){
 #pragma omp critical(Swarm__minimize__local)
 			{
 				local_p=p;

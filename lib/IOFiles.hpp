@@ -70,7 +70,7 @@ class IOFiles{
 		/*!Returns the header contained in the file*/
 		std::string get_header() const;
 		/*!Returns the header contained in the file*/
-		Header* add_header() const { return header_; }
+		Header* add_to_header() const { return header_; }
 
 		static std::string const endl; //!<Gives a way to end lines
 

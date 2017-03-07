@@ -96,7 +96,7 @@ void ACiD::run(unsigned int const& maxiter){
 	unsigned int iter(0);
 	bool improved(true);
 	bool improved_overall(true);
-	while(iter++<maxiter && improved_overall){
+	while(iter++<maxiter && stop(improved_overall)){
 		for(unsigned int i(0);i<N_;i++){
 			x1(i) = x_(i) + sigma_(d)*B_(i,d);
 			x2(i) = x_(i) - sigma_(d)*B_(i,d);

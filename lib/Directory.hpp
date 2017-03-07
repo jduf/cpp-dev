@@ -1,10 +1,10 @@
 #ifndef DEF_DIRECTORY
 #define DEF_DIRECTORY
 
+#include "Miscellaneous.hpp"
+
 #include <dirent.h>
 #include <sys/stat.h>
-#include <iostream>
-#include <vector>
 
 class Directory{
 	public:
@@ -32,13 +32,13 @@ class Directory{
 		inline unsigned int size() const { return path_.size(); }
 
 		/*!Prints all the path_+filename_+extension_*/
-		void print() const;
+		void print(std::ostream& flux) const;
 		/*!Lists all directories stored in curr_dir*/
 		void list_dir(std::string curr_dir);
-		/*!Lists all files matching part ok keyword*/
-		void search_file(std::string const& keyword, std::string curr_dir, bool follow_link, bool recursive);
-		/*!Lists all files whose extension is*/
-		void search_file_ext(std::string const& ext, std::string curr_dir, bool follow_link, bool recursive);
+		/*!Finds all files matching keyword*/
+		void search_files(std::string const& keyword, std::string curr_dir, bool follow_link, bool recursive);
+		/*!Finds all files with extension "ext"*/
+		void search_files_ext(std::string const& ext, std::string curr_dir, bool follow_link, bool recursive);
 		/*!Sorts by alphabetical order all the path_+filename_+extension_*/
 		void sort();
 

@@ -182,7 +182,7 @@ namespace my{
 		return r;
 	}
 
-	inline void display_progress(double const& step, double const& total, std::string const& msg=" "){
+	inline void display_progress(double const& step, double const& total, std::string const& msg = " "){
 		std::cout<<msg<<100.*step/total<<"%       \r"<<std::flush;
 	}
 
