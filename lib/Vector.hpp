@@ -490,9 +490,9 @@ bool Vector<Type>::is_sorted(Function cmp) const {
 
 template<typename Type>
 Vector<Type> Vector<Type>::order(Vector<unsigned int> const& index) const {
-	assert(size_ == index.size());
-	Vector<Type> out(size_);
-	for(unsigned int i(0);i<size_;i++){ out(i) = vec_[index(i)]; }
+	assert(size_ >= index.size() && index.max() < size_);
+	Vector<Type> out(index.size());
+	for(unsigned int i(0);i<index.size();i++){ out(i) = vec_[index(i)]; }
 	return out;
 }
 
@@ -512,15 +512,15 @@ namespace my {
 			}
 		}
 
+	/*!I don't know what this function is about*/
 	template<typename Type>
 		Vector<Type> comb(unsigned int n, int unsigned k, Vector<Type> v){
 			Vector<Type> out(nCk(n,k));
 			std::vector<char> bitmask(k, 1);
 			bitmask.resize(n, 0);
 			unsigned int i(0);
-			unsigned int s;
 			do{
-				s = 1;
+				unsigned int s(1);
 				for(unsigned int j(0);j<n;j++){ if (bitmask[j]){ s *= v(j); } }
 				out(i) = s;
 				i++;

@@ -3,30 +3,21 @@
 
 #include "Vector.hpp"
 
-/*!taken from : 
- * http://compprog.wordpress.com/2007/10/17/generating-combinations-1/
- * 
- * next_comb(int comb[], int k, int n) Generates the next combination of n
- * elements as k after comb
- * 
- * comb => the previous combination ( use (0, 1, 2, ..., k) for first)
- * k => the size of the subsets to generate
- * n => the size of the original set
- * 
- * Returns: 1 if a valid combination was found
- * 0, otherwise
-*/
+/*!see : http://compprog.wordpress.com/2007/10/17/generating-combinations-1/ */
 class Combination{
 	public: 
-		Combination();
-		void set(unsigned int const& k, unsigned int const& n,Vector<unsigned int>& comb);
+		Combination(unsigned int const& n, unsigned int const& k);
 
+		/*!Generates the next combination of n elements as k after comb*/
 		bool next();
+		/*!Returns the total number of combination*/
 		unsigned int number() const;
+		/*!Returns current combination*/
+		Vector<unsigned int> const& get_combination() const { return comb_; }
 
 	private:
-		unsigned int k_;
-		unsigned int n_;
-		unsigned int* comb_;
+		unsigned int const k_;//!size of the subsets to generate
+		unsigned int const n_;//!size of the original set
+		Vector<unsigned int> comb_; //!previous combination ( use (0, 1, 2, ..., k) for first)
 };
 #endif

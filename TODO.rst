@@ -23,3 +23,5 @@ IDEA
 + Variable has a clone method that doesn't use unique_ptr (e.g. MCSystem).
   therefore memory is allocated in GenericVariable and released in Container.
   this is not really good
++ Sampling: improve the way the data are stored (can significantly reduce the
+  size)
