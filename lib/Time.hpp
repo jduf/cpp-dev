@@ -39,7 +39,7 @@ class Time{
 		/*!Returns the date*/
 		std::string date(std::string s){
 			char tmp[20];
-			//std::strftime(tmp,20,"%G-%m-%d_%H:%M:%S",localtime(&rawtime_));
+			//std::strftime(tmp,20,"%G-%m-%d_%H:%M:%S",localtime(&tt_));
 			std::string format("%F_%H"+s+"%M"+s+"%S");
 			std::strftime(tmp,20,format.c_str(),localtime(&tt_));
 			return tmp;
@@ -50,7 +50,8 @@ class Time{
 		{ return time(0)>limit+tt_; }
 
 		/*!Returns the elapsed from the instantiation or last call of set*/
-		double elapsed() const { return (std::chrono::duration_cast<std::chrono::duration<double> >(std::chrono::steady_clock::now() - t0_)).count(); }
+		auto elapsed() const { return (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - t0_)).count(); }
+
 
 	private:
 		std::chrono::steady_clock::time_point t0_;

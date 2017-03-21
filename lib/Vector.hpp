@@ -193,7 +193,7 @@ Vector<Type>::Vector(IOFiles& r):
 
 template<typename Type>
 Vector<Type>::~Vector(){
-	if(vec_){ delete[]  vec_; }
+	if(vec_){ delete[] vec_; }
 }
 
 template<typename Type>

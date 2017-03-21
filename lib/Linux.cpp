@@ -138,10 +138,9 @@ std::string Linux::rst2latex(std::string const& texfile, std::string const& path
 
 std::string Linux::rst2html(std::string const& path, std::string const& filename){
 	std::string cmd(MY_BIN_RST2HTML);
-	cmd+= " -st";
 	cmd+= " --stylesheet=" + std::string(MY_RST2HTML_STYLESHEET);
-	cmd+= " --field-name-limit=0 ";
-	cmd+= " --link-stylesheet ";
+	cmd+= " --field-name-limit=0";
+	cmd+= " -st ";
 	cmd+= path + filename + ".rst ";
 	cmd+= path + filename + ".html ";
 	return cmd;

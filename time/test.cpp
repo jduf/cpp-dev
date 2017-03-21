@@ -1,10 +1,16 @@
 #include "Time.hpp"
+#include "Miscellaneous.hpp"
 
 #include<iostream>
 #include<unistd.h>
 
-
 int main(){
+	std::cout<<my::convert_seconds(100001)<<std::endl;
+	std::cout<<my::convert_seconds(3702)<<std::endl;
+	std::cout<<my::convert_seconds(520)<<std::endl;
+	std::cout<<my::convert_seconds(60)<<std::endl;
+	std::cout<<my::convert_seconds(27)<<std::endl;
+
 	Time t;
 	std::cout<<t.day()<<" "<<t.month()<<" "<<t.year()<<" "<<t.hour()<<" "<<t.min()<<" "<<t.sec()<<std::endl;
 	std::string d;
@@ -18,4 +24,3 @@ int main(){
 	} while (!t.limit_reached(5));
 	std::cout<<t.elapsed()<<std::endl;
 }
-

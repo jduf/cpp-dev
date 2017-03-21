@@ -5,9 +5,9 @@
 #include <cassert>
 
 /*{Description*/
-/*!Random number generator that uses <random> of c++11.
- * \warning if declared outside an parallel region but used by different
- * threads, to same random number may be used by different thread (openmp)
+/*!Random number generator that uses <random> of c++14.
+ * \warning if declared outside a parallel region but used by different
+ * threads, the same random numbers may arise in different threads (openmp)
  */
 /*}*/
 template<typename Type>

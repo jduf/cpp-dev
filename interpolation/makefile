@@ -6,7 +6,7 @@ JDLIB = ../lib
 BUILD = build
 #-----------------------------------------------------------------
 
-CXX = g++ -std=c++11
+CXX = g++ -std=c++14
 
 OPTION = -fopenmp
 LAPACK = -llapack -lblas

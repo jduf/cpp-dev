@@ -7,7 +7,7 @@ JDLIB = ../lib
 BUILD = build
 #-----------------------------------------------------------------
 
-CXX = g++ -std=c++11
+CXX = g++ -std=c++14
 
 OPTION =
 ERRORS = -Wall -Wextra -pedantic

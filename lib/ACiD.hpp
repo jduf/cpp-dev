@@ -7,11 +7,11 @@
 class ACiD{
 	public:
 		/*!Constructor*/
-		ACiD(unsigned int const& N, Vector<double> const& xa, Vector<double> const& xb, double const& beta);
+		ACiD(unsigned int const& N, double const& beta);
 		/*!Constructor that reads from file*/
 		ACiD(IOFiles& in);
 		/*!Default destructor*/
-		virtual ~ACiD() = default;
+		virtual ~ACiD();
 		/*{Forbidden*/
 		ACiD() = delete;
 		ACiD(ACiD const&) = delete;
@@ -21,8 +21,7 @@ class ACiD{
 
 		void run(unsigned int const& maxiter);
 		virtual double function(Vector<double> const& x) = 0;
-		virtual bool stop(bool const& improve_overall) const { return !improve_overall; }
-		unsigned int iter_ = 0;
+		virtual bool keepon(bool const& improve_overall) const { return improve_overall; }
 
 		void save(IOFiles& out) const;
 
@@ -33,13 +32,13 @@ class ACiD{
 		double c1_;
 		double cp_;
 		double cmu_;
-		double bf_;
-		Vector<double> x_;
+		double bf_;				//!< function(x_min_)
+		Vector<double> x_min_;	//!< best location found by ACiD
 		Vector<double> p_;
 		Vector<double> w_;
 		Vector<double> xmean_;
-		Vector<double> xmeanold_;
 		Vector<double> sigma_;
+		Vector<double>* d_;
 		Matrix<double> B_;
 		Matrix<double> invB_;
 		Matrix<double> C_;

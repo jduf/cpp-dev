@@ -6,12 +6,12 @@ JDLIB = ../lib
 BUILD = build
 #-----------------------------------------------------------------
 
-CXX = g++ -std=c++11
+CXX = g++ -std=c++14
 
 OPTION = -lblas
 ERRORS = -Wall -Wextra -pedantic
 
-#CXX = icpc -std=c++11 -g
+#CXX = icpc -std=c++14 -g
 #ERRORS = -Wall -Wextra -pedantic
 #OPTION = -openmp -mkl -D MY_BLAS_ZDOTU
 

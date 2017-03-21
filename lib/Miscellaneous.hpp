@@ -259,6 +259,26 @@ namespace my{
 		std::cerr<<__PRETTY_FUNCTION__<<" : failed to find a fraction for "<<x0<<std::endl;
 		return 0;
 	}
+
+	/*!seconds to hours, minutes, seconds*/
+	inline std::string convert_seconds(unsigned int const& s0){
+		std::string elapsed("");
+		unsigned int s(s0);
+		if(s0>=86400){
+			elapsed += my::tostring(s/86400)+"d";
+			s = s%86400;
+		}
+		if(s0>=3600){
+			elapsed += my::tostring(s/3600)+"h";
+			s = s%3600;
+		}
+		if(s0>=60){
+			elapsed+= my::tostring(s/60)+"m";
+			s = s%60;
+		}
+		elapsed+= my::tostring(s)+"s";
+		return elapsed;
+	}
 }
 
 namespace BLAS{
