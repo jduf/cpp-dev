@@ -15,9 +15,9 @@ int main(int argc, char* argv[]){
 	std::string ext("");
 	std::string keyword("");
 	std::string host("");
-	std::string dft_answer(P.find("y",i,false)?"y":"n");
+	std::string dft_answer(P.find("y")?"y":"n");
 	std::string dft_string(dft_answer=="y"?" ? [Y/n]:":" ? [y/N]:");
-	bool ssh(P.find("ssh",i,false));
+	bool ssh(P.find("ssh",i));
 	if(ssh){ 
 		std::cerr<<"diffdir : will only take into account the local directory"<<std::endl;
 		host = P.get<std::string>(i); 
@@ -31,12 +31,12 @@ int main(int argc, char* argv[]){
 		if(directory_name_2[directory_name_2.size()-1] != '/'){ directory_name_2 += "/"; }
 		Directory d1;
 		Directory d2;
-		if(P.find("e",i,false)){
+		if(P.find("e",i)){
 			ext = P.get<std::string>(i);
 			d1.search_files_ext(ext,directory_name_1,true,false);
 			d2.search_files_ext(ext,directory_name_2,true,false);
 		}
-		if(P.find("k",i,false)){
+		if(P.find("k",i)){
 			keyword = P.get<std::string>(i);
 			d1.search_files(keyword,directory_name_1,true,false);
 			d2.search_files(keyword,directory_name_2,true,false);

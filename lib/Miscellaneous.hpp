@@ -297,11 +297,11 @@ namespace BLAS{
 			)
 	{
 		if(ar){//multiply a row of a
-			if(br){ return ddot_(N,/**/a+aidx,     arow,/**/b+bidx     ,brow); }
+			if(br){ return ddot_(N,/**/a+aidx,     arow,/**/b+bidx,     brow); }
 			else  { return ddot_(N,/**/a+aidx,     arow,/**/b+bidx*brow,1); }
 		} else {
 			std::cout<<__PRETTY_FUNCTION__<<" : need to be checked"<<std::endl;
-			if(br){ return ddot_(N,/**/a+aidx*arow,1,   /**/b+bidx     ,brow); }
+			if(br){ return ddot_(N,/**/a+aidx*arow,1,   /**/b+bidx,     brow); }
 			else  { return ddot_(N,/**/a+aidx*arow,1,   /**/b+bidx*brow,1); }
 		}
 	}
@@ -375,11 +375,11 @@ namespace BLAS{
 			)
 	{
 		if(ar){
-			if(br){ return zdotu_(N,/**/a+aidx,     arow,/**/b+bidx     ,brow); }
+			if(br){ return zdotu_(N,/**/a+aidx,     arow,/**/b+bidx,     brow); }
 			else  { return zdotu_(N,/**/a+aidx,     arow,/**/b+bidx*brow,1); }
 		} else {
 			std::cout<<__PRETTY_FUNCTION__<<" : need to be checked"<<std::endl;
-			if(br){ return zdotu_(N,/**/a+aidx*arow,1,   /**/b+bidx     ,brow); }
+			if(br){ return zdotu_(N,/**/a+aidx*arow,1,   /**/b+bidx,     brow); }
 			else  { return zdotu_(N,/**/a+aidx*arow,1,   /**/b+bidx*brow,1); }
 		}
 	}

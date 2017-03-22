@@ -37,23 +37,24 @@ class Container{
 			void get(std::string const& name, Type& t) const;
 		/*!Sets t to data_[i].get_val()*/
 		template<typename Type>
-			void get(unsigned int i, Type& t) const;
+			void get(unsigned int const& i, Type& t) const;
 		/*!Returns data_[i].get_val()*/
 		template<typename Type>
-			Type get(unsigned int i) const;
+			Type get(unsigned int const& i) const;
 
-		/*!Returns the number of GenericVariable stored*/
-		unsigned int size() const { return data_.size(); }
-
-		virtual bool find(std::string const& pattern, unsigned int& i, bool iffail=true) const {
-			(void)(iffail);
-			i=0;
+		/*!Returns true if patter_==val_[i] and set i to that index*/
+		virtual bool find(std::string const& pattern, unsigned int& i, bool const& lock_iffail) const {
+			(void)(lock_iffail);
+			i = 0;
 			while(i<data_.size()){
 				if(data_[i]->name_==pattern){ return true; }
 				else { i++; }
 			}
 			return false;
 		}
+
+		/*!Returns the number of GenericVariable stored*/
+		unsigned int size() const { return data_.size(); }
 
 	private:
 		/*{Variable*/
@@ -117,7 +118,7 @@ void Container::set(std::string const& name, Type const& t){
 template<typename Type>
 Type Container::get(std::string const& name) const {
 	unsigned int i(0);
-	if(find(name,i)){ return static_cast<GenericVariable<Type>*>(data_[i])->t_; }
+	if(find(name,i,true)){ return static_cast<GenericVariable<Type>*>(data_[i])->t_; }
 	else {
 		std::cerr<<__PRETTY_FUNCTION__<<" : no variable with name "<<name<<std::endl;
 		return Type();
@@ -127,18 +128,18 @@ Type Container::get(std::string const& name) const {
 template<typename Type>
 void Container::get(std::string const& name, Type& t) const {
 	unsigned int i(0);
-	if(find(name,i)){ t = static_cast< GenericVariable<Type> *>(data_[i])->t_; }
+	if(find(name,i,true)){ t = static_cast< GenericVariable<Type> *>(data_[i])->t_; }
 	else { std::cerr<<__PRETTY_FUNCTION__<<" : no data with name '"<<name<<"' thus the value is unchanged : "<< t <<std::endl; }
 }
 
 template<typename Type>
-void Container::get(unsigned int i, Type &t) const {
+void Container::get(unsigned int const& i, Type& t) const {
 	if(i<data_.size()){ t = static_cast< GenericVariable<Type> *>(data_[i])->t_; }
 	else { std::cerr<<__PRETTY_FUNCTION__<<" : trying to get an unindexed value ("<<i<<"<"<< data_.size()<<"?)"<<std::endl; }
 }
 
 template<typename Type>
-Type Container::get(unsigned int i) const {
+Type Container::get(unsigned int const& i) const {
 	if(i<data_.size()){ return static_cast< GenericVariable<Type> *>(data_[i])->t_; }
 	else {
 		std::cerr<<__PRETTY_FUNCTION__<<" : "<<i<<"<"<< data_.size()<<"?" <<std::endl;

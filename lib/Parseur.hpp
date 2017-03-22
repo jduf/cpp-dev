@@ -21,8 +21,16 @@ class Parseur: public Container {
 		Parseur& operator=(Parseur) = delete;
 		/*}*/
 
-		/*!Returns true if there is a var_[i]==patern and sets i*/
-		bool find(std::string const& pattern, unsigned int& i, bool lock_iffail) const;
+		/*!If there is a var_[i]==pattern, returns val_[i] otherwise returns t*/
+		template<typename Type>
+			Type check_get(std::string const& pattern, Type const& t) const;
+		/*!Returns true if there is a var_[i]==pattern and sets i*/
+		bool find(std::string const& pattern, unsigned int& i, bool const& lock_iffail=false) const;
+		/*!Returns true if there is a var_[i]==pattern*/
+		bool find(std::string const& pattern) const;
+		/*!The return value of find(*) decides whether to lock or not the class*/
+		bool lock_if_not_found(bool const& has_status) const;
+
 		/*!Returns locked_*/
 		bool locked() const { return locked_; }
 		/*!Returns type of argument (0=scalar,1=2=vector)*/
@@ -39,6 +47,16 @@ class Parseur: public Container {
 			void set_vector_from_range(std::string const& name, std::string const& val);
 		void lock(std::string const& arg);
 };
+
+template<typename Type>
+Type Parseur::check_get(std::string const& pattern, Type const& t) const {
+	unsigned int i(0);
+	if(find(pattern,i,false)){ return get<Type>(i); }
+	else {
+		std::cerr<<__PRETTY_FUNCTION__<<" option "<<pattern<<" set to default value "<<t<<std::endl; 
+		return t;
+	}
+}
 
 template<typename Type>
 void Parseur::set_vector_from_list(std::string const& name, std::string const& val){
