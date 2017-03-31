@@ -27,11 +27,11 @@ ACiD::ACiD(unsigned int const& N, double const& beta):
 
 		//for(unsigned int i(0);i<N_;i++){ v(i) = rnd(); }
 		//for(unsigned int i(0);i<N_;i++){
-			//for(unsigned int j(0);j<i;j++){
-				//tmp = 0.0;
-				//for(unsigned int k(0);k<N_;k++){ tmp += v(k)*B_(k,j); }
-				//for(unsigned int k(0);k<N_;k++){ v(k) -= tmp*B_(k,j); }
-			//}
+		//for(unsigned int j(0);j<i;j++){
+		//tmp = 0.0;
+		//for(unsigned int k(0);k<N_;k++){ tmp += v(k)*B_(k,j); }
+		//for(unsigned int k(0);k<N_;k++){ v(k) -= tmp*B_(k,j); }
+		//}
 		//}
 		//tmp = v.norm();
 		//for(unsigned int j(0);j<N_;j++){ B_(j,d) = v(j)/tmp; }
@@ -40,7 +40,7 @@ ACiD::ACiD(unsigned int const& N, double const& beta):
 	//invB_ = B_.transpose();
 	invB_=B_;
 	Lapack<double>(invB_,false,'G').inv();
-	
+
 	double muw(1.0/w_.norm_squared());
 	if(muw<1){
 		std::cerr<<"weight problem : "<<muw<<std::endl;
@@ -79,76 +79,78 @@ ACiD::~ACiD(){
 	d_ = NULL;
 }
 
-void ACiD::run(unsigned int const& maxiter){
-	double bfold(bf_);
-	double f1(0.0);
-	double f2(0.0);
-	Vector<double> x1(N_);
-	Vector<double> x2(N_);
+void ACiD::run(unsigned int const& maxsteps){
+	if(x_min_.ptr()){
+		double bfold(bf_);
+		double f1(0.0);
+		double f2(0.0);
+		Vector<double> x1(N_);
+		Vector<double> x2(N_);
 
-	Vector<double> allf(2*N_);
-	Matrix<double> allx(N_,2*N_);
-	Matrix<double> pop(N_,N_);
+		Vector<double> allf(2*N_);
+		Matrix<double> allx(N_,2*N_);
+		Matrix<double> pop(N_,N_);
 
-	unsigned int direction(0);
-	unsigned int iter(0);
-	bool improved(true);
-	bool improved_overall(true);
-	while(iter++<maxiter && keepon(improved_overall)){
-		for(unsigned int i(0);i<N_;i++){
-			x1(i) = x_min_(i) + sigma_(direction)*B_(i,direction);
-			x2(i) = x_min_(i) - sigma_(direction)*B_(i,direction);
-		}
+		unsigned int direction(0);
+		unsigned int step(0);
+		bool improved(true);
+		bool improved_overall(true);
+		while(step++<maxsteps && keepon(improved_overall)){
+			for(unsigned int i(0);i<N_;i++){
+				x1(i) = x_min_(i) + sigma_(direction)*B_(i,direction);
+				x2(i) = x_min_(i) - sigma_(direction)*B_(i,direction);
+			}
 
-		f1 = function(x1);
-		f2 = function(x2);
+			f1 = function(x1);
+			f2 = function(x2);
 
-		bool optimized(false);
-		if(f1 < bf_){
-			bf_ = f1;
-			x_min_ = x1;
-			optimized = true;
-		}
-		if(f2 < bf_){
-			bf_ = f2;
-			x_min_ = x2;
-			optimized = true;
-		}
-		if(optimized){
-			sigma_(direction) *= k_suc_;
-			improved = true;
-		} else {
-			sigma_(direction) *= k_uns_;
-		}
+			bool optimized(false);
+			if(f1 < bf_){
+				bf_ = f1;
+				x_min_ = x1;
+				optimized = true;
+			}
+			if(f2 < bf_){
+				bf_ = f2;
+				x_min_ = x2;
+				optimized = true;
+			}
+			if(optimized){
+				sigma_(direction) *= k_suc_;
+				improved = true;
+			} else {
+				sigma_(direction) *= k_uns_;
+			}
 
-		unsigned int d1(2*direction);
-		unsigned int d2(2*direction+1);
-		allf(d1) = f1;
-		allf(d2) = f2;
-		for(unsigned int i(0);i<N_;i++){
-			allx(i,d1) = x1(i);
-			allx(i,d2) = x2(i);
-		}
+			unsigned int d1(2*direction);
+			unsigned int d2(2*direction+1);
+			allf(d1) = f1;
+			allf(d2) = f2;
+			for(unsigned int i(0);i<N_;i++){
+				allx(i,d1) = x1(i);
+				allx(i,d2) = x2(i);
+			}
 
-		direction++;
-		if(direction == N_){
-			direction = 0;
-			if(improved){
-				improved = false;
-				Vector<unsigned int> index;
-				allf.sort(std::less_equal<double>(),index);
-				for(unsigned int i(0);i<N_;i++){
-					for(unsigned int j(0);j<N_;j++){
-						pop(i,j) = allx(i,index(j));
+			direction++;
+			if(direction == N_){
+				direction = 0;
+				if(improved){
+					improved = false;
+					Vector<unsigned int> index;
+					allf.sort(std::less_equal<double>(),index);
+					for(unsigned int i(0);i<N_;i++){
+						for(unsigned int j(0);j<N_;j++){
+							pop(i,j) = allx(i,index(j));
+						}
 					}
-				}
-				ACD_update(pop);
+					ACD_update(pop);
 
-				improved_overall = !my::are_equal(bfold,bf_,1e-7,1e-7);
-				bfold = bf_;
+					improved_overall = !my::are_equal(bfold,bf_,1e-7,1e-7);
+					bfold = bf_;
+				}
 			}
 		}
-	}
+	} else { std::cerr<<__PRETTY_FUNCTION__<<" : the initial starting point has not been defined : x_min_=NULL"<<std::endl; }
 }
 
 void ACiD::save(IOFiles& out) const {

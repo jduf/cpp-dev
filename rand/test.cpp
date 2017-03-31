@@ -210,14 +210,19 @@ void small_double(){
 }
 
 void check_gaussian(){
-	RandGaussian rnd(5,2);
+	RandGaussian rnd(0,0.025);
 	
     std::map<int, int> hist;
     for(int n=0; n<100000; ++n) {
-        ++hist[std::round(rnd())];
+        ++hist[std::round(100*rnd())];
     }
     for(auto p : hist) {
         std::cout << std::fixed << std::setprecision(1) << std::setw(2)
                   << p.first << ' ' << std::string(p.second/200, '*') << '\n';
     }
+
+    for(int n=0; n<100; ++n) {
+		std::cout<<std::setprecision(6)<<rnd()<<std::endl;
+	}
+
 }

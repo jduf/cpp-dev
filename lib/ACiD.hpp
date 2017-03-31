@@ -19,7 +19,7 @@ class ACiD{
 		ACiD& operator=(ACiD const&);
 		/*}*/
 
-		void run(unsigned int const& maxiter);
+		void run(unsigned int const& maxsteps);
 		virtual double function(Vector<double> const& x) = 0;
 		virtual bool keepon(bool const& improve_overall) const { return improve_overall; }
 
