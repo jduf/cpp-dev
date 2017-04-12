@@ -22,13 +22,14 @@ void read_bin(){
 	std::complex<double> c;
 	double a;
 	std::string slt;
-	read>>a>>M>>c>>slt>>v;
-	//std::cout<<read.get_header()<<std::endl;
-	//std::cout<<a<<std::endl;
-	//std::cout<<M<<std::endl;
-	//std::cout<<c<<std::endl;
-	//std::cout<<slt<<std::endl;
-	//std::cout<<v<<std::endl;
+	read>>a>>M>>c>>slt;
+	v = read.read<Vector<std::complex<double> > >();
+	std::cout<<read.get_header()<<std::endl;
+	std::cout<<a<<std::endl;
+	std::cout<<M<<std::endl;
+	std::cout<<c<<std::endl;
+	std::cout<<slt<<std::endl;
+	std::cout<<v<<std::endl;
 }
 
 void write_txt(){
@@ -80,9 +81,9 @@ void append_txt(){
 }
 
 int main(){
-	//write_bin();
-	//read_bin();
-	write_txt();
-	read_txt();
-	append_txt();
+	write_bin();
+	read_bin();
+	//write_txt();
+	//read_txt();
+	//append_txt();
 }

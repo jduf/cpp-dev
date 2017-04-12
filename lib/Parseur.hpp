@@ -53,7 +53,7 @@ Type Parseur::check_get(std::string const& pattern, Type const& t) const {
 	unsigned int i(0);
 	if(find(pattern,i,false)){ return get<Type>(i); }
 	else {
-		std::cerr<<__PRETTY_FUNCTION__<<" option "<<pattern<<" set to default value '"<<t<<"'"<<std::endl; 
+		std::cerr<<__PRETTY_FUNCTION__<<" : option set to default : '"<<pattern<<"="<<t<<"'"<<std::endl; 
 		return t;
 	}
 }
