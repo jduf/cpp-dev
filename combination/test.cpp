@@ -11,7 +11,7 @@ void test1(){
 	unsigned int i(0);
 	do{
 		std::cout<<v.order(generate.get_combination())<<std::endl;
-		i++; 
+		i++;
 	} while(generate.next());
 }
 

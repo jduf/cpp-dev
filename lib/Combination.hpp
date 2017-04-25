@@ -5,7 +5,7 @@
 
 /*!see : http://compprog.wordpress.com/2007/10/17/generating-combinations-1/ */
 class Combination{
-	public: 
+	public:
 		Combination(unsigned int const& n, unsigned int const& k);
 
 		/*!Generates the next combination of n elements as k after comb*/

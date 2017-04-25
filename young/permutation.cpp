@@ -9,8 +9,8 @@ int main(int argc,char* argv[]){
 	tmp = P.get<std::vector<unsigned int> >("p0");
 	Matrix<unsigned int> p0(2,n);
 	for(unsigned int i(0);i<n;i++){
-		p0(0,i) = i+1; 
-		p0(1,i) = i+1; 
+		p0(0,i) = i+1;
+		p0(1,i) = i+1;
 	}
 	for(unsigned int i(0);i<tmp.size()-1;i++){ p0(1,tmp(i)-1) = tmp(i+1); }
 	p0(1,tmp.back()-1) = tmp(0);
@@ -18,8 +18,8 @@ int main(int argc,char* argv[]){
 	tmp = P.get<std::vector<unsigned int> >("p1");
 	Matrix<unsigned int> p1(2,n);
 	for(unsigned int i(0);i<n;i++){
-		p1(0,i) = i+1; 
-		p1(1,i) = i+1; 
+		p1(0,i) = i+1;
+		p1(1,i) = i+1;
 	}
 	for(unsigned int i(0);i<tmp.size()-1;i++){ p1(1,tmp(i)-1) = tmp(i+1); }
 	p1(1,tmp.back()-1) = tmp(0);
@@ -27,8 +27,8 @@ int main(int argc,char* argv[]){
 
 	Matrix<unsigned int> p2(2,n);
 	for(unsigned int i(0);i<n;i++){
-		p2(0,i) = i+1; 
-		p2(1,i) = p1(1,p0(1,i)-1); 
+		p2(0,i) = i+1;
+		p2(1,i) = p1(1,p0(1,i)-1);
 	}
 
 	std::cout<<p0<<std::endl;

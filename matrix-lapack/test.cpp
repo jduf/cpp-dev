@@ -101,7 +101,7 @@ int main(){
 	////m1.print_mathematica();
 	////std::cout<<m1<<std::endl;
 	//Vector<double> v(m1.col());
-	//for(unsigned int i(0);i<v.size();i++){v(i) = i+1;} 
+	//for(unsigned int i(0);i<v.size();i++){v(i) = i+1;}
 	//std::cout<<m1<<std::endl;
 	//std::cout<<std::endl;
 	//std::cout<<v<<std::endl;
@@ -155,15 +155,15 @@ int main(){
 	///*}*/
 	/////*{complex hermitian matrix*/
 	////Matrix<std::complex<double> > M(3,3);
-	////M(0,0) = std::complex<double> (1,0); 
-	////M(1,1) = std::complex<double> (4,0); 
-	////M(2,2) = std::complex<double> (5,0); 
-	////M(0,1) = std::complex<double> (2,3); 
-	////M(1,0) = std::complex<double> (2,-3); 
-	////M(0,2) = std::complex<double> (6,4); 
-	////M(2,0) = std::complex<double> (6,-4); 
-	////M(1,2) = std::complex<double> (-4,-6); 
-	////M(2,1) = std::complex<double> (-4,6); 
+	////M(0,0) = std::complex<double> (1,0);
+	////M(1,1) = std::complex<double> (4,0);
+	////M(2,2) = std::complex<double> (5,0);
+	////M(0,1) = std::complex<double> (2,3);
+	////M(1,0) = std::complex<double> (2,-3);
+	////M(0,2) = std::complex<double> (6,4);
+	////M(2,0) = std::complex<double> (6,-4);
+	////M(1,2) = std::complex<double> (-4,-6);
+	////M(2,1) = std::complex<double> (-4,6);
 	////
 	////Lapack<std::complex<double> > M_(M,false,'H');
 	////Vector<double> EVal2(3);
@@ -174,15 +174,15 @@ int main(){
 	/////*}*/
 	///*{complex general matrix*/
 	//Matrix<std::complex<double> > M(3,3);
-	//M(0,0) = std::complex<double> (1,0); 
-	//M(1,1) = std::complex<double> (4,0); 
-	//M(2,2) = std::complex<double> (5,0); 
-	//M(0,1) = std::complex<double> (2,3); 
-	//M(1,0) = std::complex<double> (2,3); 
-	//M(0,2) = std::complex<double> (10,4); 
-	//M(2,0) = std::complex<double> (6,4); 
-	//M(1,2) = std::complex<double> (4,1); 
-	//M(2,1) = std::complex<double> (-2,6); 
+	//M(0,0) = std::complex<double> (1,0);
+	//M(1,1) = std::complex<double> (4,0);
+	//M(2,2) = std::complex<double> (5,0);
+	//M(0,1) = std::complex<double> (2,3);
+	//M(1,0) = std::complex<double> (2,3);
+	//M(0,2) = std::complex<double> (10,4);
+	//M(2,0) = std::complex<double> (6,4);
+	//M(1,2) = std::complex<double> (4,1);
+	//M(2,1) = std::complex<double> (-2,6);
 	//
 	//Lapack<std::complex<double> > M_(M,true,'G');
 	//Matrix<std::complex<double> > EVec;

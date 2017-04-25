@@ -18,7 +18,7 @@ class FuncPSO : public Swarm<ParticleOnGrid> {
 
 	private:
 		IOFiles out_;
-		bool evaluate(unsigned int const& p); 
+		bool evaluate(unsigned int const& p);
 		bool random_;
 		Rand<double> rnd_;
 };

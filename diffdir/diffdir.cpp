@@ -18,9 +18,9 @@ int main(int argc, char* argv[]){
 	std::string dft_answer(P.find("y")?"y":"n");
 	std::string dft_string(dft_answer=="y"?" ? [Y/n]:":" ? [y/N]:");
 	bool ssh(P.find("ssh",i));
-	if(ssh){ 
+	if(ssh){
 		std::cerr<<"diffdir : will only take into account the local directory"<<std::endl;
-		host = P.get<std::string>(i); 
+		host = P.get<std::string>(i);
 	}
 
 	if(!P.locked()){
@@ -54,14 +54,14 @@ int main(int argc, char* argv[]){
 				for(unsigned int k(old_j+1); k<j; k++){
 					std::cout<<"     B : "<< d2.get_name(k) << d2.get_ext(k)<<std::endl;
 				}
-				if(ssh){ command("ssh " + host + " cat '"+ d2[j] + "' | diff -q " + d1[i] + " - > /dev/null",false); } 
+				if(ssh){ command("ssh " + host + " cat '"+ d2[j] + "' | diff -q " + d1[i] + " - > /dev/null",false); }
 				else {   command("diff -q " + d1[i] + " " + d2[j]+ "> /dev/null",false); }
 				if(command.status()){
 					std::cout<<"A != B : "<< d1.get_name(i) << d1.get_ext(i) << dft_string;
 					std::getline(std::cin,answer);
 					if(answer==""){ answer = dft_answer; }
-					if(answer=="y"){ 
-						if(ssh){ command("vimdiff " + d1[i] + " scp://" + host + "/" + d2[j],false); } 
+					if(answer=="y"){
+						if(ssh){ command("vimdiff " + d1[i] + " scp://" + host + "/" + d2[j],false); }
 						else {   command("vimdiff " + d1[i] + " " + d2[j],false); }
 					}
 				} else { std::cout<<"A == B : "<<d1.get_name(i)<<d1.get_ext(i)<<std::endl; }

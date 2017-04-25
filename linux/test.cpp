@@ -1,5 +1,5 @@
-#include "Linux.hpp" 
-#include "Time.hpp" 
+#include "Linux.hpp"
+#include "Time.hpp"
 #include <iostream>
 #include <vector>
 
@@ -16,7 +16,7 @@ int main(){
 	std::cout<<chrono.elapsed()<<std::endl;
 	chrono.set();
 	for(unsigned int i(0);i<N;i++){
-		system("mkdir -p AA/BB/CC/KK/FF/EE/"); 
+		system("mkdir -p AA/BB/CC/KK/FF/EE/");
 	}
 	std::cout<<chrono.elapsed()<<std::endl;
 	command.mkdir("AA");

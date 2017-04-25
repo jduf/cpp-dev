@@ -40,7 +40,7 @@ void test(double a){
 	std::cout<<"-------------------------------------------------------"<<std::endl;
 	iter = to_fraction_old(a,num,den,sign);
 	std::cout<<"btilly  "<<a<<" "<<sign*num/den<<"="<<num<<"/"<<den<<" in "<<iter<<" iterations"<<std::endl;
-	iter = my::to_fraction(a,num,den,sign);                                               
+	iter = my::to_fraction(a,num,den,sign);
 	std::cout<<"richard "<<a<<" "<<sign*num/den<<"="<<num<<"/"<<den<<" in "<<iter<<" iterations"<<std::endl;
 }
 

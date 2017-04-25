@@ -5,8 +5,8 @@
 
 /*!Class that implement a static array as a matrix
  *
- * - can be saved with Write.hpp 
- * - can be loaded with Read.hpp 
+ * - can be saved with Write.hpp
+ * - can be loaded with Read.hpp
 */
 template<typename Type>
 class SquareMatrix : public Matrix<Type>{
@@ -23,7 +23,7 @@ class SquareMatrix : public Matrix<Type>{
 		~SquareMatrix();
 
 		/*!Multiplies two matrices (m1 *= m2 : m1 = m1*m2)*/
-		SquareMatrix<Type>& operator*=(SquareMatrix<Type> const& mat);  
+		SquareMatrix<Type>& operator*=(SquareMatrix<Type> const& mat);
 
 
 	private:
@@ -39,7 +39,7 @@ template<typename Type>
 SquareMatrix<Type>::SquareMatrix(unsigned int N):
 	Matrix<Type>(N,N),
 	N(N)
-{ } 
+{ }
 
 template<typename Type>
 SquareMatrix<Type>::SquareMatrix(unsigned int N, Type val):

@@ -29,7 +29,7 @@ class Rand{
 
 	private:
 		mutable std::mt19937_64 mt_;
-		mutable typename 
+		mutable typename
 			std::conditional<
 			std::is_integral<Type>::value,
 			std::uniform_int_distribution<Type>,

@@ -53,18 +53,18 @@ void check_openmp_mt(){
 	std::cout<<"mt declared inside openmp"<<std::endl;
 	Matrix<double> m(20,omp_get_max_threads());
 #pragma omp parallel for num_threads(m.col())
-	for(unsigned int i=0;i<m.col();i++){ 
+	for(unsigned int i=0;i<m.col();i++){
 		unsigned int thread(omp_get_thread_num());
 		Rand<double> rnd(0,1);
-		for(unsigned int j(0);j<m.row();j++){ 
-			m(j,thread)=rnd(); 
+		for(unsigned int j(0);j<m.row();j++){
+			m(j,thread)=rnd();
 		}
 	}
 	std::cout<<m<<std::endl<<std::endl;
 
 	std::cout<<omp_get_max_threads()<<" different mt declared inside openmp"<<std::endl;
 #pragma omp parallel for num_threads(m.col())
-	for(unsigned int i=0;i<m.col();i++){ 
+	for(unsigned int i=0;i<m.col();i++){
 		unsigned int thread(omp_get_thread_num());
 		Rand<double> rnd0(0,1);
 		Rand<double> rnd1(0,1);
@@ -75,7 +75,7 @@ void check_openmp_mt(){
 	std::cout<<"one mt declared outside openmp (note the same value if #pragma critical is removed) : takes too long"<<std::endl;
 	Rand<double> rnd_out(0,1);
 #pragma omp parallel for num_threads(m.col())
-	for(unsigned int i=0;i<m.col();i++){ 
+	for(unsigned int i=0;i<m.col();i++){
 		unsigned int thread(omp_get_thread_num());
 #pragma omp critical
 		{
@@ -91,7 +91,7 @@ void check_openmp_mt(){
 		rnd_array[i] = new Rand<double>(i,i+1);
 	}
 #pragma omp parallel for num_threads(m.col())
-	for(unsigned int i=0;i<m.col();i++){ 
+	for(unsigned int i=0;i<m.col();i++){
 		unsigned int thread(omp_get_thread_num());
 		for(unsigned int j(0);j<m.row();j++){ m(j,thread)=(*rnd_array[thread])(); }
 	}
@@ -106,7 +106,7 @@ void check_openmp_mt(){
 		rnd_array_class.set(i,i,i+1);
 	}
 #pragma omp parallel for num_threads(m.col())
-	for(unsigned int i=0;i<m.col();i++){ 
+	for(unsigned int i=0;i<m.col();i++){
 		unsigned int thread(omp_get_thread_num());
 		for(unsigned int j(0);j<m.row();j++){ m(j,thread)=rnd_array_class(thread); }
 	}
@@ -132,7 +132,7 @@ void check_openmp_mt_time(){
 	for(unsigned int k(0);k<80;k++){
 		t1 = std::chrono::high_resolution_clock::now();
 #pragma omp parallel for
-		for(unsigned int i=0;i<N;i++){ 
+		for(unsigned int i=0;i<N;i++){
 			for(unsigned int j(0);j<iter;j++){ (*rnd_array[i])(); }
 		}
 		t2 = std::chrono::high_resolution_clock::now();
@@ -141,8 +141,8 @@ void check_openmp_mt_time(){
 		std::cout<<"Rand**    : "<<duration<<std::endl;
 
 		t1 = std::chrono::high_resolution_clock::now();
-#pragma omp parallel for 
-		for(unsigned int i=0;i<N;i++){ 
+#pragma omp parallel for
+		for(unsigned int i=0;i<N;i++){
 			for(unsigned int j(0);j<iter;j++){ rnd_array_class(i); }
 		}
 		t2 = std::chrono::high_resolution_clock::now();
@@ -164,8 +164,8 @@ void check_shuffle(){
 	unsigned int const n(16);
 	unsigned int const m(2);
 	Matrix<unsigned int> v(n,m);
-	for(unsigned int i(0);i<n;i++){ 
-		for(unsigned int j(0);j<m;j++){ 
+	for(unsigned int i(0);i<n;i++){
+		for(unsigned int j(0);j<m;j++){
 			v(i,j) = j;
 		}
 	}
@@ -185,8 +185,8 @@ void check_minimal_number_mt(){
 	std::mt19937_64 mt(rd());
 	std::uniform_real_distribution<double> dist(0,1);
 
-	while(!t.limit_reached(300)){ 
-		tmp = dist(mt); 
+	while(!t.limit_reached(300)){
+		tmp = dist(mt);
 		i++;
 		if(tmp<min){ min = tmp; }
 	}

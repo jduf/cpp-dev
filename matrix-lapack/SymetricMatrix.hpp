@@ -21,14 +21,14 @@ class SymetricMatrix: public Matrix<double>{
 		~SymetricMatrix() = default;
 
 		/*!Accesses the (i,j)th entry of the matrix*/
-		double const& operator()(unsigned int const& i, unsigned int const& j) const { 
-			assert(i<row_ && j<col_); 
+		double const& operator()(unsigned int const& i, unsigned int const& j) const {
+			assert(i<row_ && j<col_);
 			if(i<j){ return mat_[i+j*(j-1)/2]; }
 			else   { return mat_[j+i*(i-1)/2]; }
 		}
 		/*!Sets the (i,j)th entry of the matrix*/
 		double& operator()(unsigned int const& i, unsigned int const& j){
-			assert(i<row_ && j<col_); 
+			assert(i<row_ && j<col_);
 			if(i<j){ return mat_[i+j*(j-1)/2]; }
 			else   { return mat_[j+i*(i-1)/2]; }
 		}

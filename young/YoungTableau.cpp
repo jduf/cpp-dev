@@ -56,7 +56,7 @@ bool YoungTableau::is_tableau_valid(){
 		if(col_[0]>N){ return false;}
 		for(unsigned int i(1);i<col_[0];i++){
 			if(row_[i]>row_[i-1]){return false;}
-			if(yt[i][row_[i]-1] != 0 && 
+			if(yt[i][row_[i]-1] != 0 &&
 					yt[i][row_[i]-1] == yt[i-1][row_[i]-1]) {return false;}
 		}
 	}
@@ -101,7 +101,7 @@ std::vector<YoungTableau> YoungTableau::multiply(YoungTableau const& b, unsigned
 			for(unsigned int j(0); j<tmp.size(); j++){
 				for(unsigned int k(0);k<out_tmp.size();k++){
 					if(tmp[j] == out_tmp[k]){
-						tmp.erase(tmp.begin()+j); 
+						tmp.erase(tmp.begin()+j);
 					}
 				}
 			}
@@ -218,11 +218,11 @@ void YoungTableau::test(){
 	std::cout<<std::endl;
 }
 
-//{Uncomplete code : final_check 
-/*! 
+//{Uncomplete code : final_check
+/*!
   void YoungTableau::final_check(){
   std::cerr<<"YoungTableau : final_check has not been checked"<<std::endl;
-  if(col_[0]>=N){ 
+  if(col_[0]>=N){
   unsigned int col__to_del(row_[N-1]);
   std::vector<std::vector<unsigned int> > tmp;
   for(unsigned int i(0); i<N-1; i++){
@@ -235,7 +235,7 @@ void YoungTableau::test(){
   }
   }
   yt=tmp;
-  } 
+  }
   }
 */
 //}

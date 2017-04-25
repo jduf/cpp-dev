@@ -30,10 +30,10 @@ int main(){
 }
 
 bool init(Vector<double>* A, unsigned int& i, unsigned int& j, unsigned int const& imax){
-	if(j==A[i].size()){ 
+	if(j==A[i].size()){
 		if(++i==imax){ return false; }
 		j=0;
-	} else { 
+	} else {
 		A[i](j) = j*pow(10,i);
 		j += 1;
 	}
@@ -47,7 +47,7 @@ bool eval(Vector<double>* A, Vector<unsigned int>& idx){
 
 	idx(0)++;
 	for(unsigned int i(0);i<idx.size();i++){
-		if(idx(i) == A[i].size()){ 
+		if(idx(i) == A[i].size()){
 			if(i+1 == idx.size()){ return false; }
 			idx(i) = 0;
 			idx(i+1)++;
@@ -58,7 +58,7 @@ bool eval(Vector<double>* A, Vector<unsigned int>& idx){
 
 bool eval_border(Vector<double>* A, Vector<unsigned int>& idx, unsigned int const& min0, unsigned int const& max0){
 	for(unsigned int l(0);l<idx.size();l++){
-		if(l<idx.size() && (idx(l) == 0 || idx(l) == A[l].size()-1) ) { 
+		if(l<idx.size() && (idx(l) == 0 || idx(l) == A[l].size()-1) ) {
 #pragma omp critical
 			std::cerr<<idx<<std::endl;
 			l = idx.size();
@@ -68,20 +68,20 @@ bool eval_border(Vector<double>* A, Vector<unsigned int>& idx, unsigned int cons
 	idx(0)++;
 	if(min0==0 && max0==0){
 		for(unsigned int i(0);i<idx.size();i++){
-			if(idx(i) == A[i].size()){ 
+			if(idx(i) == A[i].size()){
 				if(i+1 == idx.size()){ return false; }
 				idx(i) = 0;
 				idx(i+1)++;
 			}
 		}
 	} else {
-		if(idx(0) == max0){ 
+		if(idx(0) == max0){
 			if(1 == idx.size()){ return false; }
 			idx(0) = min0;
 			idx(1)++;
 		}
 		for(unsigned int i(1);i<idx.size();i++){
-			if(idx(i) == A[i].size()){ 
+			if(idx(i) == A[i].size()){
 				if(i+1 == idx.size()){ return false; }
 				idx(i) = 0;
 				idx(i+1)++;
@@ -138,7 +138,7 @@ unsigned int number_of_border_element(Vector<unsigned int> edges_length){
 	unsigned int N(edges_length.size());
 	bool hypercube(true);
 	for(unsigned int i(1);i<N;i++){
-		if(edges_length(0) != edges_length(i)){ 
+		if(edges_length(0) != edges_length(i)){
 			i = N;
 			hypercube = false;
 		}

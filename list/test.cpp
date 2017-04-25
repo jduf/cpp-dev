@@ -18,12 +18,12 @@ class A{
 			std::cout<<"move A "<<N_<<" "<<a_<<std::endl;
 		}
 
-		~A(){ 
-			N_--; 
+		~A(){
+			N_--;
 			std::cout<<"destroyed A "<<N_<<" "<<a_<<std::endl;
 		}
 
-		A const& operator*=(double x){ 
+		A const& operator*=(double x){
 			a_ *= x;
 			return (*this);
 		}
@@ -149,7 +149,7 @@ int main(){
 	//}
 	//{
 		//std::cout<<"#### test add_sort with vector ####"<<std::endl;
-		//auto func = [](Vector<int> const& a, Vector<int> const& b) { 
+		//auto func = [](Vector<int> const& a, Vector<int> const& b) {
 			//unsigned int i(0);
 			//while(i<a.size()){
 				//if(a(i) > b(i)){ return false; }
@@ -170,7 +170,7 @@ int main(){
 	//}
 	//{
 		//std::cout<<"#### test find_in_sorted_list/add_after_target ####"<<std::endl;
-		//auto cmp_for_fuse = [](Vector<int> const& a, Vector<int> const& b) { 
+		//auto cmp_for_fuse = [](Vector<int> const& a, Vector<int> const& b) {
 			//unsigned int i(0);
 			//while(i<a.size()){
 				//if(a(i) > b(i)){ return 0; }
@@ -179,7 +179,7 @@ int main(){
 			//}
 			//return 2;
 		//};
-		//auto fuse = [](Vector<int>& a, Vector<int> const& b) { 
+		//auto fuse = [](Vector<int>& a, Vector<int> const& b) {
 			//std::cout<<"should fuse "<<a<<" and "<<b<<std::endl;
 		//};
 		//Rand<int> rnd(0,10);
@@ -195,7 +195,7 @@ int main(){
 				//fuse(*target->get(),*tmp_shared);
 			//} else {
 				//a.set_target(target);
-				//a.add_after_target(tmp_shared); 
+				//a.add_after_target(tmp_shared);
 			//}
 			//std::cout<<a<<std::endl;
 		//}
@@ -208,7 +208,7 @@ int main(){
 			//fuse(*target->get(),*tmp_shared);
 		//} else {
 			//a.set_target(target);
-			//a.add_after_target(tmp_shared); 
+			//a.add_after_target(tmp_shared);
 		//}
 		//std::cout<<a<<std::endl;
 //

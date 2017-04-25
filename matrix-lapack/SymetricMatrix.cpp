@@ -7,7 +7,7 @@ SymetricMatrix::SymetricMatrix(unsigned int N){
 	col_=N;
 	size_=N*(N+1)/2;
 	mat_=size_?new double[size_]:NULL;
-} 
+}
 
 SymetricMatrix::SymetricMatrix(unsigned int N, double val){
 	row_ = N;

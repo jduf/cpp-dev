@@ -50,7 +50,7 @@ class Myclass{
 
 			Vector<double> p(3,1);
 
-			auto func = [this](double x, const double* p){ 
+			auto func = [this](double x, const double* p){
 				//return p[0]*cos(2*M_PI*x*m_/N_)*(pow(x,-p[1])+pow(n_-x,-p[1]))+p[2]*(pow(x,-p[3])+pow(n_-x,-p[3]));
 				return p[0]*cos(2*M_PI*x*this->m_/this->N_)*(pow(x,-p[1])+pow(this->n_-x,-p[1]))+p[2]*(pow(x,-2)+pow(this->n_-x,-2));
 			};

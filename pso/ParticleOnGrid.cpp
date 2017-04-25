@@ -1,6 +1,6 @@
 #include "ParticleOnGrid.hpp"
 
-unsigned int Measure::sort(Measure const& a, Measure const& b) { 
+unsigned int Measure::sort(Measure const& a, Measure const& b) {
 	for(unsigned int i(0);i<a.x_.size();i++){
 		if(a.x_(i) - b.x_(i) > 1e-10 ){ return 0; }
 		if(a.x_(i) - b.x_(i) <-1e-10 ){ return 1; }
@@ -8,10 +8,10 @@ unsigned int Measure::sort(Measure const& a, Measure const& b) {
 	return 2;
 }
 
-void Measure::merge(std::shared_ptr<Measure> const& new_elem){ 
+void Measure::merge(std::shared_ptr<Measure> const& new_elem){
 	//std::cout<<"merge "<<x_<<" "<<new_elem->get_x()<<std::endl;
 	N_++;
-	s_ += new_elem.get()->get_fx(); 
+	s_ += new_elem.get()->get_fx();
 	ss_+= new_elem.get()->get_fx()*new_elem.get()->get_fx();
 }
 
@@ -48,8 +48,8 @@ bool ParticleOnGrid::update(std::shared_ptr<Measure> const& new_elem){
 		}
 	}
 
-	if(x.ptr() && !my::are_equal(x_,x)){ 
-		bx_ = x; 
+	if(x.ptr() && !my::are_equal(x_,x)){
+		bx_ = x;
 		return true;
 	} else { return false; }
 }

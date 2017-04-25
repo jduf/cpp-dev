@@ -50,7 +50,7 @@ void check_troyer(){
 	H_correct.complete_analysis(tol);
 
 	IOFiles hist_correct("hist_correct.dat",true,false);
-	for(unsigned int i(0);i<N+1;i++){ 
+	for(unsigned int i(0);i<N+1;i++){
 		hist_correct<<i<<" "<<H_correct[i].get_x()<<" "<<H_correct[i].get_dx()<<" "<<H_correct[i].get_conv()<<IOFiles::endl;
 	}
 
@@ -99,18 +99,18 @@ void check_flip_coin(){
 	for(unsigned int i(0);i<N;i++){
 		iter=0;
 		xtot=0.0;
-		do{ 
+		do{
 			iter++;
 			x=rnd();
 			H.set_x(x);
-			H.add_sample(); 
+			H.add_sample();
 			xtot += x;
 			if(iter>1e4){ H.complete_analysis(tol); }
 		} while (!H.get_conv());
 		H.complete_analysis(tol);
 
 		xtot/=iter;
-		if(H.get_x()>0.5){ sup+=1.0;} 
+		if(H.get_x()>0.5){ sup+=1.0;}
 		/*{if the following test is wrong it is because the xtot and
 		 * H_get_mean() are not computed for the same number of samples. this
 		 * is normal because CorrelatedSamples recompute x_ and dx_ only when one bin is
@@ -122,7 +122,7 @@ void check_flip_coin(){
 		 *
 		 x_=0.0;
 		 for(unsigned int i(0);i<Ml_(0);i++){ x_ += bin_[0](i); }
-		 if(iter_!=0){ 
+		 if(iter_!=0){
 		 x_ *= DPL_;
 		 x_ += bin_[0](Ml_(0));
 		 x_ /= DPL_*Ml_(0)+iter_;
@@ -133,7 +133,7 @@ void check_flip_coin(){
 		 * where iter_ is the number of samples stored in the partially filled
 		 * bin. But if one uses this x_, there won't be any corresponding dx_
 		 *}*/
-		if(std::abs(H.get_x()-xtot)<1e-14){ diff+=1.0; } 
+		if(std::abs(H.get_x()-xtot)<1e-14){ diff+=1.0; }
 		else { std::cout<<"diff "<<std::abs(H.get_x()-xtot)<<" "<<H.get_x()<<" "<<xtot<<std::endl; }
 		if(H.get_conv()){ conv+=1.0;}
 		w<<H;
@@ -177,22 +177,22 @@ void merge_two_sim(){
 	H2.set(B,b,conv);
 	Data<double> H3;
 	H3.set(B,b,conv);
-	do{ 
+	do{
 		iter++;
 		H1.set_x(iter);
-		H1.add_sample(); 
+		H1.add_sample();
 
 		H3.set_x(iter);
-		H3.add_sample(); 
+		H3.add_sample();
 	} while (iter<N1);
 	iter = 0;
-	do{ 
+	do{
 		iter++;
 		H2.set_x(iter);
-		H2.add_sample(); 
+		H2.add_sample();
 
 		H3.set_x(iter);
-		H3.add_sample(); 
+		H3.add_sample();
 	} while (iter<N2);
 
 	std::cout<<H2<<std::endl;
@@ -228,24 +228,24 @@ void merge_two_sim_rnd(){
 	H2.set(B,b,conv);
 	Data<double> H3;
 	H3.set(B,b,conv);
-	do{ 
+	do{
 		tmp = rnd();
 		iter++;
 		H1.set_x(tmp);
-		H1.add_sample(); 
+		H1.add_sample();
 
 		H3.set_x(tmp);
-		H3.add_sample(); 
+		H3.add_sample();
 	} while (iter<N1);
 	iter = 0;
-	do{ 
+	do{
 		tmp = rnd();
 		iter++;
 		H2.set_x(tmp);
-		H2.add_sample(); 
+		H2.add_sample();
 
 		H3.set_x(tmp);
-		H3.add_sample(); 
+		H3.add_sample();
 	} while (iter<N2);
 
 	std::cout<<H2<<std::endl;
