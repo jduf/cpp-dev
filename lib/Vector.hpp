@@ -527,5 +527,14 @@ namespace my {
 			} while (std::prev_permutation(bitmask.begin(), bitmask.end()));
 			return out;
 		}
+
+	template<typename Type>
+		std::string tostring(Vector<Type> const& t){
+			std::string s("");
+			for(unsigned int i(0);i<t.size()-1;i++){
+				s += my::tostring(t(i)) + ",";
+			}
+			return s+my::tostring(t.back());
+		}
 }
 #endif

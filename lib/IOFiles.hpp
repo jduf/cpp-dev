@@ -80,12 +80,12 @@ class IOFiles{
 		/*!Writes the header*/
 		void write_header();
 
-		std::string filename_;	//!< name of the file to read from
-		bool write_;			//!< true if the file is writable
-		bool binary_; 			//!< true if the file is binary_
-		Header* header_;		//!< pointer to a header (actually it will be a footer)
-		std::fstream file_;		//!< text file to read form
-		bool open_;				//!< true if the file is ready to be read from
+		std::string const filename_;//!< name of the file to read from
+		bool const write_;			//!< true if the file is writable
+		bool const binary_; 		//!< true if the file is binary_
+		Header* header_;			//!< pointer to a header (actually it will be a footer)
+		std::fstream file_;			//!< file to read form and write in
+		bool const open_;			//!< true if the file is ready to be read from
 };
 
 template<typename Type>

@@ -154,7 +154,6 @@ int main(){
 			//while(i<a.size()){
 				//if(a(i) > b(i)){ return false; }
 				//if(a(i) < b(i)){ return true; }
-				//if(a(i) ==b(i)){ i++; }
 				//if( my::are_equal(a(i),b(i)) ){ i++; }
 			//}
 			//return false;

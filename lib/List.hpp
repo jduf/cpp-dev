@@ -114,9 +114,9 @@ class List{
 		void pop_range(unsigned int const& a, unsigned int const& b);
 
 		/*!In a correctly sorted list, returns true if the list contains a t'
-		 * such that cmp(t',t)=2 . In that case, targets point the that entry
+		 * such that cmp(t',t)=2 . In that case, target points the that entry
 		 * in the list. It returns false if the condition is not satisfied and
-		 * targets points to the place where t should be added with
+		 * target points to the place where t should be added with
 		 * add_after_target(t) to keep a correct sorting*/
 		bool find_in_sorted_list(std::shared_ptr<Type> const& t, Node*& target, std::function<unsigned int (Type const&, Type const&)> cmp) const;
 		bool find_in_sorted_list(std::shared_ptr<Type> const& t, std::function<unsigned int (Type const&, Type const&)> cmp) { return find_in_sorted_list(t,target_,cmp); }
