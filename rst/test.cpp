@@ -43,5 +43,5 @@ int main(){
 		rst.hyperlink(file,file_link);
 		rst.np();
 	}
-	rst.save(false,true);
+	rst.save(true,false,true);
 }

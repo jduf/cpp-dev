@@ -18,7 +18,7 @@ class RSTFile: public RST {
 		/*}*/
 
 		/*!Saves the .rst file and create a .html and a .pdf if pdf==true*/
-		void save(bool const& pdf, bool const& silent);
+		void save(bool const& html, bool const& pdf, bool const& silent);
 
 	private:
 		std::string path_;		//!< path of the .rst, .html and .pdf files

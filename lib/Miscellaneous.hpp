@@ -68,7 +68,18 @@ namespace my{
 		return elems;
 	}
 
-	inline void ensure_trailing_slash(std::string& s){ if(s.back() != '/'){ s += '/'; } }
+		inline unsigned int count_substring(std::string const& s, std::string const& ss){
+			unsigned int n(0);
+			unsigned int l(ss.size());
+			unsigned int p(0);
+			while( (p=s.find(ss,p)+l) != l-1){ n++; }
+			return n;
+		}
+
+	inline std::string ensure_trailing_slash(std::string const& s){
+		if(s.back()=='/'){ return s; }
+		else { return s+'/'; }
+	}
 
 	/*int to alphabet*/
 	inline char int_to_alphabet(unsigned int const& i, bool const& upper_case){

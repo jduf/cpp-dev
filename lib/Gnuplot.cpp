@@ -1,11 +1,11 @@
 #include "Gnuplot.hpp"
 
 Gnuplot::Gnuplot(std::string const& path, std::string const& filename):
-	path_(path),
+	path_(my::ensure_trailing_slash(path)),
 	filename_(filename),
 	plot_(""),
 	multiplot_(false)
-{ my::ensure_trailing_slash(path_); }
+{}
 
 void Gnuplot::multiplot(){
 	plot_ += "set multiplot\n";
@@ -76,12 +76,14 @@ void Gnuplot::create_image(bool const& silent, std::string const& format){
 	}
 
 	Linux command;
-	command(Linux::gp2latex("/tmp/"+texfile,path_,filename_),silent);
+	command(Linux::gp2latex(path_,filename_,"/tmp/",texfile),silent);
 	if(!command.status()){
 		command(Linux::pdflatex("/tmp/",texfile),silent);
-		if(format == "png"){ command(Linux::pdf2png("/tmp/" + texfile, path_ + filename_),silent); }
-		if(format == "jpg"){ command(Linux::pdf2jpg("/tmp/" + texfile, path_ + filename_),silent); }
-		command("mv /tmp/" + texfile + ".pdf " + path_ + filename_ + ".pdf",silent);
-		command("rm /tmp/" + texfile + ".* /tmp/" + texfile + "*-inc-eps-converted-to.pdf /tmp/" + texfile + "*-inc.eps",silent);
-	} else { std::cerr<<__PRETTY_FUNCTION__<<" : Linux::gp2latex(\"/tmp/\"+texfile,path_,filename_) returned an error ("<<command.status()<<")"<<std::endl; }
+		if(!command.status()){
+			command("mv /tmp/" + texfile + ".pdf " + path_ + filename_ + ".pdf",silent);
+			command("rm /tmp/" + texfile + "*",silent);
+			if(format == "png"){ command(Linux::pdf2png(path_ + filename_, path_ + filename_),silent); }
+			if(format == "jpg"){ command(Linux::pdf2jpg(path_ + filename_, path_ + filename_),silent); }
+		} else { std::cerr<<__PRETTY_FUNCTION__<<" : Linux::pdflatex(\"/tmp/\",texfile) returned an error ("<<command.status()<<")"<<std::endl; }
+	} else { std::cerr<<__PRETTY_FUNCTION__<<" : Linux::gp2latex(\"/tmp/\"+texfile,filename_,texfile) returned an error ("<<command.status()<<")"<<std::endl; }
 }

@@ -76,78 +76,62 @@ void Linux::mkpath(const char *path, mode_t mode){
 
 /*{methods returning a std::string that is then to by executed by system*/
 std::string Linux::latex(std::string const& path, std::string const& filename){
-	std::string cmd(MY_BIN_LATEX);
-	cmd+= " -output-directory " + path + " ";
-	cmd+= path+filename + ".tex";
-	return cmd;
+	return std::string(MY_BIN_LATEX) + " -output-directory " + path + " " + path + filename + ".tex";
 }
 
 std::string Linux::pdflatex(std::string const& path, std::string const& filename){
-	std::string cmd(MY_BIN_PDFLATEX);
-	cmd+= " -shell-escape";
-	cmd+= " -output-directory " +path + " ";
-	cmd+= filename + ".tex";
+	return std::string(MY_BIN_PDFLATEX) + " -shell-escape" + " -output-directory " +path + " " + filename + ".tex";
+}
+
+std::string Linux::rst2latex(std::string const& infile, std::string const& outfile){
+	std::string cmd(MY_BIN_RST2LATEX);
+	cmd+= " --latex-preamble='\\usepackage{grffile}\\usepackage[a4paper,total={ 13cm,27cm}]{geometry}'";
+	cmd+= " " + infile + ".rst ";
+	cmd+=       outfile + ".tex ";
 	return cmd;
 }
 
-std::string Linux::dvipdf(std::string const& path, std::string const& filename){
-	std::string cmd(MY_BIN_DVIPDF);
-	cmd = "(cd " + path + "; " + cmd + " " + filename + ".dvi " + filename + ".pdf)";
+std::string Linux::rst2html(std::string const& infile, std::string const& outfile){
+	std::string cmd(MY_BIN_RST2HTML);
+	cmd+= " --stylesheet=" + std::string(MY_RST2HTML_STYLESHEET);
+	cmd+= " --field-name-limit=0";
+	cmd+= " -st ";
+	cmd+= infile + ".rst ";
+	cmd+= outfile + ".html ";
 	return cmd;
 }
 
-std::string Linux::pdfcrop(std::string const& path, std::string const& filename){
-	std::string cmd(MY_BIN_PDFCROP);
-	cmd = "(cd " + path + "; " + cmd + " " + filename + ".pdf " + filename + ".pdf > /dev/null)";
-	return cmd;
+std::string Linux::dvipdf(std::string const& infile, std::string const& outfile){
+	return std::string(MY_BIN_DVIPDF) + " " + infile + ".dvi " + outfile + ".pdf";
+}
+
+std::string Linux::pdfcrop(std::string const& infile, std::string const& outfile){
+	return std::string(MY_BIN_PDFCROP) + " " + infile + ".pdf " + outfile + ".pdf";
 }
 
 std::string Linux::pdf2png(std::string const& infile, std::string const& outfile){
-	std::string cmd(MY_BIN_PDFCONVERT);
-	cmd+= " -sDEVICE=pngalpha -o " + outfile + ".png " + "-r300 " + infile + ".pdf";
-	return cmd;
+	return std::string(MY_BIN_PDFCONVERT) + " -sDEVICE=pngalpha -r300 -o " + outfile + ".png " + infile + ".pdf";
 }
 
 std::string Linux::pdf2jpg(std::string const& infile, std::string const& outfile){
-	std::string cmd(MY_BIN_PDFCONVERT);
-	cmd+= " -sDEVICE=jpeg -dJPEGQ=100 -o " + outfile + ".jpg " + "-r300 " + infile + ".pdf";
-	return cmd;
+	return std::string(MY_BIN_PDFCONVERT) + " -sDEVICE=jpeg -dJPEGQ=100 -r300 -o " + outfile + ".jpg " + infile + ".pdf";
 }
 
-std::string Linux::gp2latex(std::string const& texfile, std::string const& path, std::string const& gpfile){
-	std::string cmd(MY_BIN_GNUPLOT);
-	cmd = "(cd " + path + " && " + cmd;
-	std::ifstream file(path+gpfile+".gp",std::ifstream::in);
+std::string Linux::gp2latex(std::string const& inpath, std::string const& infile, std::string const& outpath, std::string const& outfile){
+	std::ifstream file(inpath+infile+".gp",std::ifstream::in);
 	std::string size;
 	if(file.is_open() && std::getline(file,size) && size.find("#latex_size") != std::string::npos){
 		size = size.substr(12);
 		std::cerr<<__PRETTY_FUNCTION__<<" : set size "<<size<<std::endl;
 	} else { size = "12.15cm,7.54"; }
-	cmd+= " -e \"set terminal epslatex color size "+size+" standalone lw 2 header \'\\\\usepackage{amsmath,amssymb}\'; set output \'" + texfile + ".tex\'\" ";
-	cmd+= gpfile + ".gp )";
-	return cmd;
-}
-
-std::string Linux::rst2latex(std::string const& texfile, std::string const& path, std::string const& filename){
-	std::string cmd(MY_BIN_RST2LATEX);
-	cmd+= " --latex-preamble='\\usepackage{grffile}\\usepackage[a4paper,total={ 13cm,27cm}]{geometry}'";
-	cmd+= " " + path + filename + ".rst ";
-	cmd+=       texfile + ".tex ";
-	return cmd;
-}
-
-std::string Linux::rst2html(std::string const& path, std::string const& filename){
-	std::string cmd(MY_BIN_RST2HTML);
-	cmd+= " --stylesheet=" + std::string(MY_RST2HTML_STYLESHEET);
-	cmd+= " --field-name-limit=0";
-	cmd+= " -st ";
-	cmd+= path + filename + ".rst ";
-	cmd+= path + filename + ".html ";
+	std::string cmd(MY_BIN_GNUPLOT);
+	cmd = "(cd " + inpath + " && " + cmd;
+	cmd+= " -e \"set terminal epslatex color size "+size+" standalone lw 2 header \'\\\\usepackage{amsmath,amssymb}\'; set output \'" + outpath + outfile + ".tex\'\" ";
+	cmd+= infile + ".gp )";
 	return cmd;
 }
 
 std::string Linux::html_browser(std::string const& html){
-	std::string cmd(MY_BIN_HTMLBROWSER);
-	return cmd + " " + html;
+	return std::string(MY_BIN_HTMLBROWSER) + " " + html;
 }
 /*}*/

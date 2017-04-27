@@ -8,7 +8,7 @@ void Directory::set(){
 }
 
 void Directory::search_files(std::string const& keyword, std::string curr_dir, bool follow_link, bool recursive){
-	my::ensure_trailing_slash(curr_dir);
+	curr_dir = my::ensure_trailing_slash(curr_dir);
 	DIR* dir_point(opendir(curr_dir.c_str()));
 	if(dir_point){
 		dirent* entry(readdir(dir_point));
@@ -43,7 +43,7 @@ void Directory::search_files(std::string const& keyword, std::string curr_dir, b
 }
 
 void Directory::search_files_ext(std::string const& extension, std::string curr_dir, bool follow_link, bool recursive){
-	my::ensure_trailing_slash(curr_dir);
+	curr_dir = my::ensure_trailing_slash(curr_dir);
 	DIR* dir_point(opendir(curr_dir.c_str()));
 	if(dir_point){
 		dirent* entry(readdir(dir_point));

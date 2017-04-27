@@ -10,7 +10,7 @@ int main(int argc, char* argv[]){
 		if(pos != std::string::npos){ name = name.substr(pos,name.size()-6); }
 		RSTFile html("/tmp/",name);
 		html.text(r.get_header());
-		html.save(false,false);
+		html.save(true,false,false);
 		Linux command;
 		command(Linux::html_browser("/tmp/"+name+".html"),true);
 		command("rm /tmp/"+name+"*",false);
