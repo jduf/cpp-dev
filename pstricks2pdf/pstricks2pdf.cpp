@@ -33,6 +33,7 @@ int main(int argc, char* argv[]){
 					ps.end(false,true,true);
 					Linux command;
 					command("mv pstricks-tmp.pdf " + filename.substr(0,filename.find(".")) +  ".pdf",false);
+					command("mv pstricks-tmp.png " + filename.substr(0,filename.find(".")) +  ".png",false);
 					command("rm pstricks-tmp*",false);
 				};
 			}

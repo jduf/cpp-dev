@@ -6,7 +6,7 @@
 
 class PSTricks {
 	public:
-		PSTricks(std::string path, std::string filename);
+		PSTricks(std::string const& path, std::string const& filename);
 		/*!Default destructor*/
 		~PSTricks() = default;
 		/*{Forbidden*/

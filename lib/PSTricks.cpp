@@ -1,7 +1,7 @@
 #include "PSTricks.hpp"
 
-PSTricks::PSTricks(std::string path, std::string filename):
-	path_(path),
+PSTricks::PSTricks(std::string const& path, std::string const& filename):
+	path_(my::ensure_trailing_slash(path)),
 	filename_(filename),
 	s_(""),
 	begin_end_(false)
@@ -77,9 +77,9 @@ void PSTricks::end(bool const& silent, bool const& png, bool const& crop){
 	Linux command;
 	command(Linux::latex(path_,filename_),silent);
 	if(!command.status()){
-		command(Linux::dvipdf(path_,filename_),silent);
-		if(crop){ command(Linux::pdfcrop(path_,filename_),silent); }
+		command(Linux::dvipdf(path_+filename_,path_+filename_),silent);
+		command("rm " + path_+filename_+".dvi " + path_+filename_+".aux " + path_+filename_+".log",silent);
+		if(crop){ command(Linux::pdfcrop(path_+filename_,path_+filename_),silent); }
 		if(png){ command(Linux::pdf2png(path_+filename_,path_+filename_),silent); }
-		command("(cd " + path_ + "; rm " +filename_+".dvi "+filename_+".aux "+filename_+".log)",true);
 	} else { std::cerr<<__PRETTY_FUNCTION__<<" : Linux::latex(path_,filename_) returned an error ("<<command.status()<<")"<<std::endl; }
 }
