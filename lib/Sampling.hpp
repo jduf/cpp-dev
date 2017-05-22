@@ -322,8 +322,7 @@ void Data<Type>::Binning::complete_analysis(double const& convergence_criterion,
 		if(num/den>0.0){ dx += num/den * xb; }
 
 		/*!if the slope is flat enough, the convergence is reached*/
-		if(std::abs(num/(den*x))<convergence_criterion){ conv = true; }
-		else{ conv = false; }
+		conv = (std::abs(num/(den*x))<convergence_criterion);
 	}
 }
 
