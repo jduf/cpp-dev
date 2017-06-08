@@ -126,7 +126,7 @@ std::string Linux::gp2latex(std::string const& inpath, std::string const& infile
 	} else { size = "12.15cm,7.54"; }
 	std::string cmd(MY_BIN_GNUPLOT);
 	cmd = "(cd " + inpath + " && " + cmd;
-	cmd+= " -e \"set terminal epslatex color size "+size+" standalone lw 2 header \'\\\\usepackage{amsmath,amssymb}\'; set output \'" + outpath + outfile + ".tex\'\" ";
+	cmd+= " -e \"set terminal epslatex color size "+size+" standalone lw 2 header \'\\\\usepackage{amsmath,amssymb,grffile}\'; set output \'" + outpath + outfile + ".tex\'\" ";
 	cmd+= infile + ".gp )";
 	return cmd;
 }

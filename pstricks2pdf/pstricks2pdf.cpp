@@ -38,7 +38,5 @@ int main(int argc, char* argv[]){
 				};
 			}
 		}
-	} else {
-		std::cerr<<"pstricks2pdf : You need to give a .tex file"<<std::endl;
-	}
+	} else { std::cerr<<"pstricks2pdf : You need to give a .tex file"<<std::endl; }
 }
