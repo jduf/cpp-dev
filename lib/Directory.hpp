@@ -36,9 +36,9 @@ class Directory{
 		/*!Lists all directories stored in curr_dir*/
 		void list_dir(std::string curr_dir);
 		/*!Finds all files matching keyword*/
-		void search_files(std::string const& keyword, std::string curr_dir, bool follow_link, bool recursive);
+		void search_files(std::string const& keyword, std::string curr_dir, bool const& follow_link, bool const& recursive, bool const& hidden);
 		/*!Finds all files with extension "ext"*/
-		void search_files_ext(std::string const& ext, std::string curr_dir, bool follow_link, bool recursive);
+		void search_files_ext(std::string const& ext, std::string curr_dir, bool const& follow_link, bool const& recursive, bool const& hidden);
 		/*!Sorts by alphabetical order all the path_+filename_+extension_*/
 		void sort();
 

@@ -1,5 +1,6 @@
 diffdir/diffdir
 gnuplot/gnuplot2image
+gnuplot/data2stems4gp
 jdtools/jdhtml
 jdtools/jdread
 pstricks2pdf/pstricks2pdf
@@ -7,3 +8,6 @@ rst/rst2pdf
 tofraction/tofraction
 
 *.html
+*.gp
+*.pdf
+*.dat

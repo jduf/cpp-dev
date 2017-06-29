@@ -7,7 +7,7 @@ void Directory::set(){
 	ext_.clear();
 }
 
-void Directory::search_files(std::string const& keyword, std::string curr_dir, bool follow_link, bool recursive){
+void Directory::search_files(std::string const& keyword, std::string curr_dir, bool const& follow_link, bool const& recursive, bool const& hidden){
 	curr_dir = my::ensure_trailing_slash(curr_dir);
 	DIR* dir_point(opendir(curr_dir.c_str()));
 	if(dir_point){
@@ -19,13 +19,13 @@ void Directory::search_files(std::string const& keyword, std::string curr_dir, b
 				switch (st.st_mode & S_IFMT) {
 					case S_IFDIR:
 						{
-							if(recursive && name != "." && name != ".."){
-								search_files(keyword,curr_dir+name+"/",follow_link,recursive);
+							if(recursive && name != "." && name != ".." && (hidden?true:name[0] != '.')){
+								search_files(keyword,curr_dir+name+"/",follow_link,recursive,hidden);
 							}
 						}break;
 					case S_IFREG:
 						{
-							if(name.find(keyword) != std::string::npos){
+							if(name.find(keyword) != std::string::npos && (hidden?true:name[0] != '.')){
 								path_.push_back(curr_dir);
 								split_ext(name);
 							}
@@ -42,7 +42,7 @@ void Directory::search_files(std::string const& keyword, std::string curr_dir, b
 	closedir(dir_point);
 }
 
-void Directory::search_files_ext(std::string const& extension, std::string curr_dir, bool follow_link, bool recursive){
+void Directory::search_files_ext(std::string const& extension, std::string curr_dir, bool const& follow_link, bool const& recursive, bool const& hidden){
 	curr_dir = my::ensure_trailing_slash(curr_dir);
 	DIR* dir_point(opendir(curr_dir.c_str()));
 	if(dir_point){
@@ -54,13 +54,13 @@ void Directory::search_files_ext(std::string const& extension, std::string curr_
 				switch (st.st_mode & S_IFMT) {
 					case S_IFDIR:
 						{
-							if(recursive && name != "." && name != ".."){
-								search_files_ext(extension,curr_dir+name+"/",follow_link,recursive);
+							if(recursive && name != "." && name != ".." && (hidden?true:name[0] != '.')){
+								search_files_ext(extension,curr_dir+name+"/",follow_link,recursive,hidden);
 							}
 						}break;
 					case S_IFREG:
 						{
-							if(name.find(extension,name.size()-extension.size()) != std::string::npos){
+							if(name.find(extension,name.size()-extension.size()) != std::string::npos && (hidden?true:name[0] != '.') ){
 								path_.push_back(curr_dir);
 								split_ext(name);
 							}

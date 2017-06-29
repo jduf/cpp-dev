@@ -7,6 +7,9 @@ int main(int argc,char* argv[]){
 	const std::string ext(".gp");
 	if(argc==2 || argc==3){
 		std::string filename(argv[1]);
+		std::string option(argc==3?argv[2]:"");
+		bool silent(option!="debug");
+
 		if ( filename != ext && filename.size() > ext.size() && filename.substr(filename.size() - ext.size()) == ext ) {
 			filename = filename.substr(0, filename.size() - ext.size());
 			std::string path("");
@@ -18,15 +21,13 @@ int main(int argc,char* argv[]){
 			Linux command;
 			if(path[0] != '/'){ path = command.pwd() + path; }
 			std::string texfile("gp2latex_tmp");
-			command(Linux::gp2latex(path,filename,"/tmp/",texfile),false);
+			command(Linux::gp2latex(path,filename,"/tmp/",texfile),silent);
 			if(!command.status()){
-				bool silent(true);
 				command(Linux::pdflatex("/tmp/",texfile),silent);
 				if(!command.status()){
 					command("mv /tmp/" + texfile + ".pdf " + path + filename + ".pdf",silent);
 					command("rm /tmp/" + texfile + "*",silent);
 					if(argc==3){
-						std::string option(argv[2]);
 						if(option=="png"){ command(Linux::pdf2png(path + filename, path + filename),silent); }
 						else if(option=="jpg"){ command(Linux::pdf2png(path + filename, path + filename),silent); }
 						else { std::cerr<<__PRETTY_FUNCTION__<<" : unknown option (only possible is 'png' or 'jpg')"<<std::endl; }

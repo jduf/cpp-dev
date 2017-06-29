@@ -290,6 +290,11 @@ namespace my{
 		elapsed+= my::tostring(s)+"s";
 		return elapsed;
 	}
+
+	/*!returns string of length str.size() with spaces*/
+	inline std::string whitespace(std::string const& s){
+		return std::string(s.size(),' ');
+	}
 }
 
 namespace BLAS{
