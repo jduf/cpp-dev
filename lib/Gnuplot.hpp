@@ -7,7 +7,7 @@
 class Gnuplot{
 	public:
 		/*!Constructor for the creation of a .gp file in path/filename*/
-		Gnuplot(std::string const&  path, std::string const& filename);
+		Gnuplot(std::string const& path, std::string const& filename);
 		/*!Default destructor*/
 		~Gnuplot() = default;
 		/*{Forbidden*/

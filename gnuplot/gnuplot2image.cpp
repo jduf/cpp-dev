@@ -21,7 +21,7 @@ int main(int argc,char* argv[]){
 			Linux command;
 			if(path[0] != '/'){ path = command.pwd() + path; }
 			std::string texfile("gp2latex_tmp");
-			command(Linux::gp2latex(path,filename,"/tmp/",texfile),silent);
+			command(Linux::gp2latex(path,filename,"/tmp/",texfile),false);
 			if(!command.status()){
 				command(Linux::pdflatex("/tmp/",texfile),silent);
 				if(!command.status()){

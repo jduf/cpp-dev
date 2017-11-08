@@ -51,8 +51,22 @@ namespace my{
 			std::getline(std::cin,token);
 			if(token == "y"){ return true; }
 			if(token == "n"){ return false; }
-		} while(1);
+		} while(true);
 	}
+
+	template<typename Type>
+		inline Type get_number(std::string const& msg, Type const& nmin, Type const& nmax){
+			std::string token;
+			Type ntoken;
+			do{
+				std::cout<<msg<<" ["<<nmin<<"-"<<nmax<<"] ";
+				std::getline(std::cin,token);
+				if(token != ""){
+					ntoken = my::string2type<Type>(token);
+					if( ntoken >= nmin && ntoken <= nmax){ return ntoken; }
+				}
+			} while(true);
+		}
 
 	inline std::vector<std::string> &string_split(std::string const& s, char const& delim, std::vector<std::string>& elems){
 		std::stringstream ss(s);
@@ -68,13 +82,13 @@ namespace my{
 		return elems;
 	}
 
-		inline unsigned int count_substring(std::string const& s, std::string const& ss){
-			unsigned int n(0);
-			unsigned int l(ss.size());
-			unsigned int p(0);
-			while( (p=s.find(ss,p)+l) != l-1){ n++; }
-			return n;
-		}
+	inline unsigned int count_substring(std::string const& s, std::string const& ss){
+		unsigned int n(0);
+		unsigned int l(ss.size());
+		unsigned int p(0);
+		while( (p=s.find(ss,p)+l) != l-1){ n++; }
+		return n;
+	}
 
 	inline std::string ensure_trailing_slash(std::string const& s){
 		if(s.back()=='/'){ return s; }

@@ -6,7 +6,7 @@
 #include <cstring>
 
 /*{*/
- /*!Class that allows to read/write datas from/in a binary or a text file.
+/*!Class that allows to read/write datas from/in a binary or a text file.
  *
  * When used with a text file
  *  - the datas must be separated with a space
@@ -39,10 +39,12 @@ class IOFiles{
 		IOFiles& operator>>(std::string& t);
 		/*Allows to extract personal classes or data*/
 		template<typename Type>
-			void read(Type* m, unsigned int const& N, size_t const& type_size);
+			void read(Type* t, unsigned int const& N, size_t const& type_size);
 		/*!Reads file and extract a Type value. Useful for initialization*/
 		template<typename Type>
 			Type read();
+		/*!Reads a text file line by line*/
+		std::string getline();
 
 		/*!Stream operator for all types
 		 * \warning needs an overload for std::string*/
@@ -51,7 +53,7 @@ class IOFiles{
 		IOFiles& operator<<(std::string const& t);
 		/*Allows to write personal classes or data*/
 		template<typename Type>
-			void write(Type* m, unsigned int const& N, size_t const& type_size);
+			void write(Type* t, unsigned int const& N, size_t const& type_size);
 		/*Writes val with label var*/
 		template<typename Type>
 			void write(std::string const& var, Type const& val);

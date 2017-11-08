@@ -81,7 +81,7 @@ IOFiles& IOFiles::operator>>(std::string& t){
 		} else {
 			std::string tmp("");
 			while(file_.good()){
-				getline(file_,tmp);
+				std::getline(file_,tmp);
 				t += tmp + "\n";
 			}
 		}
@@ -112,5 +112,12 @@ std::string IOFiles::get_header() const {
 	if(header_){ return header_->get(); }
 	std::cerr<<__PRETTY_FUNCTION__<<" : can't read from "<<filename_<<std::endl;
 	return 0;
+}
+
+std::string IOFiles::getline(){
+	std::string s("");
+	if(open_ && !write_ && !binary_){ std::getline(file_,s); }
+	else { std::cerr<<__PRETTY_FUNCTION__<<" : not defined for binary file "<<filename_<<std::endl; }
+	return s;
 }
 /*}*/
