@@ -1,3 +1,4 @@
+#include "Directory.hpp"
 #include "TP.hpp"
 
 int main(int argc,char* argv[]){
@@ -6,28 +7,33 @@ int main(int argc,char* argv[]){
 		TP tp(P);
 		tp.display();
 		tp.save();
-	}
-	if(P.find("a")){
-		IOFiles ftp(P.get<std::string>("class"),false,false);
-		TP tp(ftp);
-		tp.add();
-		tp.save();
-		tp.pdf();
-		tp.clean();
-	}
-	if(P.find("e")){
-		IOFiles ftp(P.get<std::string>("class"),false,false);
-		TP tp(ftp);
-		tp.edit();
-		tp.save();
-		tp.pdf();
-		tp.clean();
-	}
-	if(P.find("s")){
-		IOFiles ftp(P.get<std::string>("class"),false,false);
-		TP tp(ftp);
-		tp.display();
-		tp.pdf();
-		tp.clean();
+	} else {
+	unsigned int i(0);
+		if(P.find("class",i,false)){
+			Directory dir;
+			dir.search_files(P.get<std::string>(i),"./tp",false,false,false);
+			dir.sort();
+			std::cout<<dir.last()<<std::endl;
+
+			IOFiles ftp(dir.last(),false,false);
+			TP tp(ftp);
+			if(P.find("a")){
+				tp.add();
+				tp.save();
+				tp.pdf();
+				tp.clean();
+			}
+			if(P.find("e")){
+				tp.edit();
+				tp.save();
+				tp.pdf();
+				tp.clean();
+			}
+			if(P.find("s")){
+				tp.display();
+				tp.pdf();
+				tp.clean();
+			}
+		}
 	}
 }

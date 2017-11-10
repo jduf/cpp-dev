@@ -25,19 +25,18 @@ class Examen{
 		std::string date_;
 		std::vector<std::string> class_list_;
 
-		double bonus_points_;
+		double bonus_test_;
 		double bonus_coef_;
-		Vector<unsigned int> questions_;
 		double average_;
-		double average_bonus_;
+		double average_grades_with_bonus_;
 		double average_final_;
 		unsigned int nfails_;
 
 		Matrix<double> points_;
-		Vector<double> test_bonus_;
+		Vector<double> max_points_;
+		Vector<double> points_bonus_;
 		Vector<double> grades_;
-		Vector<double> grades_bonus_;
+		Vector<double> grades_with_bonus_;
 		Vector<double> grades_final_;
-		Vector<double> freq_final_;
 };
 #endif

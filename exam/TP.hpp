@@ -12,13 +12,13 @@ class TP{
 		TP() = delete;
 		~TP() = default;
 
+		void analyse();
 		void display();
 		void save();
 		void add();
 		void edit(unsigned int student=-1);
-		void analyse();
-		void summary();
 		void histogram();
+		void summary();
 		void feedback();
 		void pdf(){
 			summary();
@@ -38,7 +38,6 @@ class TP{
 
 		double average_;
 		unsigned int nfails_;
-
 
 		std::string const criteria_[9] = {"Table des matières", "Notice principale", "Notices TP", "Numérotation", "Préparation", "Questions préliminaires", "Schéma", "Unités", "Compte rendu"};
 };

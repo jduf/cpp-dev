@@ -29,6 +29,41 @@ TP::TP(IOFiles& ftp):
 	class_list_(nstudents_)
 { for(auto& name:class_list_){ ftp>>name; } }
 
+void TP::analyse(){
+	nfails_ = 0;
+	average_ = 0.0;
+	unsigned int n_valid(0);
+	unsigned int total_points(max_points_.sum());
+	for(unsigned int i(0);i<grades_.size();i++){
+		grades_(i) = 0;
+		for(unsigned int j(0);j<points_.col();j++){ grades_(i) += points_(i,j); }
+		grades_(i) = my::round_nearest(5.0*grades_(i)/total_points+1,2);
+
+		if(!my::are_equal(grades_(i),1)){ 
+			average_ += grades_(i);
+			n_valid++;
+			if(grades_(i)<4){ nfails_++; }
+		}
+	}
+	average_ /= n_valid;
+}
+
+void TP::display(){
+	for(unsigned int i(0);i<nstudents_;i++){
+		std::cout<<i<<". "<<class_list_[i];
+		if(!my::are_equal(grades_(i),1)){ std::cout<<" -> "<<grades_(i); } 
+		std::cout<<std::endl;
+	}
+}
+
+void TP::save(){
+	IOFiles tmp("./tp/"+Time().date("-")+"-"+class_id_+".jdbin",true,false);
+	tmp.write("Classe",class_id_);
+	tmp.write("TP numéro",TP_number_);
+	tmp<<nstudents_<<comments_<<points_<<max_points_<<grades_;
+	for(auto& name:class_list_){ tmp<<name; }
+}
+
 void TP::add(){
 	display();
 	unsigned int student(my::get_number("Choisir l'étudiant :", (unsigned int)(0), (unsigned int)(nstudents_-1)));
@@ -81,41 +116,6 @@ void TP::edit(unsigned int student){
 	command("rm " + ncriteria+" "+npoints+" "+ncomments,false);
 }
 
-void TP::save(){
-	IOFiles tmp(Time().date("-")+"-"+class_id_+".jdbin",true,false);
-	tmp.write("Classe",class_id_);
-	tmp.write("TP numéro",TP_number_);
-	tmp<<nstudents_<<comments_<<points_<<max_points_<<grades_;
-	for(auto& name:class_list_){ tmp<<name; }
-}
-
-void TP::display(){
-	for(unsigned int i(0);i<nstudents_;i++){
-		std::cout<<i<<". "<<class_list_[i];
-		if(!my::are_equal(grades_(i),1)){ std::cout<<" -> "<<grades_(i); } 
-		std::cout<<std::endl;
-	}
-}
-
-void TP::analyse(){
-	nfails_ = 0;
-	average_ = 0.0;
-	unsigned int n_valid(0);
-	unsigned int total_points(max_points_.sum());
-	for(unsigned int i(0);i<grades_.size();i++){
-		grades_(i) = 0;
-		for(unsigned int j(0);j<points_.col();j++){ grades_(i) += points_(i,j); }
-		grades_(i) = my::round_nearest(5.0*grades_(i)/total_points+1,2);
-
-		if(!my::are_equal(grades_(i),1)){ 
-			average_ += grades_(i);
-			n_valid++;
-			if(grades_(i)<4){ nfails_++; }
-		}
-	}
-	average_ /= n_valid;
-}
-
 void TP::histogram(){
 	Vector<double> bins(11,0);
 	for(unsigned int i(0);i<grades_.size();i++){
@@ -146,6 +146,7 @@ void TP::summary(){
 	latex<<"\\usepackage{amsmath}"<<IOFiles::endl;
 	latex<<"\\usepackage{siunitx}"<<IOFiles::endl;
 	latex<<"\\usepackage{graphics}"<<IOFiles::endl;
+	latex<<"\\usepackage[table]{xcolor}"<<IOFiles::endl;
 	latex<<"\\pagenumbering{gobble}"<<IOFiles::endl;
 	latex<<"\\begin{document}"<<IOFiles::endl;
 	latex<<"\\section*{"<<class_id_<<": TP-"<<TP_number_<<"}"<<IOFiles::endl;
@@ -155,6 +156,7 @@ void TP::summary(){
 	latex<<"||S[table-format=1.3]||}"<<IOFiles::endl;;
 	latex<<"Nom & \\multicolumn{"<<points_.col()<<"}{c||}{Points} & {Notes} \\\\\\hline\\hline"<<IOFiles::endl;;
 	for(unsigned int i(0);i<class_list_.size();i++){
+		if(i%2){ latex<<"\\rowcolor{gray!30}"<<IOFiles::endl; }
 		latex<<class_list_[i]<<" &";
 		if(!my::are_equal(grades_(i),1)){ 
 			for(unsigned int j(0);j<points_.col();j++){ latex<<points_(i,j)<<" &"; }

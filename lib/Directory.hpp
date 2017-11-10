@@ -28,6 +28,10 @@ class Directory{
 		inline std::string const& get_ext(unsigned int i) const { return ext_[i]; }
 		/*!Returns the ith const& path_+filename_+extension_*/
 		inline std::string operator[](unsigned int i) const { return path_[i]+filename_[i]+ext_[i]; }
+		/*!Returns the first file listed*/
+		inline std::string first() const { return path_[0]+filename_[0]+ext_[0]; }
+		/*!Returns the flast file listed*/
+		inline std::string last() const { return path_.back()+filename_.back()+ext_.back(); }
 		/*!Returns the number of files*/
 		inline unsigned int size() const { return path_.size(); }
 
