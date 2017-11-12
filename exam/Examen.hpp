@@ -16,7 +16,7 @@ class Examen{
 		void display();
 		void save();
 		void edit();
-		void histogram();
+		std::string histogram(Vector<double> const& data, double const& min, double const& max, double const& bin_width, std::string const& title);
 		void summary();
 		void clean();
 

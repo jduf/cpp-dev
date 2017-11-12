@@ -3,10 +3,10 @@
 Examen::Examen(Parseur& P):
 	class_id_(P.get<std::string>("class")),
 	title_(my::get_string("Titre")),
-	bonus_test_(0),
-	bonus_coef_(0),
 	average_(0),
-	nfails_(0)
+	nfails_(0),
+	bonus_test_(0),
+	bonus_coef_(0)
 {
 	Linux command;
 	std::string tmps;
@@ -36,9 +36,9 @@ Examen::Examen(Parseur& P):
 	} while ( !my::get_yn("Les points sont-ils corrects ?") );
 
 	points_.set(n,m,0.0);
-	grades_.set(n,1.0);
-	grades_test_.set(n);
-	grades_with_bonus_.set(n);
+	grades_.set(n,0.0);
+	grades_test_.set(n,0.0);
+	grades_with_bonus_.set(n,0.0);
 }
 
 Examen::Examen(IOFiles& fexa):
@@ -68,17 +68,19 @@ void Examen::analyse(){
 	unsigned int total_points(max_points_.sum());
 	for(unsigned int i(0);i<grades_test_.size();i++){
 		grades_test_(i) = 0;
+		grades_with_bonus_(i) = 0;
+		grades_(i) = 0;
 		for(unsigned int j(0);j<points_.col();j++){ grades_test_(i) += points_(i,j); }
-		grades_test_(i) = std::min(5*grades_test_(i)/(total_points-bonus_test_)+1.0,6.0);
-		grades_with_bonus_(i) = std::min(grades_test_(i) + points_bonus_(i)*bonus_coef_,6.0);
-		grades_(i) = my::round_nearest(grades_with_bonus_(i),2);
+		if(grades_test_(i) != 0){
+			n_valid++;
+			grades_test_(i) = std::min(5*grades_test_(i)/(total_points-bonus_test_)+1.0,6.0);
+			grades_with_bonus_(i) = std::min(grades_test_(i) + points_bonus_(i)*bonus_coef_,6.0);
+			grades_(i) = my::round_nearest(grades_with_bonus_(i),2);
+			if(grades_(i)<4){ nfails_++; }
 
-		if(!my::are_equal(grades_test_(i),1)){
 			average_test_ += grades_test_(i);
 			average_grades_with_bonus_ += grades_with_bonus_(i);
 			average_ += grades_(i);
-			n_valid++;
-			if(grades_(i)<4){ nfails_++; }
 		}
 	}
 	average_test_ /= n_valid;
@@ -169,25 +171,41 @@ void Examen::save(){
 	tmp<<points_bonus_<<grades_test_<<grades_with_bonus_;
 }
 
-void Examen::histogram(){
-	Vector<double> bins(11,0);
-	for(unsigned int i(0);i<grades_.size();i++){
-		if(!my::are_equal(grades_test_(i),1)){ bins(grades_(i)*2-2)++; }
+std::string Examen::histogram(Vector<double> const& data, double const& min, double const& max, double const& bin_width, std::string const& title){
+	unsigned int nbins(ceil((max-min)/bin_width+1));
+	Vector<double> xbin(nbins);
+	Vector<unsigned int> ybin(nbins,0);
+	for(unsigned int i(0);i<nbins;i++){ xbin(i) = min+i*bin_width; }
+
+	for(unsigned int i(0);i<data.size();i++){
+		for(unsigned int j(0);j<nbins;j++){
+			if(std::abs(data(i)-xbin(j))<=bin_width/2.0){ ybin(j)++; }
+		}
 	}
 
-	IOFiles ffrequencies("histogram-"+class_id_+".dat",true,false);
-	for(unsigned int i(0);i<bins.size();i++){
-		ffrequencies<<1.0+0.5*i<<" "<<bins(i)<<IOFiles::endl;
+	std::string fname("histogram-"+class_id_+"-"+title);
+	IOFiles fbins(fname+".dat",true,false);
+	for(unsigned int i(0);i<nbins;i++){
+		fbins<<xbin(i)<<" "<<ybin(i)<<IOFiles::endl;
 	}
-	Gnuplot histogram("./","histogram-"+class_id_);
-	histogram += "set style data histogram";
+	Gnuplot histogram("./",fname);
+	histogram += "set boxwidth 0.5 relative";
+	histogram += "set style fill transparent solid 0.5 noborder";
+	histogram.key("left");
+	histogram.tics("x",0.5);
+	histogram.range("x",min-bin_width/2.0,max+bin_width/2.0);
 	histogram.tics("y",1);
-	histogram += "plot 'histogram-"+class_id_+".dat' using 2:xtic(1) t 'Notes'";
+	histogram.range("y",0,ybin.max()+1);
+	histogram += "plot '"+fname+".dat' using 1:2 with boxes t '"+title+"'";
 	histogram.save_file();
 	histogram.create_image(true);
+
+	return fname;
 }
 
 void Examen::summary(){
+	analyse();
+	
 	IOFiles latex(class_id_+"-summary.tex",true,false);
 	latex<<"\\documentclass{article}"<<IOFiles::endl;
 	//latex<<"\\usepackage[a4paper,landscape,twocolumn,margin=1cm]{geometry}"<<IOFiles::endl;
@@ -218,7 +236,7 @@ void Examen::summary(){
 	for(unsigned int i(0);i<class_list_.size();i++){
 		if(i%2){ latex<<"\\rowcolor{gray!30}"<<IOFiles::endl; }
 		latex<<class_list_(i)<<" &" << points_bonus_(i)<<" &";
-		if(!my::are_equal(grades_test_(i),1)){
+		if(grades_test_(i)>0){
 			for(unsigned int j(0);j<points_.col();j++){ latex<<points_(i,j)<<" &"; }
 			latex<<my::round_nearest(grades_test_(i),1000)<<" &";
 			latex<<my::round_nearest(grades_with_bonus_(i),1000)<<" &";
@@ -234,8 +252,15 @@ void Examen::summary(){
 	latex<<"\\end{center}"<<IOFiles::endl;
 	latex<<"\\vfill"<<IOFiles::endl;
 	latex<<"\\begin{center}"<<IOFiles::endl;
-	latex<<"\\includegraphics{histogram-"+class_id_+"}"<<IOFiles::endl;
+	latex<<"\\includegraphics{"+histogram(grades_,1,6,0.5,"Notes")+"}"<<IOFiles::endl;
 	latex<<"\\end{center}"<<IOFiles::endl;
+	for(unsigned int j(0);j<max_points_.size();j++){
+		Vector<double> tmp(grades_.size());
+		for(unsigned int i(0);i<tmp.size();i++){ tmp(i) = points_(i,j); }
+		latex<<"\\begin{center}"<<IOFiles::endl;
+		latex<<"\\includegraphics{"+histogram(tmp,0,max_points_(j),1,"Exo"+my::tostring(j+1))+"}"<<IOFiles::endl;
+		latex<<"\\end{center}"<<IOFiles::endl;
+	}
 	latex<<"\\end{document}"<<IOFiles::endl;
 
 	Linux command;
@@ -244,6 +269,5 @@ void Examen::summary(){
 
 void Examen::clean(){
 	Linux command;
-	command("rm histogram-" +class_id_ + "* "+class_id_+"-summary.tex",false);
-	command("rm *.aux *.log",true);
+	command("rm histogram-* "+class_id_+"-summary.tex *.aux *.log",false);
 }

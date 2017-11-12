@@ -6,10 +6,8 @@ int main(int argc,char* argv[]){
 	if(P.find("n")){
 		Examen exa(P);
 		exa.edit();
-		exa.analyse();
-		exa.save();
-		exa.histogram();
 		exa.summary();
+		exa.save();
 		exa.clean();
 	} else {
 		unsigned int i(0);
@@ -22,18 +20,15 @@ int main(int argc,char* argv[]){
 			Examen exa(fexa);
 			if(P.find("e")){
 				exa.edit();
-				exa.analyse();
-				exa.save();
-				exa.histogram();
 				exa.summary();
+				exa.save();
 				exa.clean();
 			}
 			if(P.find("s")){
 				exa.analyse();
 				exa.display();
-				exa.histogram();
 				exa.summary();
-				exa.clean();
+				//exa.clean();
 			}
 			if(P.find("d")){
 				exa.display();
