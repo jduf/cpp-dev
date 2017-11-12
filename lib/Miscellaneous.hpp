@@ -44,6 +44,13 @@ namespace my{
 		return in;
 	}
 
+	inline std::string get_string(std::string const& msg){
+		std::string token;
+		std::cout<<msg<<" [std::string] ";
+		std::getline(std::cin,token);
+		return token;
+	}
+
 	inline bool get_yn(std::string const& msg){
 		std::string token;
 		do{

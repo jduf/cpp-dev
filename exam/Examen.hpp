@@ -1,7 +1,7 @@
 #ifndef DEF_EXAMEN
 #define DEF_EXAMEN
 
-#include "Vector.hpp"
+#include "VectorOfStrings.hpp"
 #include "Gnuplot.hpp"
 #include "Parseur.hpp"
 
@@ -22,21 +22,21 @@ class Examen{
 
 	private:
 		std::string class_id_;
-		std::string date_;
-		std::vector<std::string> class_list_;
+		std::string title_;
+		VectorOfStrings class_list_;
+		Matrix<double> points_;
+		Vector<double> max_points_;
+		Vector<double> grades_;
+		double average_;
+		unsigned int nfails_;
 
 		double bonus_test_;
 		double bonus_coef_;
-		double average_;
+		double average_test_;
 		double average_grades_with_bonus_;
-		double average_final_;
-		unsigned int nfails_;
 
-		Matrix<double> points_;
-		Vector<double> max_points_;
 		Vector<double> points_bonus_;
-		Vector<double> grades_;
+		Vector<double> grades_test_;
 		Vector<double> grades_with_bonus_;
-		Vector<double> grades_final_;
 };
 #endif

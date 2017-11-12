@@ -17,7 +17,6 @@ int main(int argc,char* argv[]){
 			Directory dir;
 			dir.search_files(P.get<std::string>(i),"./exa",false,false,false);
 			dir.sort();
-			std::cout<<dir.last()<<std::endl;
 
 			IOFiles fexa(dir.last(),false,false);
 			Examen exa(fexa);

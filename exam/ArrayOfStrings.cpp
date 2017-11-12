@@ -18,23 +18,23 @@ ArrayOfStrings::ArrayOfStrings(unsigned int N_row, unsigned int N_col, std::stri
 	for(unsigned int i(0);i<size_;i++){ arr_[i] = val; }
 }
 
-ArrayOfStrings::ArrayOfStrings(ArrayOfStrings const& mat):
-	row_(mat.row_),
-	col_(mat.col_),
-	size_(mat.size_),
+ArrayOfStrings::ArrayOfStrings(ArrayOfStrings const& aos):
+	row_(aos.row_),
+	col_(aos.col_),
+	size_(aos.size_),
 	arr_(size_?new std::string[size_]:NULL)
 {
-	for(unsigned int i(0);i<size_;i++){ arr_[i] = mat.arr_[i]; }
+	for(unsigned int i(0);i<size_;i++){ arr_[i] = aos.arr_[i]; }
 }
 
-ArrayOfStrings::ArrayOfStrings(ArrayOfStrings&& mat):
-	row_(mat.row_),
-	col_(mat.col_),
-	size_(mat.size_),
-	arr_(mat.arr_)
+ArrayOfStrings::ArrayOfStrings(ArrayOfStrings&& aos):
+	row_(aos.row_),
+	col_(aos.col_),
+	size_(aos.size_),
+	arr_(aos.arr_)
 {
-	mat.arr_ = NULL;
-	mat.row_ = mat.col_ = mat.size_ = 0;
+	aos.arr_ = NULL;
+	aos.row_ = aos.col_ = aos.size_ = 0;
 }
 
 ArrayOfStrings::ArrayOfStrings(IOFiles& r):
@@ -42,9 +42,7 @@ ArrayOfStrings::ArrayOfStrings(IOFiles& r):
 	col_(r.read<unsigned int>()),
 	size_(row_*col_),
 	arr_(size_?new std::string[size_]:NULL)
-{
-	for(unsigned int i(0);i<size_;i++){ r>>arr_[i]; }
-}
+{ for(unsigned int i(0);i<size_;i++){ r>>arr_[i]; } }
 
 ArrayOfStrings::~ArrayOfStrings(){
 	if(arr_){
@@ -60,40 +58,40 @@ void ArrayOfStrings::swap_to_assign(ArrayOfStrings& m1,ArrayOfStrings& m2){
 	std::swap(m1.size_,m2.size_);
 }
 
-ArrayOfStrings& ArrayOfStrings::operator=(ArrayOfStrings mat){
-	swap_to_assign(*this,mat);
+ArrayOfStrings& ArrayOfStrings::operator=(ArrayOfStrings aos){
+	swap_to_assign(*this,aos);
 	return (*this);
 }
 /*}*/
 
 /*i/o methods*/
 /*{*/
-std::ostream& operator<<(std::ostream& flux, ArrayOfStrings const& m){
-	for(unsigned int i(0);i<m.row();i++){
-		for(unsigned int j(0);j<m.col();j++){ flux<<m(i,j)<<" "; }
-		if(i+1 != m.row()){ flux<<std::endl; }
+std::ostream& operator<<(std::ostream& flux, ArrayOfStrings const& aos){
+	for(unsigned int i(0);i<aos.row();i++){
+		for(unsigned int j(0);j<aos.col();j++){ flux<<aos(i,j)<<" "; }
+		if(i+1 != aos.row()){ flux<<std::endl; }
 	}
 	return flux;
 }
 
-std::istream& operator>>(std::istream& flux, ArrayOfStrings& m){
-	unsigned int size(m.size());
-	for(unsigned int i(0);i<size;i++){ flux>>m.ptr()[i]; }
+std::istream& operator>>(std::istream& flux, ArrayOfStrings& aos){
+	unsigned int size(aos.size());
+	for(unsigned int i(0);i<size;i++){ flux>>aos.ptr()[i]; }
 	return flux;
 }
 
-IOFiles& operator<<(IOFiles& w, ArrayOfStrings const& m){
+IOFiles& operator<<(IOFiles& w, ArrayOfStrings const& aos){
 	if(w.is_binary()){
-		w<<m.row()<<m.col();
-		unsigned int size(m.size());
-		for(unsigned int i(0);i<size;i++){ w<<m.ptr()[i]; }
-	} else { w.stream()<<m; }
+		w<<aos.row()<<aos.col();
+		unsigned int size(aos.size());
+		for(unsigned int i(0);i<size;i++){ w<<aos.ptr()[i]; }
+	} else { w.stream()<<aos; }
 	return w;
 }
 
-IOFiles& operator>>(IOFiles& r, ArrayOfStrings& m){
-	if(r.is_binary()){ m = std::move(ArrayOfStrings(r)); }
-	else { r.stream()>>m; }
+IOFiles& operator>>(IOFiles& r, ArrayOfStrings& aos){
+	if(r.is_binary()){ aos = std::move(ArrayOfStrings(r)); }
+	else { r.stream()>>aos; }
 	return r;
 }
 /*}*/

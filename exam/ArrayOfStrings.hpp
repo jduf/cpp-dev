@@ -12,46 +12,41 @@ class ArrayOfStrings{
 		/*!Initializes a static array of std::string of size N_row*N_col to a value val*/
 		ArrayOfStrings(unsigned int N_row, unsigned int N_col, std::string val);
 		/*!Deep copy constructor*/
-		ArrayOfStrings(ArrayOfStrings const& mat);
+		ArrayOfStrings(ArrayOfStrings const& aos);
 		/*!Move constructor (can't be default because of arr_)*/
-		ArrayOfStrings(ArrayOfStrings&& mat);
+		ArrayOfStrings(ArrayOfStrings&& aos);
 		/*!Constructor that reads from file*/
 		ArrayOfStrings(IOFiles& r);
 		/*!Delete the static array*/
 		virtual ~ArrayOfStrings();
 
-		/*!Accesses the (i,j)th entry of the matrix*/
+		/*!Accesses the (i,j)th entry of the array*/
 		std::string const& operator()(unsigned int const& i, unsigned int const& j) const
 		{ assert(i<row_ && j<col_); return arr_[i+j*row_]; }
-		/*!Sets the (i,j)th entry of the matrix*/
+		/*!Sets the (i,j)th entry of the array*/
 		std::string& operator()(unsigned int const& i, unsigned int const& j)
 		{ assert(i<row_ && j<col_); return arr_[i+j*row_]; }
 
 		/*!Assignment (using Copy-And-Swap Idiom)*/
-		ArrayOfStrings& operator=(ArrayOfStrings mat);
+		ArrayOfStrings& operator=(ArrayOfStrings aos);
 
-		/*!Set the matrix to 0*/
+		/*!Set the array to 0*/
 		void set();
-		/*!Set the matrix to val*/
+		/*!Set the array to val*/
 		void set(std::string const& val);
-		/*!Set a N_row x N_col matrix  */
+		/*!Set a N_row x N_col array  */
 		void set(unsigned int N_row, unsigned int N_col);
-		/*!Set a N_row x N_col matrix to val */
+		/*!Set a N_row x N_col array to val */
 		void set(unsigned int N_row, unsigned int N_col, std::string val);
 
-		/*!Returns the size of the matrix*/
+		/*!Returns the size of the array*/
 		unsigned int const& size() const { return size_; }
-		/*!Returns the number of rows of the matrix*/
+		/*!Returns the number of rows of the array*/
 		unsigned int const& row() const { return row_; }
-		/*!Returns the number of columns of the matrix*/
+		/*!Returns the number of columns of the array*/
 		unsigned int const& col() const { return col_; }
-		/*!Returns the pointer to the matrix*/
+		/*!Returns the pointer to the array*/
 		std::string* ptr() const { return arr_; }
-
-		/*!Returns the maximal value of arr_*/
-		std::string max() const;
-		/*!Returns the minimal value of arr_*/
-		std::string min() const;
 
 		std::string header_def() const { return "ArrayOfStrings("+RST::math(my::tostring(row_)+"\\times"+my::tostring(col_))+")"; }
 

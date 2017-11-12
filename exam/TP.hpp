@@ -2,6 +2,7 @@
 #define DEF_TP
 
 #include "ArrayOfStrings.hpp"
+#include "VectorOfStrings.hpp"
 #include "Gnuplot.hpp"
 #include "Parseur.hpp"
 
@@ -28,17 +29,17 @@ class TP{
 
 	private:
 		std::string class_id_;
-		unsigned int TP_number_;
-		unsigned int nstudents_;
-		ArrayOfStrings comments_;
+		std::string title_;
+		VectorOfStrings class_list_;
 		Matrix<double> points_;
 		Vector<double> max_points_;
 		Vector<double> grades_;
-		std::vector<std::string> class_list_;
-
 		double average_;
 		unsigned int nfails_;
 
-		std::string const criteria_[9] = {"Table des matières", "Notice principale", "Notices TP", "Numérotation", "Préparation", "Questions préliminaires", "Schéma", "Unités", "Compte rendu"};
+		VectorOfStrings criteria_;
+		ArrayOfStrings comments_;
+
+		unsigned int pick_student();
 };
 #endif

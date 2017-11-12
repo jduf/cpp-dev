@@ -13,7 +13,6 @@ int main(int argc,char* argv[]){
 			Directory dir;
 			dir.search_files(P.get<std::string>(i),"./tp",false,false,false);
 			dir.sort();
-			std::cout<<dir.last()<<std::endl;
 
 			IOFiles ftp(dir.last(),false,false);
 			TP tp(ftp);
@@ -33,6 +32,9 @@ int main(int argc,char* argv[]){
 				tp.display();
 				tp.pdf();
 				tp.clean();
+			}
+			if(P.find("d")){
+				tp.display();
 			}
 		}
 	}
