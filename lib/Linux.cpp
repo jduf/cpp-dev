@@ -118,15 +118,26 @@ std::string Linux::pdf2jpg(std::string const& infile, std::string const& outfile
 }
 
 std::string Linux::gp2latex(std::string const& inpath, std::string const& infile, std::string const& outpath, std::string const& outfile){
-	std::ifstream file(inpath+infile+".gp",std::ifstream::in);
-	std::string size;
-	if(file.is_open() && std::getline(file,size) && size.find("#latex_size") != std::string::npos){
-		size = size.substr(12);
-		std::cerr<<__PRETTY_FUNCTION__<<" : set size "<<size<<std::endl;
-	} else { size = "12.15cm,7.54"; }
+	std::string size("12.15cm,7.54");
+	std::string setfrench("");
+	{
+		std::ifstream file(inpath+infile+".gp",std::ifstream::in);
+		std::string line;
+		if(file.is_open())
+			while(std::getline(file,line) && line[0] == '#'){
+				if(line.find("#latex_size") != std::string::npos){
+					size = line.substr(12);
+					std::cerr<<__PRETTY_FUNCTION__<<" : set size "<<size<<std::endl;
+				}
+				if(line.find("#setfrench") != std::string::npos){
+					setfrench = "\\usepackage[T1]{fontenc}\\usepackage[utf8]{inputenc}";
+					std::cerr<<__PRETTY_FUNCTION__<<" : "<<setfrench<<std::endl;
+				}
+			}
+	}
 	std::string cmd(MY_BIN_GNUPLOT);
 	cmd = "(cd " + inpath + " && " + cmd;
-	cmd+= " -e \"set terminal epslatex color size "+size+" standalone lw 2 header \'\\\\usepackage{amsmath,amssymb,grffile}\'; set output \'" + outpath + outfile + ".tex\'\" ";
+	cmd+= " -e \"set terminal epslatex color size "+size+" standalone lw 2 header \'"+setfrench+"\\\\usepackage{amsmath,amssymb,grffile}\'; set output \'" + outpath + outfile + ".tex\'\" ";
 	cmd+= infile + ".gp )";
 	return cmd;
 }

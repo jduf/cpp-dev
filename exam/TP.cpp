@@ -188,7 +188,7 @@ void TP::summary(){
 	latex<<"\\usepackage[utf8]{inputenc}"<<IOFiles::endl;
 	latex<<"\\usepackage{amsmath}"<<IOFiles::endl;
 	latex<<"\\usepackage{siunitx}"<<IOFiles::endl;
-	latex<<"\\usepackage{graphics}"<<IOFiles::endl;
+	latex<<"\\usepackage{graphicx}"<<IOFiles::endl;
 	latex<<"\\usepackage[table]{xcolor}"<<IOFiles::endl;
 	latex<<"\\pagenumbering{gobble}"<<IOFiles::endl;
 	latex<<"\\begin{document}"<<IOFiles::endl;

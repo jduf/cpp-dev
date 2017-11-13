@@ -16,7 +16,7 @@ Examen::Examen(Parseur& P):
 
 	do {
 		{
-			command("vim "+ class_id_+"-list.txt",false);
+			command("vim " + class_id_ +"-list.txt",false);
 			std::fstream file(class_id_+"-list.txt",std::ios::in);
 			while(std::getline(file,tmps)){ tmp.push_back(tmps); }
 		}
@@ -192,11 +192,11 @@ std::string Examen::histogram(Vector<double> const& data, double const& min, dou
 	histogram += "set boxwidth 0.5 relative";
 	histogram += "set style fill transparent solid 0.5 noborder";
 	histogram.key("left");
-	histogram.tics("x",0.5);
+	histogram.tics("x",bin_width);
 	histogram.range("x",min-bin_width/2.0,max+bin_width/2.0);
 	histogram.tics("y",1);
 	histogram.range("y",0,ybin.max()+1);
-	histogram += "plot '"+fname+".dat' using 1:2 with boxes t '"+title+"'";
+	histogram += "plot '"+fname+".dat' using 1:2 with boxes t '"+title+" : Moyenne "+my::tostring(data.mean())+"'";
 	histogram.save_file();
 	histogram.create_image(true);
 
@@ -215,7 +215,7 @@ void Examen::summary(){
 	latex<<"\\usepackage[utf8]{inputenc}"<<IOFiles::endl;
 	latex<<"\\usepackage{amsmath}"<<IOFiles::endl;
 	latex<<"\\usepackage{siunitx}"<<IOFiles::endl;
-	latex<<"\\usepackage{graphics}"<<IOFiles::endl;
+	latex<<"\\usepackage{graphicx}"<<IOFiles::endl;
 	latex<<"\\usepackage[table]{xcolor}"<<IOFiles::endl;
 	latex<<"\\pagenumbering{gobble}"<<IOFiles::endl;
 	latex<<"\\begin{document}"<<IOFiles::endl;
@@ -258,7 +258,7 @@ void Examen::summary(){
 		Vector<double> tmp(grades_.size());
 		for(unsigned int i(0);i<tmp.size();i++){ tmp(i) = points_(i,j); }
 		latex<<"\\begin{center}"<<IOFiles::endl;
-		latex<<"\\includegraphics{"+histogram(tmp,0,max_points_(j),1,"Exo"+my::tostring(j+1))+"}"<<IOFiles::endl;
+		latex<<"\\includegraphics{"+histogram(tmp,0,max_points_(j),1,"Exo"+my::tostring(j+1))+"}"<<IOFiles::endl; 
 		latex<<"\\end{center}"<<IOFiles::endl;
 	}
 	latex<<"\\end{document}"<<IOFiles::endl;
