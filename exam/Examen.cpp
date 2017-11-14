@@ -1,10 +1,7 @@
 #include "Examen.hpp"
 
 Examen::Examen(Parseur& P):
-	class_id_(P.get<std::string>("class")),
-	title_(my::get_string("Titre")),
-	average_(0),
-	nfails_(0),
+	Note(P),
 	bonus_test_(0),
 	bonus_coef_(0)
 {
@@ -42,14 +39,7 @@ Examen::Examen(Parseur& P):
 }
 
 Examen::Examen(IOFiles& fexa):
-	class_id_(fexa.read<std::string>()),
-	title_(fexa.read<std::string>()),
-	class_list_(fexa.read<VectorOfStrings>()),
-	points_(fexa.read<Matrix<double> >()),
-	max_points_(fexa.read<Vector<double> >()),
-	grades_(fexa.read<Vector<double> >()),
-	average_(fexa.read<double>()),
-	nfails_(fexa.read<unsigned int>()),
+	Note(fexa),
 	bonus_test_(fexa.read<double>()),
 	bonus_coef_(fexa.read<double>()),
 	average_test_(fexa.read<double>()),
@@ -157,58 +147,24 @@ void Examen::edit(){
 }
 
 void Examen::save(){
-	IOFiles tmp("./exa/"+Time().date("-")+"-"+class_id_+".jdbin",true,false);
-	tmp.write("Classe",class_id_);
-	tmp.write("Titre",title_);
-	tmp<<class_list_<<points_<<max_points_<<grades_;
-	tmp.write("Moyenne",average_);
-	tmp.write("Échecs",nfails_);
-
-	tmp.write("Bonus points",bonus_test_);
-	tmp.write("Bonus coefficient",bonus_coef_);
-	tmp.write("Average (test)",average_test_);
-	tmp.write("Average (with bonus)",average_grades_with_bonus_);
-	tmp<<points_bonus_<<grades_test_<<grades_with_bonus_;
+	IOFiles w("./exa/"+Time().date("-")+"-"+class_id_+".jdbin",true,false);
+	save(w);
 }
 
-std::string Examen::histogram(Vector<double> const& data, double const& min, double const& max, double const& bin_width, std::string const& title){
-	unsigned int nbins(ceil((max-min)/bin_width+1));
-	Vector<double> xbin(nbins);
-	Vector<unsigned int> ybin(nbins,0);
-	for(unsigned int i(0);i<nbins;i++){ xbin(i) = min+i*bin_width; }
-
-	for(unsigned int i(0);i<data.size();i++){
-		for(unsigned int j(0);j<nbins;j++){
-			if(std::abs(data(i)-xbin(j))<=bin_width/2.0){ ybin(j)++; }
-		}
-	}
-
-	std::string fname("histogram-"+class_id_+"-"+title);
-	IOFiles fbins(fname+".dat",true,false);
-	for(unsigned int i(0);i<nbins;i++){
-		fbins<<xbin(i)<<" "<<ybin(i)<<IOFiles::endl;
-	}
-	Gnuplot histogram("./",fname);
-	histogram += "set boxwidth 0.5 relative";
-	histogram += "set style fill transparent solid 0.5 noborder";
-	histogram.key("left");
-	histogram.tics("x",bin_width);
-	histogram.range("x",min-bin_width/2.0,max+bin_width/2.0);
-	histogram.tics("y",1);
-	histogram.range("y",0,ybin.max()+1);
-	histogram += "plot '"+fname+".dat' using 1:2 with boxes t '"+title+" : Moyenne "+my::tostring(data.mean())+"'";
-	histogram.save_file();
-	histogram.create_image(true);
-
-	return fname;
+void Examen::save(IOFiles& w){
+	Note::save(w);
+	w.write("Bonus points",bonus_test_);
+	w.write("Bonus coefficient",bonus_coef_);
+	w.write("Average (test)",average_test_);
+	w.write("Average (with bonus)",average_grades_with_bonus_);
+	w<<points_bonus_<<grades_test_<<grades_with_bonus_;
 }
 
 void Examen::summary(){
 	analyse();
-	
+
 	IOFiles latex(class_id_+"-summary.tex",true,false);
 	latex<<"\\documentclass{article}"<<IOFiles::endl;
-	//latex<<"\\usepackage[a4paper,landscape,twocolumn,margin=1cm]{geometry}"<<IOFiles::endl;
 	latex<<"\\usepackage[a4paper,margin=1cm]{geometry}"<<IOFiles::endl;
 	latex<<"\\usepackage[frenchb]{babel}"<<IOFiles::endl;
 	latex<<"\\usepackage[T1]{fontenc}"<<IOFiles::endl;
@@ -265,9 +221,4 @@ void Examen::summary(){
 
 	Linux command;
 	command(Linux::pdflatex("./",class_id_+"-summary"),true);
-}
-
-void Examen::clean(){
-	Linux command;
-	command("rm histogram-* "+class_id_+"-summary.tex *.aux *.log",false);
 }

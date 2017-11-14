@@ -1,10 +1,7 @@
 #include "TP.hpp"
 
 TP::TP(Parseur& P):
-	class_id_(P.get<std::string>("class")),
-	title_(my::get_string("Titre")),
-	average_(0),
-	nfails_(0)
+	Note(P)
 {
 	Linux command;
 	std::string tmps;
@@ -53,14 +50,7 @@ TP::TP(Parseur& P):
 }
 
 TP::TP(IOFiles& ftp):
-	class_id_(ftp.read<std::string>()),
-	title_(ftp.read<std::string>()),
-	class_list_(ftp.read<VectorOfStrings>()),
-	points_(ftp.read<Matrix<double> >()),
-	max_points_(ftp.read<Vector<double> >()),
-	grades_(ftp.read<Vector<double> >()),
-	average_(ftp.read<double>()),
-	nfails_(ftp.read<unsigned int>()),
+	Note(ftp),
 	criteria_(ftp.read<VectorOfStrings>()),
 	comments_(ftp.read<ArrayOfStrings>())
 {}
@@ -73,11 +63,10 @@ void TP::analyse(){
 	for(unsigned int i(0);i<grades_.size();i++){
 		grades_(i) = 0;
 		for(unsigned int j(0);j<points_.col();j++){ grades_(i) += points_(i,j); }
-		grades_(i) = my::round_nearest(5.0*grades_(i)/total_points+1,2);
-
-		if(!my::are_equal(grades_(i),1)){
-			average_ += grades_(i);
+		if(grades_(i) != 0){
 			n_valid++;
+			grades_(i) = my::round_nearest(5.0*grades_(i)/total_points+1,2);
+			average_ += grades_(i);
 			if(grades_(i)<4){ nfails_++; }
 		}
 	}
@@ -93,20 +82,13 @@ void TP::display(){
 }
 
 void TP::save(){
-	IOFiles tmp("./tp/"+class_id_+"-TP-"+Time().date("-")+".jdbin",true,false);
-	tmp.write("Classe",class_id_);
-	tmp.write("Titre",title_);
-	tmp<<class_list_<<points_<<max_points_<<grades_;
-	tmp.write("Moyenne",average_);
-	tmp.write("Échecs",nfails_);
-
-	tmp<<criteria_<<comments_;
+	IOFiles w("./tp/"+class_id_+"-TP-"+Time().date("-")+".jdbin",true,false);
+	save(w);
 }
 
-unsigned int TP::pick_student(){
-	unsigned int s(my::get_number("Choisir l'étudiant :", (unsigned int)(0), class_list_.size()-1));
-	std::cout<<"Etudiant sélectionné : "<<class_list_(s)<<std::endl;
-	return s;
+void TP::save(IOFiles& w){
+	Note::save(w);
+	w<<criteria_<<comments_;
 }
 
 void TP::add(){
@@ -159,27 +141,9 @@ void TP::edit(unsigned int student){
 	command("rm " + ncriteria+" "+npoints+" "+ncomments,false);
 }
 
-void TP::histogram(){
-	Vector<double> bins(11,0);
-	for(unsigned int i(0);i<grades_.size();i++){
-		if(!my::are_equal(grades_(i),1)){ bins(grades_(i)*2-2)++; }
-	}
-
-	IOFiles ffrequencies("histogram-"+class_id_+".dat",true,false);
-	for(unsigned int i(0);i<bins.size();i++){
-		ffrequencies<<1.0+0.5*i<<" "<<bins(i)<<IOFiles::endl;
-	}
-	Gnuplot histogram("./","histogram-"+class_id_);
-	histogram += "set style data histogram";
-	histogram.tics("y",1);
-	histogram += "plot 'histogram-"+class_id_+".dat' using 2:xtic(1) t 'Notes'";
-	histogram.save_file();
-	histogram.create_image(true);
-}
-
 void TP::summary(){
 	analyse();
-	histogram();
+
 	IOFiles latex(class_id_+"-summary-TP.tex",true,false);
 	latex<<"\\documentclass{article}"<<IOFiles::endl;
 	latex<<"\\usepackage[a4paper,margin=1cm]{geometry}"<<IOFiles::endl;
@@ -201,7 +165,7 @@ void TP::summary(){
 	for(unsigned int i(0);i<class_list_.size();i++){
 		if(i%2){ latex<<"\\rowcolor{gray!30}"<<IOFiles::endl; }
 		latex<<class_list_(i)<<" &";
-		if(!my::are_equal(grades_(i),1)){
+		if(grades_(i)>0){
 			for(unsigned int j(0);j<points_.col();j++){ latex<<points_(i,j)<<" &"; }
 			latex<<grades_(i);
 		} else {
@@ -211,12 +175,11 @@ void TP::summary(){
 	}
 	latex<<"\\hline\\hline"<<IOFiles::endl;
 	latex<<"\\multicolumn{"<<points_.col()+1<<"}{r||}{Moyennes}&"<<my::round_nearest(average_,1000)<<IOFiles::endl;
-
 	latex<<"\\end{tabular}"<<IOFiles::endl;
 	latex<<"\\end{center}"<<IOFiles::endl;
 	latex<<"\\vfill"<<IOFiles::endl;
 	latex<<"\\begin{center}"<<IOFiles::endl;
-	latex<<"\\includegraphics{histogram-"+class_id_+"}"<<IOFiles::endl;
+	latex<<"\\includegraphics{"+ histogram(grades_,1,6,0.5,"Notes") +"}"<<IOFiles::endl;
 	latex<<"\\end{center}"<<IOFiles::endl;
 	latex<<"\\end{document}"<<IOFiles::endl;
 
@@ -255,10 +218,4 @@ void TP::feedback(){
 
 	Linux command;
 	command(Linux::pdflatex("./",class_id_+"-feedback-TP"),true);
-}
-
-void TP::clean(){
-	Linux command;
-	command("rm histogram-" +class_id_ + "* "+class_id_+"-summary-TP.tex "+class_id_+"-feedback-TP.tex",false);
-	command("rm *.aux *.log",true);
 }
