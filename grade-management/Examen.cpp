@@ -1,29 +1,15 @@
 #include "Examen.hpp"
 
-Examen::Examen(Parseur& P):
-	Note(P),
+Examen::Examen(unsigned int const& nstudents):
+	Note(nstudents),
 	bonus_test_(0),
-	bonus_coef_(0)
+	bonus_coef_(0),
+	points_bonus_(nstudents,0.0),
+	grades_test_(nstudents,0.0),
+	grades_with_bonus_(nstudents,0.0)
 {
 	Linux command;
-	std::string tmps;
-	std::vector<std::string> tmp;
-	unsigned int n;
 	unsigned int m;
-
-	do {
-		{
-			command("vim " + class_id_ +"-list.txt",false);
-			std::fstream file(class_id_+"-list.txt",std::ios::in);
-			while(std::getline(file,tmps)){ tmp.push_back(tmps); }
-		}
-		n = tmp.size();
-		class_list_.set(n);
-		for(unsigned int i(0);i<n;i++){ class_list_(i) = tmp[i]; }
-		tmp.clear();
-		std::cout<<class_list_<<std::endl;
-	} while ( !my::get_yn(my::tostring(class_list_.size())+" élèves enregistrés, est-ce correct?") );
-
 	do {
 		std::vector<std::string> mp(my::string_split(my::get_string("Point par exercice"),','));
 		m = mp.size();
@@ -32,10 +18,7 @@ Examen::Examen(Parseur& P):
 		std::cout<<max_points_.sum()<<" points au total réparti sur "<<m<<" exercices"<<std::endl;
 	} while ( !my::get_yn("Les points sont-ils corrects ?") );
 
-	points_.set(n,m,-1.0);
-	grades_.set(n,0.0);
-	grades_test_.set(n,0.0);
-	grades_with_bonus_.set(n,0.0);
+	points_.set(nstudents,m,-1.0);
 }
 
 Examen::Examen(IOFiles& fexa):
@@ -81,70 +64,65 @@ void Examen::analyse(){
 
 void Examen::display(VectorOfStrings const& class_list){
 	for(unsigned int i(0);i<class_list.size();i++){
-		std::cout<<class_list(i)<<" "<<points_bonus_(i)<<" ";
+		std::cout<<i<<". "<<class_list(i)<<" "<<points_bonus_(i)<<" ";
 		for(unsigned int j(0);j<points_.col();j++){ std::cout<<points_(i,j)<<" "; }
 		std::cout<<grades_test_(i)<<" "<<grades_with_bonus_(i)<<" "<<grades_(i)<<std::endl;
 	}
 	std::cout<<average_test_<<" "<<average_grades_with_bonus_<<" "<<average_<<std::endl;
 }
 
-void Examen::edit(){
-	std::string nclass(class_id_+".txt");
-	std::string npoints("points-"+class_id_+".txt");
-	std::string nbonus("bonus-"+class_id_+".txt");
-	std::string ndata("data-"+class_id_+".txt");
-	Linux command;
-	{
-		IOFiles fclass(nclass,true,false);
-		fclass<<class_list_;
+void Examen::edit(unsigned int const& student){
+	if(student>=grades_.size()){
+		std::string tmp;
 
-		IOFiles fpoints(npoints,true,false);
-		fpoints<<points_;
-
-		IOFiles fbonus(nbonus,true,false);
-		for(unsigned int i(0);i<points_bonus_.size();i++){ fbonus<<points_bonus_(i)<<IOFiles::endl; }
-
-		IOFiles fdata(ndata,true,false);
-		fdata<<"titre="<<title_<<IOFiles::endl;
-		fdata<<"max points="<<max_points_<<IOFiles::endl;
-		fdata<<"bonus coefficient="<<bonus_coef_<<IOFiles::endl;
-		fdata<<"bonus point="<<bonus_test_<<IOFiles::endl;
-
-	}
-	command("vim "+ ndata+" -c 'sp "+npoints+" |vsp "+nbonus+" |vsp "+nclass+"'",false);
-
-	{
-		IOFiles fdata(ndata,false,false);
-		std::string txt;
-		fdata>>txt;
-		std::vector<std::string> options(my::string_split(txt,'\n'));
-		for(auto& o:options){
-			std::vector<std::string> p(my::string_split(o,'='));
-			if(p.size()==2){
-				if(p[0] == "titre"){ title_ = p[1]; }
-				else if(p[0] == "bonus coefficient"){ bonus_coef_ = my::string2type<double>(p[1]); }
-				else if(p[0] == "bonus point"){ bonus_test_ = my::string2type<double>(p[1]); }
-				else if(p[0] == "max points"){
-					std::vector<std::string> q(my::string_split(p[1],' '));
-					max_points_.set(q.size());
-					for(unsigned int i(0);i<q.size();i++){
-						max_points_(i) = my::string2type<unsigned int>(q[i]);
-					}
-				} else { std::cerr<<__PRETTY_FUNCTION__<<" : option not found"<<std::endl; }
-			} else {
-				std::cerr<<__PRETTY_FUNCTION__<<" : the file is not correctly parsed"<<std::endl;
+		tmp = my::get_string("titre ("+title_+")");
+		if(tmp != ""){
+			title_ = tmp;
+			tmp = "";
+		}
+		tmp = my::get_string("bonus coefficient ("+my::tostring(bonus_coef_)+")");
+		if(tmp != ""){
+			bonus_coef_ = my::string2type<double>(tmp); 
+			tmp = "";
+		}
+		tmp = my::get_string("bonus point ("+my::tostring(bonus_test_)+")");
+		if(tmp != ""){
+			bonus_test_ = my::string2type<double>(tmp); 
+			tmp = "";
+		}
+		tmp = "max points (";
+		for(unsigned int i(0);i<max_points_.size()-1;i++){
+			tmp += my::tostring(max_points_(i))+",";
+		}
+		tmp += my::tostring(max_points_.back())+")";
+		tmp = my::get_string(tmp);
+		if(tmp != ""){
+			std::vector<std::string> q(my::string_split(tmp,' '));
+			max_points_.set(q.size());
+			for(unsigned int i(0);i<q.size();i++){
+				max_points_(i) = my::string2type<unsigned int>(q[i]);
 			}
+			tmp = "";
+		}
+	} else { 
+		do {
+		double tmp(my::get_number("point de bonus ("+my::tostring(points_bonus_(student))+")",0.0,1.0,false));
+		if( tmp >= 0.0 ){ points_bonus_(student) = tmp; }
+
+		for(unsigned int i(0);i<max_points_.size();i++){
+			tmp = my::get_number("Exo"+my::tostring(i+1)+" ("+my::tostring(points_(student,i))+")",0.0,max_points_(i),false);
+			if( tmp >= 0.0 ){ points_(student,i) = tmp; }
 		}
 
-		IOFiles fpoints(npoints,false,false);
-		points_.set(class_list_.size(),max_points_.size(),0);
-		fpoints>>points_;
-
-		IOFiles fbonus(nbonus,false,false);
-		points_bonus_.set(class_list_.size(),0);
-		fbonus>>points_bonus_;
+		std::cout<<std::endl;
+		std::cout<<"point de bonus : "<<points_bonus_(student) <<std::endl;
+		std::cout<<"points au test : ";
+		for(unsigned int i(0);i<max_points_.size();i++){
+			std::cout<<points_(student,i)<<" ";
+		}
+		} while (!my::get_yn("Est-ce que les points sont correctement entrés"));
+		std::cout<<std::endl;
 	}
-	command("rm " + ndata+" "+npoints+" "+nbonus+" "+nclass,false);
 }
 
 void Examen::save(IOFiles& w){
@@ -190,11 +168,11 @@ void Examen::summary(Latex& latex, std::string const& class_id, VectorOfStrings 
 	latex+="\\hline\\hline";
 	latex+="\\multicolumn{" + my::tostring(points_.col()+2) + "}{r||}{Moyennes}&" + my::tostring(my::round_nearest(average_test_,1000)) + " &" + my::tostring(my::round_nearest(average_grades_with_bonus_,1000)) + " &" + my::tostring(my::round_nearest(average_,1000));
 	latex.end("tabular");
-	latex.command("includegraphics[scale=0.7]{"+histogram(grades_,1,6,0.5,"Test")+"}\\\\");
+	latex.command("includegraphics[scale=0.7]{"+histogram(grades_,1,6,0.5,class_id,"Test")+"}\\\\");
 	for(unsigned int j(0);j<max_points_.size();j++){
 		Vector<double> tmp(grades_.size());
 		for(unsigned int i(0);i<tmp.size();i++){ tmp(i) = points_(i,j); }
-		latex.command("includegraphics[scale=0.5]{"+histogram(tmp,0,max_points_(j),1,"Exo"+my::tostring(j+1))+"}");
+		latex.command("includegraphics[scale=0.5]{"+histogram(tmp,0,max_points_(j),1,class_id,"Exo"+my::tostring(j+1))+"}");
 		if(!((j+1)%2)){ latex += "\\\\"; }
 	}
 	latex.end("center");

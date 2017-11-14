@@ -12,8 +12,13 @@ int main(int argc,char* argv[]){
 
 		IOFiles data(dir.last(),false,false);
 		Class c(data);
+		if(P.find("e")){ c.edit(); }
+		if(P.find("a")){ c.add(); }
 		c.summary();
 		c.clean();
+		c.save();
+	} else {
+		Class c;
 		c.save();
 	}
 }

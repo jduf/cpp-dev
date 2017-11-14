@@ -62,7 +62,7 @@ namespace my{
 	}
 
 	template<typename Type>
-		inline Type get_number(std::string const& msg, Type const& nmin, Type const& nmax){
+		inline Type get_number(std::string const& msg, Type const& nmin, Type const& nmax, bool const& keepon=true){
 			std::string token;
 			Type ntoken;
 			do{
@@ -72,7 +72,8 @@ namespace my{
 					ntoken = my::string2type<Type>(token);
 					if( ntoken >= nmin && ntoken <= nmax){ return ntoken; }
 				}
-			} while(true);
+			} while(keepon);
+			return nmin-1.0;
 		}
 
 	inline std::vector<std::string> &string_split(std::string const& s, char const& delim, std::vector<std::string>& elems){

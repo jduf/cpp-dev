@@ -6,16 +6,21 @@
 
 class TP: public Note{
 	public:
-		TP(Parseur& P);
+		TP(unsigned int const& nstudents);
 		TP(IOFiles& ftp);
-		TP() = delete;
 		virtual ~TP() = default;
+		/*{Forbidden*/
+		TP() = delete;
+		TP(TP const&) = delete;
+		TP(TP&&) = delete;
+		TP& operator=(TP);
+		/*}*/
 
 		void analyse();
 		void display(VectorOfStrings const& class_list);
 		void save(IOFiles& w);
-		void add();
-		void edit(unsigned int student=-1);
+		void add(unsigned int const& student);
+		void edit(unsigned int const& student);
 		void summary(Latex& latex, std::string const& class_id, VectorOfStrings const& class_list);
 		void feedback(std::string const& class_id, VectorOfStrings const& class_list);
 

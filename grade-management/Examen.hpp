@@ -5,15 +5,20 @@
 
 class Examen: public Note{
 	public:
-		Examen(Parseur& P);
+		Examen(unsigned int const& nstudents);
 		Examen(IOFiles& fexa);
-		Examen() = delete;
 		~Examen() = default;
+		/*{Forbidden*/
+		Examen() = delete;
+		Examen(Examen const&) = delete;
+		Examen(Examen&&) = delete;
+		Examen& operator=(Examen);
+		/*}*/
 
 		void analyse();
 		void display(VectorOfStrings const& class_list);
 		void save(IOFiles& w);
-		void edit();
+		void edit(unsigned int const& student);
 		void summary(Latex& latex, std::string const& class_id, VectorOfStrings const& class_list);
 
 	private:

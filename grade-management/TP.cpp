@@ -1,31 +1,16 @@
 #include "TP.hpp"
 
-TP::TP(Parseur& P):
-	Note(P)
+TP::TP(unsigned int const& nstudents):
+	Note(nstudents)
 {
 	Linux command;
-	std::string tmps;
 	std::vector<std::string> tmp;
-	unsigned int n;
+	std::string tmps;
 	unsigned int m;
-
 	do {
 		{
-			command("vim " + class_id_ +"-list.txt",false);
-			std::fstream file(class_id_+"-list.txt",std::ios::in);
-			while(std::getline(file,tmps)){ tmp.push_back(tmps); }
-		}
-		n = tmp.size();
-		class_list_.set(n);
-		for(unsigned int i(0);i<n;i++){ class_list_(i) = tmp[i]; }
-		tmp.clear();
-		std::cout<<class_list_<<std::endl;
-	} while ( !my::get_yn(my::tostring(class_list_.size())+" élèves enregistrés, est-ce correct?") );
-
-	do {
-		{
-			command("vim " + class_id_ +"-data.txt",false);
-			std::fstream file(class_id_+"-data.txt",std::ios::in);
+			command("vim " + title_ +"-max-points.txt",false);
+			std::fstream file(title_+"-max-points.txt",std::ios::in);
 			while(std::getline(file,tmps)){ tmp.push_back(tmps); }
 		}
 		m = tmp.size();
@@ -43,10 +28,8 @@ TP::TP(Parseur& P):
 		}
 		std::cout<<max_points_.sum()<<" points au total"<<std::endl;
 	} while ( !my::get_yn("Les critères sont-ils corrects ?") );
-
-	comments_.set(n,m,"");
-	points_.set(n,m,-1.0);
-	grades_.set(n,1.0);
+	comments_.set(nstudents,m,"");
+	points_.set(nstudents,m,-1.0);
 }
 
 TP::TP(IOFiles& ftp):
@@ -68,10 +51,7 @@ void TP::analyse(){
 			grades_(i) = my::round_nearest(5.0*grades_(i)/total_points+1,2);
 			if(grades_(i)<4){ nfails_++; }
 			average_ += grades_(i);
-		} else {
-			for(unsigned int j(0);j<points_.col();j++){ points_(i,j) = -1.0; }
-			grades_(i) = 0;
-		}
+		} else { grades_(i) = 0; }
 	}
 	average_ /= nvalid_;
 }
@@ -89,10 +69,7 @@ void TP::save(IOFiles& w){
 	w<<criteria_<<comments_;
 }
 
-void TP::add(){
-	//display();
-	unsigned int student(pick_student());
-
+void TP::add(unsigned int const& student){
 	for(unsigned int i(0);i<comments_.col();i++){
 		std::cout<<criteria_(i)<<" : ";
 		std::getline(std::cin,comments_(student,i));
@@ -101,12 +78,7 @@ void TP::add(){
 	edit(student);
 }
 
-void TP::edit(unsigned int student){
-	if(student > class_list_.size()){
-		//display();
-		student = pick_student();
-	}
-
+void TP::edit(unsigned int const& student){
 	std::string ncriteria("criteria.txt");
 	std::string npoints("points.txt");
 	std::string ncomments("comments.txt");
@@ -168,7 +140,7 @@ void TP::summary(Latex& latex, std::string const& class_id, VectorOfStrings cons
 	latex.end("center");
 	latex+="\\vfill";
 	latex.begin("center");
-	latex+="\\includegraphics{"+ histogram(grades_,1,6,0.5,"TP") +"}";
+	latex+="\\includegraphics{"+ histogram(grades_,1,6,0.5,class_id,"TP") +"}";
 	latex.end("center");
 }
 

@@ -1,31 +1,11 @@
 #include "Note.hpp"
 
-Note::Note(Parseur& P):
-	class_id_(P.get<std::string>("class")),
+Note::Note(unsigned int const& nstudents):
 	title_(my::get_string("Titre")),
+	grades_(nstudents,0.0),
 	average_(0),
 	nfails_(0)
-{
-	Linux command;
-	std::string tmps;
-	std::vector<std::string> tmp;
-	unsigned int n;
-
-	do {
-		{
-			command("vim " + class_id_ +"-list.txt",false);
-			std::fstream file(class_id_+"-list.txt",std::ios::in);
-			while(std::getline(file,tmps)){ tmp.push_back(tmps); }
-		}
-		n = tmp.size();
-		class_list_.set(n);
-		for(unsigned int i(0);i<n;i++){ class_list_(i) = tmp[i]; }
-		tmp.clear();
-		std::cout<<class_list_<<std::endl;
-	} while ( !my::get_yn(my::tostring(class_list_.size())+" élèves enregistrés, est-ce correct?") );
-
-	grades_.set(n,0.0);
-}
+{}
 
 Note::Note(IOFiles& ftp):
 	title_(ftp.read<std::string>()),
@@ -43,13 +23,7 @@ void Note::save(IOFiles& w){
 	w.write("Échecs",nfails_);
 }
 
-unsigned int Note::pick_student(){
-	unsigned int s(my::get_number("Choisir l'étudiant :", (unsigned int)(0), class_list_.size()-1));
-	std::cout<<"Etudiant sélectionné : "<<class_list_(s)<<std::endl;
-	return s;
-}
-
-std::string Note::histogram(Vector<double> const& data, double const& min, double const& max, double const& bin_width, std::string const& title){
+std::string Note::histogram(Vector<double> const& data, double const& min, double const& max, double const& bin_width, std::string const& class_id, std::string const& title){
 	unsigned int nbins(ceil((max-min)/bin_width+1));
 	Vector<double> xbin(nbins);
 	Vector<unsigned int> ybin(nbins,0);
@@ -67,7 +41,7 @@ std::string Note::histogram(Vector<double> const& data, double const& min, doubl
 	}
 	data_average /= nvalid_;
 
-	std::string fname("histogram-"+class_id_+"-"+title);
+	std::string fname("histogram-"+class_id+"-"+title);
 	IOFiles fbins(fname+".dat",true,false);
 	for(unsigned int i(0);i<nbins;i++){
 		fbins<<xbin(i)<<" "<<ybin(i)<<IOFiles::endl;
