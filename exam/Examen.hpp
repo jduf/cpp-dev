@@ -13,9 +13,8 @@ class Examen: public Note{
 		void analyse();
 		void display(VectorOfStrings const& class_list);
 		void save(IOFiles& w);
-		void save();
 		void edit();
-		void summary(std::string const& class_id, VectorOfStrings const& class_list);
+		void summary(Latex& latex, std::string const& class_id, VectorOfStrings const& class_list);
 
 	private:
 		double bonus_test_;

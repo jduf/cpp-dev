@@ -55,11 +55,17 @@ std::string Note::histogram(Vector<double> const& data, double const& min, doubl
 	Vector<unsigned int> ybin(nbins,0);
 	for(unsigned int i(0);i<nbins;i++){ xbin(i) = min+i*bin_width; }
 
+	double data_average(0);
 	for(unsigned int i(0);i<data.size();i++){
 		for(unsigned int j(0);j<nbins;j++){
-			if(std::abs(data(i)-xbin(j))<=bin_width/2.0){ ybin(j)++; }
+			if(std::abs(data(i)-xbin(j))<=bin_width/2.0){ 
+				ybin(j)++; 
+				data_average += data(i);
+				j=nbins;
+			}
 		}
 	}
+	data_average /= nvalid_;
 
 	std::string fname("histogram-"+class_id_+"-"+title);
 	IOFiles fbins(fname+".dat",true,false);
@@ -74,7 +80,7 @@ std::string Note::histogram(Vector<double> const& data, double const& min, doubl
 	histogram.range("x",min-bin_width/2.0,max+bin_width/2.0);
 	histogram.tics("y",1);
 	histogram.range("y",0,ybin.max()+1);
-	histogram += "plot '"+fname+".dat' using 1:2 with boxes t '"+title+" : Moyenne "+my::tostring(data.mean())+"'";
+	histogram += "plot '"+fname+".dat' using 1:2 with boxes t '"+title+" : Moyenne "+my::tostring(data_average)+"'";
 	histogram.save_file();
 	histogram.create_image(true);
 

@@ -45,7 +45,7 @@ TP::TP(Parseur& P):
 	} while ( !my::get_yn("Les critères sont-ils corrects ?") );
 
 	comments_.set(n,m,"");
-	points_.set(n,m,0.0);
+	points_.set(n,m,-1.0);
 	grades_.set(n,1.0);
 }
 
@@ -58,19 +58,22 @@ TP::TP(IOFiles& ftp):
 void TP::analyse(){
 	nfails_ = 0;
 	average_ = 0.0;
-	unsigned int n_valid(0);
+	nvalid_ = 0;
 	unsigned int total_points(max_points_.sum());
 	for(unsigned int i(0);i<grades_.size();i++){
 		grades_(i) = 0;
 		for(unsigned int j(0);j<points_.col();j++){ grades_(i) += points_(i,j); }
-		if(grades_(i) != 0){
-			n_valid++;
+		if(grades_(i) >= 0){
+			nvalid_++;
 			grades_(i) = my::round_nearest(5.0*grades_(i)/total_points+1,2);
-			average_ += grades_(i);
 			if(grades_(i)<4){ nfails_++; }
+			average_ += grades_(i);
+		} else {
+			for(unsigned int j(0);j<points_.col();j++){ points_(i,j) = -1.0; }
+			grades_(i) = 0;
 		}
 	}
-	average_ /= n_valid;
+	average_ /= nvalid_;
 }
 
 void TP::display(VectorOfStrings const& class_list){
@@ -79,11 +82,6 @@ void TP::display(VectorOfStrings const& class_list){
 		if(grades_(i)>0.0){ std::cout<<" -> "<<grades_(i); }
 		std::cout<<std::endl;
 	}
-}
-
-void TP::save(){
-	IOFiles w("./tp/"+class_id_+"-TP-"+Time().date("-")+".jdbin",true,false);
-	save(w);
 }
 
 void TP::save(IOFiles& w){
@@ -141,50 +139,37 @@ void TP::edit(unsigned int student){
 	command("rm " + ncriteria+" "+npoints+" "+ncomments,false);
 }
 
-void TP::summary(std::string const& class_id, VectorOfStrings const& class_list){
+void TP::summary(Latex& latex, std::string const& class_id, VectorOfStrings const& class_list){
 	analyse();
 
-	IOFiles latex(class_id+"-summary-TP.tex",true,false);
-	latex<<"\\documentclass{article}"<<IOFiles::endl;
-	latex<<"\\usepackage[a4paper,margin=1cm]{geometry}"<<IOFiles::endl;
-	latex<<"\\usepackage[frenchb]{babel}"<<IOFiles::endl;
-	latex<<"\\usepackage[T1]{fontenc}"<<IOFiles::endl;
-	latex<<"\\usepackage[utf8]{inputenc}"<<IOFiles::endl;
-	latex<<"\\usepackage{amsmath}"<<IOFiles::endl;
-	latex<<"\\usepackage{siunitx}"<<IOFiles::endl;
-	latex<<"\\usepackage{graphicx}"<<IOFiles::endl;
-	latex<<"\\usepackage[table]{xcolor}"<<IOFiles::endl;
-	latex<<"\\pagenumbering{gobble}"<<IOFiles::endl;
-	latex<<"\\begin{document}"<<IOFiles::endl;
-	latex<<"\\section*{"<<class_id<<": "<<title_<<"}"<<IOFiles::endl;
-	latex<<"\\begin{center}"<<IOFiles::endl;
-	latex<<"\\begin{tabular}{l|";
-	for(unsigned int i(0);i<points_.col();i++){ latex<<"|S[table-format=0.2]"; }
-	latex<<"||S[table-format=1.3]||}"<<IOFiles::endl;;
-	latex<<"Nom & \\multicolumn{"<<points_.col()<<"}{c||}{Points} & {Notes} \\\\\\hline\\hline"<<IOFiles::endl;;
-	for(unsigned int i(0);i<class_list.size();i++){
-		if(i%2){ latex<<"\\rowcolor{gray!30}"<<IOFiles::endl; }
-		latex<<class_list(i)<<" &";
-		if(grades_(i)>0){
-			for(unsigned int j(0);j<points_.col();j++){ latex<<points_(i,j)<<" &"; }
-			latex<<grades_(i);
-		} else {
-			for(unsigned int j(0);j<points_.col();j++){ latex<<" &"; }
-		}
-		latex<<"\\\\"<<IOFiles::endl;
-	}
-	latex<<"\\hline\\hline"<<IOFiles::endl;
-	latex<<"\\multicolumn{"<<points_.col()+1<<"}{r||}{Moyennes}&"<<my::round_nearest(average_,1000)<<IOFiles::endl;
-	latex<<"\\end{tabular}"<<IOFiles::endl;
-	latex<<"\\end{center}"<<IOFiles::endl;
-	latex<<"\\vfill"<<IOFiles::endl;
-	latex<<"\\begin{center}"<<IOFiles::endl;
-	latex<<"\\includegraphics{"+ histogram(grades_,1,6,0.5,"Notes") +"}"<<IOFiles::endl;
-	latex<<"\\end{center}"<<IOFiles::endl;
-	latex<<"\\end{document}"<<IOFiles::endl;
+	std::string tmp("{l||S[table-format=-1.1]|");
+	for(unsigned int i(0);i<points_.col();i++){ tmp += "|S[table-format=0.2]"; }
+	tmp +="||S[table-format=1.3]||}";;
 
-	Linux command;
-	command(Linux::pdflatex("./",class_id+"-summary-TP"),true);
+	latex.command("subsection*{" + class_id + ": " + title_ + "}");
+	latex.begin("center");
+	latex.begin("tabular",tmp);
+	latex+="Nom & \\multicolumn{" + my::tostring(points_.col()) + "}{c||}{Points} & {Notes} \\\\\\hline\\hline";
+	for(unsigned int i(0);i<class_list.size();i++){
+		tmp = "";
+		if(i%2){ latex += "\\rowcolor{gray!30}"; }
+		latex += my::tostring(class_list(i)) + " &";
+		if(grades_(i)>0){
+			for(unsigned int j(0);j<points_.col();j++){ tmp += my::tostring(points_(i,j)) + " &"; }
+			tmp += my::tostring(grades_(i));
+		} else {
+			for(unsigned int j(0);j<points_.col();j++){ tmp += " &"; }
+		}
+		latex+=tmp+"\\\\";
+	}
+	latex+="\\hline\\hline";
+	latex+="\\multicolumn{" + my::tostring(points_.col()+1) + "}{r||}{Moyennes}&" + my::tostring(my::round_nearest(average_,1000));
+	latex.end("tabular");
+	latex.end("center");
+	latex+="\\vfill";
+	latex.begin("center");
+	latex+="\\includegraphics{"+ histogram(grades_,1,6,0.5,"TP") +"}";
+	latex.end("center");
 }
 
 void TP::feedback(std::string const& class_id, VectorOfStrings const& class_list){

@@ -14,10 +14,9 @@ class TP: public Note{
 		void analyse();
 		void display(VectorOfStrings const& class_list);
 		void save(IOFiles& w);
-		void save();
 		void add();
 		void edit(unsigned int student=-1);
-		void summary(std::string const& class_id, VectorOfStrings const& class_list);
+		void summary(Latex& latex, std::string const& class_id, VectorOfStrings const& class_list);
 		void feedback(std::string const& class_id, VectorOfStrings const& class_list);
 
 	private:

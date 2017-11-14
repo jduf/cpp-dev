@@ -4,16 +4,22 @@
 #include "VectorOfStrings.hpp"
 #include "Gnuplot.hpp"
 #include "Parseur.hpp"
+#include "Latex.hpp"
 
 class Note{
 	public:
 		Note(Parseur& P);
 		Note(IOFiles& fexa);
-		Note() = delete;
 		virtual ~Note() = default;
+		/*{Forbidden*/
+		Note() = delete;
+		Note(Note const&) = delete;
+		Note(Note&&) = delete;
+		Note& operator=(Note&);
+		/*}*/
 
 		virtual void analyse() = 0;
-		virtual void summary(std::string const& class_id, VectorOfStrings const& class_list) = 0;
+		virtual void summary(Latex& latex, std::string const& class_id, VectorOfStrings const& class_list) = 0;
 		virtual void save(IOFiles& w);
 		std::string histogram(Vector<double> const& data, double const& min, double const& max, double const& bin_width, std::string const& title);
 
@@ -28,6 +34,7 @@ class Note{
 		Vector<double> grades_;
 		double average_;
 		unsigned int nfails_;
+		unsigned int nvalid_;
 
 		unsigned int pick_student();
 };

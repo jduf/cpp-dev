@@ -32,7 +32,7 @@ Examen::Examen(Parseur& P):
 		std::cout<<max_points_.sum()<<" points au total réparti sur "<<m<<" exercices"<<std::endl;
 	} while ( !my::get_yn("Les points sont-ils corrects ?") );
 
-	points_.set(n,m,0.0);
+	points_.set(n,m,-1.0);
 	grades_.set(n,0.0);
 	grades_test_.set(n,0.0);
 	grades_with_bonus_.set(n,0.0);
@@ -54,28 +54,29 @@ void Examen::analyse(){
 	average_test_ = 0.0;
 	average_grades_with_bonus_ = 0.0;
 	average_ = 0.0;
-	unsigned int n_valid(0);
+	nvalid_ = 0;
 	unsigned int total_points(max_points_.sum());
 	for(unsigned int i(0);i<grades_test_.size();i++){
 		grades_test_(i) = 0;
-		grades_with_bonus_(i) = 0;
-		grades_(i) = 0;
 		for(unsigned int j(0);j<points_.col();j++){ grades_test_(i) += points_(i,j); }
-		if(grades_test_(i) != 0){
-			n_valid++;
+		if(grades_test_(i) >= 0){
+			nvalid_++;
 			grades_test_(i) = std::min(5*grades_test_(i)/(total_points-bonus_test_)+1.0,6.0);
 			grades_with_bonus_(i) = std::min(grades_test_(i) + points_bonus_(i)*bonus_coef_,6.0);
 			grades_(i) = my::round_nearest(grades_with_bonus_(i),2);
 			if(grades_(i)<4){ nfails_++; }
-
 			average_test_ += grades_test_(i);
 			average_grades_with_bonus_ += grades_with_bonus_(i);
 			average_ += grades_(i);
+		} else {
+			for(unsigned int j(0);j<points_.col();j++){ points_(i,j) = -1.0; }
+			grades_with_bonus_(i) = 0;
+			grades_(i) = 0;
 		}
 	}
-	average_test_ /= n_valid;
-	average_grades_with_bonus_ /= n_valid;
-	average_ /= n_valid;
+	average_test_ /= nvalid_;
+	average_grades_with_bonus_ /= nvalid_;
+	average_ /= nvalid_;
 }
 
 void Examen::display(VectorOfStrings const& class_list){
@@ -146,11 +147,6 @@ void Examen::edit(){
 	command("rm " + ndata+" "+npoints+" "+nbonus+" "+nclass,false);
 }
 
-void Examen::save(){
-	IOFiles w("./exa/"+Time().date("-")+"-"+class_id_+".jdbin",true,false);
-	save(w);
-}
-
 void Examen::save(IOFiles& w){
 	Note::save(w);
 	w.write("Bonus points",bonus_test_);
@@ -160,65 +156,46 @@ void Examen::save(IOFiles& w){
 	w<<points_bonus_<<grades_test_<<grades_with_bonus_;
 }
 
-void Examen::summary(std::string const& class_id, VectorOfStrings const& class_list){
+void Examen::summary(Latex& latex, std::string const& class_id, VectorOfStrings const& class_list){
 	analyse();
 
-	IOFiles latex(class_id+"-summary.tex",true,false);
-	latex<<"\\documentclass{article}"<<IOFiles::endl;
-	latex<<"\\usepackage[a4paper,margin=1cm]{geometry}"<<IOFiles::endl;
-	latex<<"\\usepackage[frenchb]{babel}"<<IOFiles::endl;
-	latex<<"\\usepackage[T1]{fontenc}"<<IOFiles::endl;
-	latex<<"\\usepackage[utf8]{inputenc}"<<IOFiles::endl;
-	latex<<"\\usepackage{amsmath}"<<IOFiles::endl;
-	latex<<"\\usepackage{siunitx}"<<IOFiles::endl;
-	latex<<"\\usepackage{graphicx}"<<IOFiles::endl;
-	latex<<"\\usepackage[table]{xcolor}"<<IOFiles::endl;
-	latex<<"\\pagenumbering{gobble}"<<IOFiles::endl;
-	latex<<"\\begin{document}"<<IOFiles::endl;
-	latex<<"\\section*{"<<class_id<<": "<<title_<<"}"<<IOFiles::endl;
-	latex<<"\\begin{itemize}"<<IOFiles::endl;
-	latex<<"\\item Nombre total de points: "<<max_points_.sum()<<IOFiles::endl;
-	latex<<"\\item Points de bonus: "<<bonus_test_<<IOFiles::endl;
-	latex<<"\\item Coefficient bonus: "<<bonus_coef_<<IOFiles::endl;
-	latex<<"\\item Échecs: "<<nfails_<<IOFiles::endl;
-	latex<<"\\item Note non arrondie: $\\dfrac{5}{"<<max_points_.sum()<<"-"<<bonus_test_<<"}(\\text{points})+"<<bonus_coef_<<"(\\text{bonus})+1$"<<IOFiles::endl;
-	latex<<"\\end{itemize}"<<IOFiles::endl;
-	latex<<"\\vfill"<<IOFiles::endl;
-	latex<<"\\begin{center}"<<IOFiles::endl;
-	latex<<"\\begin{tabular}{l||S[table-format=-1.1]|";
-	for(unsigned int i(0);i<points_.col();i++){ latex<<"|S[table-format=-1.1]"; }
-	latex<<"||S[table-format=-1.3]|S[table-format=-1.3]|S[table-format=-1.3]||}"<<IOFiles::endl;;
-	latex<<"Nom & {Bonus} & \\multicolumn{"<<points_.col()<<"}{c||}{Points} & \\multicolumn{3}{c||}{Notes} \\\\\\hline\\hline"<<IOFiles::endl;;
+	std::string tmp("{l||S[table-format=-1.1]|");
+	for(unsigned int i(0);i<points_.col();i++){ tmp += "|S[table-format=-1.1]"; }
+	tmp += "||S[table-format=-1.3]|S[table-format=-1.3]|S[table-format=-1.3]||}";
+
+	latex.command("subsection*{"+class_id+": "+title_+"}");
+	//latex.begin("itemize");
+	//latex.item("Échecs: "+my::tostring(nfails_));
+	//latex.end("itemize");
+	//latex.command("vfill");
+	latex.begin("center");
+	latex.begin("tabular",tmp);
+	latex+="Nom & {Bonus} & \\multicolumn{" + my::tostring(points_.col()) + "}{c||}{Points} & \\multicolumn{3}{c||}{Notes}\\\\\\hline";
+	tmp = "& " + my::tostring(bonus_coef_) + " & ";
+	for(unsigned int i(0);i<max_points_.size();i++){ tmp += my::tostring(max_points_(i)) + " &"; }
+	latex+= tmp + "\\multicolumn{3}{c|}{$\\dfrac{5}{"+my::tostring(max_points_.sum())+"-"+my::tostring(bonus_test_)+"}(\\text{points})+"+my::tostring(bonus_coef_)+"(\\text{bonus})+1$} \\\\\\hline\\hline";
 	for(unsigned int i(0);i<class_list.size();i++){
-		if(i%2){ latex<<"\\rowcolor{gray!30}"<<IOFiles::endl; }
-		latex<<class_list(i)<<" &" << points_bonus_(i)<<" &";
-		if(grades_test_(i)>0){
-			for(unsigned int j(0);j<points_.col();j++){ latex<<points_(i,j)<<" &"; }
-			latex<<my::round_nearest(grades_test_(i),1000)<<" &";
-			latex<<my::round_nearest(grades_with_bonus_(i),1000)<<" &";
-			latex<<grades_(i);
+		if(i%2){ latex+="\\rowcolor{gray!30}"; }
+		tmp = class_list(i) + " &" + my::tostring(points_bonus_(i)) + " &";
+		if(grades_(i)>0){
+			for(unsigned int j(0);j<points_.col();j++){ tmp += my::tostring(points_(i,j)) + " &"; }
+			tmp += my::tostring(my::round_nearest(grades_test_(i),1000)) + " &";
+			tmp += my::tostring(my::round_nearest(grades_with_bonus_(i),1000)) + " &";
+			tmp += my::tostring(grades_(i));
 		} else {
-			for(unsigned int j(0);j<points_.col()+2;j++){ latex<<" &"; }
+			for(unsigned int j(0);j<points_.col()+2;j++){ tmp += " &"; }
 		}
-		latex<<"\\\\"<<IOFiles::endl;
+		latex+=tmp+"\\\\";
 	}
-	latex<<"\\hline\\hline"<<IOFiles::endl;
-	latex<<"\\multicolumn{"<<points_.col()+2<<"}{r||}{Moyennes}&"<<my::round_nearest(average_test_,1000)<<" &"<<my::round_nearest(average_grades_with_bonus_,1000)<<" &"<<my::round_nearest(average_,1000)<<IOFiles::endl;
-	latex<<"\\end{tabular}"<<IOFiles::endl;
-	latex<<"\\end{center}"<<IOFiles::endl;
-	latex<<"\\vfill"<<IOFiles::endl;
-	latex<<"\\begin{center}"<<IOFiles::endl;
-	latex<<"\\includegraphics{"+histogram(grades_,1,6,0.5,"Notes")+"}"<<IOFiles::endl;
-	latex<<"\\end{center}"<<IOFiles::endl;
+	latex+="\\hline\\hline";
+	latex+="\\multicolumn{" + my::tostring(points_.col()+2) + "}{r||}{Moyennes}&" + my::tostring(my::round_nearest(average_test_,1000)) + " &" + my::tostring(my::round_nearest(average_grades_with_bonus_,1000)) + " &" + my::tostring(my::round_nearest(average_,1000));
+	latex.end("tabular");
+	latex.command("includegraphics[scale=0.7]{"+histogram(grades_,1,6,0.5,"Test")+"}\\\\");
 	for(unsigned int j(0);j<max_points_.size();j++){
 		Vector<double> tmp(grades_.size());
 		for(unsigned int i(0);i<tmp.size();i++){ tmp(i) = points_(i,j); }
-		latex<<"\\begin{center}"<<IOFiles::endl;
-		latex<<"\\includegraphics{"+histogram(tmp,0,max_points_(j),1,"Exo"+my::tostring(j+1))+"}"<<IOFiles::endl; 
-		latex<<"\\end{center}"<<IOFiles::endl;
+		latex.command("includegraphics[scale=0.5]{"+histogram(tmp,0,max_points_(j),1,"Exo"+my::tostring(j+1))+"}");
+		if(!((j+1)%2)){ latex += "\\\\"; }
 	}
-	latex<<"\\end{document}"<<IOFiles::endl;
-
-	Linux command;
-	command(Linux::pdflatex("./",class_id+"-summary"),true);
+	latex.end("center");
 }
