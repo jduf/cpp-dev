@@ -78,9 +78,9 @@ void Examen::analyse(){
 	average_ /= n_valid;
 }
 
-void Examen::display(){
-	for(unsigned int i(0);i<class_list_.size();i++){
-		std::cout<<class_list_(i)<<" "<<points_bonus_(i)<<" ";
+void Examen::display(VectorOfStrings const& class_list){
+	for(unsigned int i(0);i<class_list.size();i++){
+		std::cout<<class_list(i)<<" "<<points_bonus_(i)<<" ";
 		for(unsigned int j(0);j<points_.col();j++){ std::cout<<points_(i,j)<<" "; }
 		std::cout<<grades_test_(i)<<" "<<grades_with_bonus_(i)<<" "<<grades_(i)<<std::endl;
 	}
@@ -160,10 +160,10 @@ void Examen::save(IOFiles& w){
 	w<<points_bonus_<<grades_test_<<grades_with_bonus_;
 }
 
-void Examen::summary(){
+void Examen::summary(std::string const& class_id, VectorOfStrings const& class_list){
 	analyse();
 
-	IOFiles latex(class_id_+"-summary.tex",true,false);
+	IOFiles latex(class_id+"-summary.tex",true,false);
 	latex<<"\\documentclass{article}"<<IOFiles::endl;
 	latex<<"\\usepackage[a4paper,margin=1cm]{geometry}"<<IOFiles::endl;
 	latex<<"\\usepackage[frenchb]{babel}"<<IOFiles::endl;
@@ -175,7 +175,7 @@ void Examen::summary(){
 	latex<<"\\usepackage[table]{xcolor}"<<IOFiles::endl;
 	latex<<"\\pagenumbering{gobble}"<<IOFiles::endl;
 	latex<<"\\begin{document}"<<IOFiles::endl;
-	latex<<"\\section*{"<<class_id_<<": "<<title_<<"}"<<IOFiles::endl;
+	latex<<"\\section*{"<<class_id<<": "<<title_<<"}"<<IOFiles::endl;
 	latex<<"\\begin{itemize}"<<IOFiles::endl;
 	latex<<"\\item Nombre total de points: "<<max_points_.sum()<<IOFiles::endl;
 	latex<<"\\item Points de bonus: "<<bonus_test_<<IOFiles::endl;
@@ -189,9 +189,9 @@ void Examen::summary(){
 	for(unsigned int i(0);i<points_.col();i++){ latex<<"|S[table-format=-1.1]"; }
 	latex<<"||S[table-format=-1.3]|S[table-format=-1.3]|S[table-format=-1.3]||}"<<IOFiles::endl;;
 	latex<<"Nom & {Bonus} & \\multicolumn{"<<points_.col()<<"}{c||}{Points} & \\multicolumn{3}{c||}{Notes} \\\\\\hline\\hline"<<IOFiles::endl;;
-	for(unsigned int i(0);i<class_list_.size();i++){
+	for(unsigned int i(0);i<class_list.size();i++){
 		if(i%2){ latex<<"\\rowcolor{gray!30}"<<IOFiles::endl; }
-		latex<<class_list_(i)<<" &" << points_bonus_(i)<<" &";
+		latex<<class_list(i)<<" &" << points_bonus_(i)<<" &";
 		if(grades_test_(i)>0){
 			for(unsigned int j(0);j<points_.col();j++){ latex<<points_(i,j)<<" &"; }
 			latex<<my::round_nearest(grades_test_(i),1000)<<" &";
@@ -220,5 +220,5 @@ void Examen::summary(){
 	latex<<"\\end{document}"<<IOFiles::endl;
 
 	Linux command;
-	command(Linux::pdflatex("./",class_id_+"-summary"),true);
+	command(Linux::pdflatex("./",class_id+"-summary"),true);
 }

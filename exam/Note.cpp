@@ -28,22 +28,17 @@ Note::Note(Parseur& P):
 }
 
 Note::Note(IOFiles& ftp):
-	class_id_(ftp.read<std::string>()),
 	title_(ftp.read<std::string>()),
-	class_list_(ftp.read<VectorOfStrings>()),
 	points_(ftp.read<Matrix<double> >()),
 	max_points_(ftp.read<Vector<double> >()),
 	grades_(ftp.read<Vector<double> >()),
 	average_(ftp.read<double>()),
 	nfails_(ftp.read<unsigned int>())
-{
-	std::cout<<title_<<std::endl;
-}
+{}
 
 void Note::save(IOFiles& w){
-	w.write("Classe",class_id_);
 	w.write("Titre",title_);
-	w<<class_list_<<points_<<max_points_<<grades_;
+	w<<points_<<max_points_<<grades_;
 	w.write("Moyenne",average_);
 	w.write("Échecs",nfails_);
 }
@@ -84,9 +79,4 @@ std::string Note::histogram(Vector<double> const& data, double const& min, doubl
 	histogram.create_image(true);
 
 	return fname;
-}
-
-void Note::clean(){
-	Linux command;
-	command("rm histogram-* "+class_id_+"-summary.tex *.aux *.log",false);
 }

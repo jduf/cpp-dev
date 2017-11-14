@@ -73,10 +73,10 @@ void TP::analyse(){
 	average_ /= n_valid;
 }
 
-void TP::display(){
-	for(unsigned int i(0);i<class_list_.size();i++){
-		std::cout<<i<<". "<<class_list_(i);
-		if(!my::are_equal(grades_(i),1.0)){ std::cout<<" -> "<<grades_(i); }
+void TP::display(VectorOfStrings const& class_list){
+	for(unsigned int i(0);i<class_list.size();i++){
+		std::cout<<i<<". "<<class_list(i);
+		if(grades_(i)>0.0){ std::cout<<" -> "<<grades_(i); }
 		std::cout<<std::endl;
 	}
 }
@@ -92,7 +92,7 @@ void TP::save(IOFiles& w){
 }
 
 void TP::add(){
-	display();
+	//display();
 	unsigned int student(pick_student());
 
 	for(unsigned int i(0);i<comments_.col();i++){
@@ -105,7 +105,7 @@ void TP::add(){
 
 void TP::edit(unsigned int student){
 	if(student > class_list_.size()){
-		display();
+		//display();
 		student = pick_student();
 	}
 
@@ -141,10 +141,10 @@ void TP::edit(unsigned int student){
 	command("rm " + ncriteria+" "+npoints+" "+ncomments,false);
 }
 
-void TP::summary(){
+void TP::summary(std::string const& class_id, VectorOfStrings const& class_list){
 	analyse();
 
-	IOFiles latex(class_id_+"-summary-TP.tex",true,false);
+	IOFiles latex(class_id+"-summary-TP.tex",true,false);
 	latex<<"\\documentclass{article}"<<IOFiles::endl;
 	latex<<"\\usepackage[a4paper,margin=1cm]{geometry}"<<IOFiles::endl;
 	latex<<"\\usepackage[frenchb]{babel}"<<IOFiles::endl;
@@ -156,15 +156,15 @@ void TP::summary(){
 	latex<<"\\usepackage[table]{xcolor}"<<IOFiles::endl;
 	latex<<"\\pagenumbering{gobble}"<<IOFiles::endl;
 	latex<<"\\begin{document}"<<IOFiles::endl;
-	latex<<"\\section*{"<<class_id_<<": "<<title_<<"}"<<IOFiles::endl;
+	latex<<"\\section*{"<<class_id<<": "<<title_<<"}"<<IOFiles::endl;
 	latex<<"\\begin{center}"<<IOFiles::endl;
 	latex<<"\\begin{tabular}{l|";
 	for(unsigned int i(0);i<points_.col();i++){ latex<<"|S[table-format=0.2]"; }
 	latex<<"||S[table-format=1.3]||}"<<IOFiles::endl;;
 	latex<<"Nom & \\multicolumn{"<<points_.col()<<"}{c||}{Points} & {Notes} \\\\\\hline\\hline"<<IOFiles::endl;;
-	for(unsigned int i(0);i<class_list_.size();i++){
+	for(unsigned int i(0);i<class_list.size();i++){
 		if(i%2){ latex<<"\\rowcolor{gray!30}"<<IOFiles::endl; }
-		latex<<class_list_(i)<<" &";
+		latex<<class_list(i)<<" &";
 		if(grades_(i)>0){
 			for(unsigned int j(0);j<points_.col();j++){ latex<<points_(i,j)<<" &"; }
 			latex<<grades_(i);
@@ -184,11 +184,11 @@ void TP::summary(){
 	latex<<"\\end{document}"<<IOFiles::endl;
 
 	Linux command;
-	command(Linux::pdflatex("./",class_id_+"-summary-TP"),true);
+	command(Linux::pdflatex("./",class_id+"-summary-TP"),true);
 }
 
-void TP::feedback(){
-	IOFiles latex(class_id_+"-feedback-TP.tex",true,false);
+void TP::feedback(std::string const& class_id, VectorOfStrings const& class_list){
+	IOFiles latex(class_id+"-feedback-TP.tex",true,false);
 	latex<<"\\documentclass{article}"<<IOFiles::endl;
 	latex<<"\\usepackage[a4paper,margin=1cm]{geometry}"<<IOFiles::endl;
 	latex<<"\\usepackage[frenchb]{babel}"<<IOFiles::endl;
@@ -198,11 +198,11 @@ void TP::feedback(){
 	latex<<"\\usepackage{siunitx}"<<IOFiles::endl;
 	latex<<"\\pagenumbering{gobble}"<<IOFiles::endl;
 	latex<<"\\begin{document}"<<IOFiles::endl;
-	for(unsigned int i(0);i<class_list_.size();i++){
+	for(unsigned int i(0);i<class_list.size();i++){
 		if(!my::are_equal(grades_(i),1)){
 			double total_points(0);
 			for(unsigned int j(0);j<comments_.col();j++){ total_points += points_(i,j); }
-			latex<<"\\section*{"<<class_list_(i)<<"}"<<IOFiles::endl;
+			latex<<"\\section*{"<<class_list(i)<<"}"<<IOFiles::endl;
 			latex<<"\\subsection*{"<<title_<<" $\\longrightarrow$ Note : "<<grades_(i)<<" ("<<total_points<<"/5)}"<<IOFiles::endl;
 			latex<<"\\begin{center}"<<IOFiles::endl;
 			latex<<"\\begin{tabular}{l|l|m{9cm}||}";
@@ -217,5 +217,5 @@ void TP::feedback(){
 	latex<<"\\end{document}"<<IOFiles::endl;
 
 	Linux command;
-	command(Linux::pdflatex("./",class_id_+"-feedback-TP"),true);
+	command(Linux::pdflatex("./",class_id+"-feedback-TP"),true);
 }

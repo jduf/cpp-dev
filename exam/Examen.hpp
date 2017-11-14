@@ -11,11 +11,11 @@ class Examen: public Note{
 		~Examen() = default;
 
 		void analyse();
-		void display();
+		void display(VectorOfStrings const& class_list);
 		void save(IOFiles& w);
 		void save();
 		void edit();
-		void summary();
+		void summary(std::string const& class_id, VectorOfStrings const& class_list);
 
 	private:
 		double bonus_test_;

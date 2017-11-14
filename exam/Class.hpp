@@ -16,6 +16,7 @@ class Class{
 
 		void save();
 		void summary();
+		void clean();
 
 	private:
 		std::string class_id_;

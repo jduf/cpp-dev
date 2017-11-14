@@ -85,7 +85,7 @@ IOFiles& IOFiles::operator>>(std::string& t){
 				t += tmp + "\n";
 			}
 		}
-	} else { std::cerr<<__PRETTY_FUNCTION__<<" : can't read from "<<filename_<<std::endl; }
+	} else { std::cerr<<__PRETTY_FUNCTION__<<" : can't read from "<<filename_<<" (open:"<<open_<<", write:"<<write_<<")"<<std::endl; }
 	return (*this);
 }
 

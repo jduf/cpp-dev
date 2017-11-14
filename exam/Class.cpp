@@ -5,6 +5,8 @@ Class::Class(IOFiles& r):
 	class_list_(r.read<VectorOfStrings>()),
 	nevals_(r.read<unsigned int>())
 {
+	std::cout<<class_id_<<std::endl;
+	std::cout<<class_list_<<std::endl;
 	for(unsigned int i(0);i<nevals_;i++){
 		switch(r.read<unsigned int>()){
 			case 1:{ evals_.push_back(Evaluation(1,new Examen(r))); }break;
@@ -40,11 +42,15 @@ void Class::init(std::string const& class_id, std::string const& exa, std::strin
 		evals_.push_back(Evaluation(2,new TP(ftp)));
 		class_list_ = evals_.back().second->get_class_list();
 	}
-
 }
 
 void Class::summary(){
 	for(auto const& e:evals_){
-		e.second->summary();
+		e.second->summary(class_id_, class_list_);
 	}
+}
+
+void Class::clean(){
+	Linux command;
+	command("rm histogram-* "+class_id_+"-summary-TP.tex "+class_id_+"-summary.tex *.aux *.log",false);
 }

@@ -5,7 +5,7 @@ int main(int argc,char* argv[]){
 	Parseur P(argc,argv);
 	if(P.find("n")){
 		TP tp(P);
-		tp.display();
+		//tp.display();
 		tp.save();
 	} else {
 	unsigned int i(0);
@@ -19,22 +19,22 @@ int main(int argc,char* argv[]){
 			if(P.find("a")){
 				tp.add();
 				tp.save();
-				tp.pdf();
-				tp.clean();
+				//tp.pdf();
+				//tp.clean();
 			}
 			if(P.find("e")){
 				tp.edit();
 				tp.save();
-				tp.pdf();
-				tp.clean();
+				//tp.pdf();
+				//tp.clean();
 			}
 			if(P.find("s")){
-				tp.display();
-				tp.pdf();
-				tp.clean();
+				//tp.display();
+				//tp.pdf();
+				//tp.clean();
 			}
 			if(P.find("d")){
-				tp.display();
+				//tp.display();
 			}
 		}
 	}

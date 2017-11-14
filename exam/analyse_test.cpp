@@ -6,9 +6,9 @@ int main(int argc,char* argv[]){
 	if(P.find("n")){
 		Examen exa(P);
 		exa.edit();
-		exa.summary();
+		//exa.summary();
 		exa.save();
-		exa.clean();
+		//exa.clean();
 	} else {
 		unsigned int i(0);
 		if(P.find("class",i,false)){
@@ -20,18 +20,18 @@ int main(int argc,char* argv[]){
 			Examen exa(fexa);
 			if(P.find("e")){
 				exa.edit();
-				exa.summary();
+				//exa.summary();
 				exa.save();
-				exa.clean();
+				//exa.clean();
 			}
 			if(P.find("s")){
 				exa.analyse();
-				exa.display();
-				exa.summary();
+				//exa.display();
+				//exa.summary();
 				//exa.clean();
 			}
 			if(P.find("d")){
-				exa.display();
+				//exa.display();
 			}
 		}
 	}

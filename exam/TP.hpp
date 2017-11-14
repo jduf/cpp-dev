@@ -12,17 +12,13 @@ class TP: public Note{
 		virtual ~TP() = default;
 
 		void analyse();
-		void display();
+		void display(VectorOfStrings const& class_list);
 		void save(IOFiles& w);
 		void save();
 		void add();
 		void edit(unsigned int student=-1);
-		void summary();
-		void feedback();
-		void pdf(){
-			summary();
-			feedback();
-		}
+		void summary(std::string const& class_id, VectorOfStrings const& class_list);
+		void feedback(std::string const& class_id, VectorOfStrings const& class_list);
 
 	private:
 		VectorOfStrings criteria_;

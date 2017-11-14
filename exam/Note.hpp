@@ -13,10 +13,9 @@ class Note{
 		virtual ~Note() = default;
 
 		virtual void analyse() = 0;
-		virtual void summary() = 0;
+		virtual void summary(std::string const& class_id, VectorOfStrings const& class_list) = 0;
 		virtual void save(IOFiles& w);
 		std::string histogram(Vector<double> const& data, double const& min, double const& max, double const& bin_width, std::string const& title);
-		void clean();
 
 		VectorOfStrings const& get_class_list() const { return class_list_; }
 
