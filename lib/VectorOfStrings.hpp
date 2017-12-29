@@ -1,7 +1,8 @@
 #ifndef DEF_VECTOROFSTRINGS
 #define DEF_VECTOROFSTRINGS
 
-#include "Vector.hpp"
+#include <cassert>
+#include "IOFiles.hpp"
 
 class VectorOfStrings{
 	public:
@@ -20,12 +21,20 @@ class VectorOfStrings{
 		/*!Delete the static array*/
 		virtual ~VectorOfStrings();
 
-		/*!Accesses the (i,j)th entry of the vector*/
+		/*!Accesses the (i)th entry of the vector*/
 		std::string const& operator()(unsigned int const& i) const
 		{ assert(i<size_); return vos_[i]; }
-		/*!Sets the (i,j)th entry of the vector*/
+		/*!Sets the (i)th entry of the vector*/
 		std::string& operator()(unsigned int const& i)
 		{ assert(i<size_); return vos_[i]; }
+
+		/*!Accesses the (i)th entry of the vector*/
+		std::string const& operator[](unsigned int const& i) const
+		{ assert(i<size_); return vos_[i]; }
+		/*!Sets the (i)th entry of the vector*/
+		std::string& operator[](unsigned int const& i)
+		{ assert(i<size_); return vos_[i]; }
+
 
 		/*!Assignment (using Copy-And-Swap Idiom)*/
 		VectorOfStrings& operator=(VectorOfStrings vos);

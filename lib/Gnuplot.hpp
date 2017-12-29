@@ -1,7 +1,7 @@
 #ifndef GNUPLOT
 #define GNUPLOT
 
-#include "IOFiles.hpp"
+#include "Vector.hpp"
 #include "Linux.hpp"
 
 class Gnuplot{
@@ -45,6 +45,8 @@ class Gnuplot{
 
 		void save_file();
 		void create_image(bool const& silent, std::string const& format="");
+
+		static std::string histogram(Vector<double> const& data, double const& min, double const& max, double const& bin_width, std::string const& id, std::string const& title);
 
 	private:
 		std::string path_;		//!< path of the .gp, .png and .pdf files

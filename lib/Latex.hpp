@@ -6,7 +6,7 @@
 
 class Latex{
 	public:
-		Latex(std::string const& path, std::string const& filename);
+		Latex(std::string const& path, std::string const& filename, std::string const& documentclass, std::string const& options="");
 		~Latex() = default;
 		/*{Forbidden*/
 		Latex() = delete;
@@ -15,7 +15,6 @@ class Latex{
 		Latex& operator=(Latex);
 		/*}*/
 
-		void documentclass(std::string const& s, std::string const& options="");
 		void package(std::string const& s, std::string const& options="");
 		void begin(std::string const& s, std::string const& options="");
 		void end(std::string const& s);

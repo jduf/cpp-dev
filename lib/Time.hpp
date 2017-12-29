@@ -20,7 +20,7 @@ class Time{
 		/*!Set to present time*/
 		void set(){
 			t0_ = std::chrono::steady_clock::now();
-			tt_ = std::chrono::system_clock::to_time_t ( std::chrono::system_clock::now() );
+			tt_ = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 			time_ = localtime(&tt_);
 		}
 
@@ -47,11 +47,10 @@ class Time{
 
 		/*!Returns true if time limit (in second) has been reached*/
 		bool limit_reached(time_t const& limit) const
-		{ return time(0)>limit+tt_; }
+		{ return time(NULL)>limit+tt_; }
 
 		/*!Returns the elapsed from the instantiation or last call of set*/
 		auto elapsed() const { return (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - t0_)).count(); }
-
 
 	private:
 		std::chrono::steady_clock::time_point t0_;

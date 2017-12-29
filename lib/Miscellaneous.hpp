@@ -85,8 +85,10 @@ namespace my{
 
 	inline std::vector<std::string> string_split(std::string const& s, char const& delim){
 		std::vector<std::string> elems;
-		string_split(s, delim, elems);
-		if(elems.back()==""){ elems.pop_back(); }
+		if(s != ""){
+			string_split(s, delim, elems);
+			if(elems.back()==""){ elems.pop_back(); }
+		}
 		return elems;
 	}
 
@@ -316,6 +318,18 @@ namespace my{
 	/*!returns string of length str.size() with spaces*/
 	inline std::string whitespace(std::string const& s){
 		return std::string(s.size(),' ');
+	}
+
+	/*!remove all given characher from string*/
+	inline std::string tr(std::string s, char const& c){
+		s.erase(std::remove(s.begin(), s.end(),c), s.end());
+		return s;
+	}
+
+	/*!replace all given characher from string by another*/
+	inline std::string replace_in_string(std::string s, char const& c0, char const& c1){
+		std::replace(s.begin(),s.end(),c0,c1);
+		return s;
 	}
 }
 

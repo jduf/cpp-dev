@@ -87,3 +87,41 @@ void Gnuplot::create_image(bool const& silent, std::string const& format){
 		} else { std::cerr<<__PRETTY_FUNCTION__<<" : Linux::pdflatex(\"/tmp/\",texfile) returned an error ("<<command.status()<<")"<<std::endl; }
 	} else { std::cerr<<__PRETTY_FUNCTION__<<" : Linux::gp2latex(\"/tmp/\"+texfile,filename_,texfile) returned an error ("<<command.status()<<")"<<std::endl; }
 }
+
+std::string Gnuplot::histogram(Vector<double> const& data, double const& min, double const& max, double const& bin_width, std::string const& id, std::string const& title){
+	unsigned int nbins(ceil((max-min)/bin_width+1));
+	Vector<double> xbin(nbins);
+	Vector<unsigned int> ybin(nbins,0);
+	for(unsigned int i(0);i<nbins;i++){ xbin(i) = min+i*bin_width; }
+
+	double data_average(0);
+	for(unsigned int i(0);i<data.size();i++){
+		for(unsigned int j(0);j<nbins;j++){
+			if(std::abs(data(i)-xbin(j))<=bin_width/2.0){ 
+				ybin(j)++; 
+				data_average += data(i);
+				j=nbins;
+			}
+		}
+	}
+	data_average /= ybin.sum();
+
+	std::string fname("histogram-"+id+"-"+my::tr(my::tr(title,' '),'.'));
+	IOFiles fbins(fname+".dat",true,false);
+	for(unsigned int i(0);i<nbins;i++){
+		fbins<<xbin(i)<<" "<<ybin(i)<<IOFiles::endl;
+	}
+	Gnuplot histogram("./",fname);
+	histogram += "set boxwidth 0.5 relative";
+	histogram += "set style fill transparent solid 0.5 noborder";
+	histogram.key("left");
+	histogram.tics("x",bin_width);
+	histogram.range("x",min-bin_width/2.0,max+bin_width/2.0);
+	histogram.tics("y",1);
+	histogram.range("y",0,ybin.max()+1);
+	histogram += "plot '"+fname+".dat' using 1:2 with boxes t '"+title+" : Moyenne "+my::tostring(data_average)+"'";
+	histogram.save_file();
+	histogram.create_image(true);
+
+	return fname;
+}

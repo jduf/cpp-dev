@@ -1,14 +1,11 @@
 #include "Latex.hpp"
 
-Latex::Latex(std::string const& path, std::string const& filename):
+Latex::Latex(std::string const& path, std::string const& filename, std::string const& documentclass, std::string const& options):
 	path_(my::ensure_trailing_slash(path)),
 	filename_(filename),
-	latex_("")
+	latex_("\\documentclass["+options+"]{"+documentclass+"}\n")
 {}
 
-void Latex::documentclass(std::string const& s, std::string const& options){
-	latex_ ="\\documentclass[" + options + "]{" + s + "}\n"; 
-}
 void Latex::package(std::string const& s, std::string const& options){
 	latex_+="\\usepackage[" + options + "]{" + s + "}\n"; 
 }
