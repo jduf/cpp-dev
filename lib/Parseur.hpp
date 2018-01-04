@@ -12,6 +12,12 @@ class Parseur: public Container {
 		 */
 		/*}*/
 		Parseur(unsigned int const& argc, char* argv[]);
+		/*{Description*/
+		/*!Constructor identical to Parseur(unsigned int const& argc, char* argv[]) but
+		 * takes a list of flags that do not expect an arguments
+		 */
+		/*}*/
+		Parseur(unsigned int const& argc, char* argv[], std::vector<std::string> const& flags);
 		/*!Destructor that warns when an argument has not been set*/
 		~Parseur();
 		/*{Forbidden*/

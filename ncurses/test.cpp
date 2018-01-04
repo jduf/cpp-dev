@@ -20,6 +20,12 @@
 	//if(choix<list.size()){ std::cout<<"mon choix est : "<<list[choix]<<std::endl; }
 //}
 
+struct Tracking{
+	std::vector<unsigned int> action;
+	std::vector<unsigned int> focus;
+	std::vector<unsigned int> select;
+};
+
 unsigned int nfw(4);
 
 void set_window_frame(WINDOW* win, std::string const& msg, bool const& highlight){
@@ -31,6 +37,7 @@ void set_window_frame(WINDOW* win, std::string const& msg, bool const& highlight
 		box(win,0,0);
 	}
 	mvwprintw(win,0,0,msg.c_str());
+	wnoutrefresh(win);
 }
 
 void display_help(WINDOW* win, unsigned int what){
@@ -39,43 +46,64 @@ void display_help(WINDOW* win, unsigned int what){
 		case 0:
 		case 1:
 		case 2:
-			mvwprintw(win, 0, 2, "Select : Type in what you want to selct");
-			mvwprintw(win, 1, 2, "      or Use the arrow keys to select");
-			mvwprintw(win, 2, 2, "Esc    : Exit");
-			break;
 		case 3:
-			mvwprintw(win, 0, 2, "Enter the points");
+		case 4:
+			mvwprintw(win, 1, 2, "Select : Type in what you want to selct");
+			mvwprintw(win, 2, 2, "      or Use the arrow keys to select");
+			mvwprintw(win, 3, 2, "Esc    : Exit");
+			break;
+		case 5:
+		case 6:
+			mvwprintw(win, 1, 2, "Enter the points");
+			mvwprintw(win, 2, 2, "Use tabulations to move");
+			mvwprintw(win, 3, 2, "Enter : exit and save changes");
+			mvwprintw(win, 4, 2, "Esc   : exit and discard changes");
 	}
 	wnoutrefresh(win);
 }
 
-bool select(std::vector<std::string> const& list, std::vector<unsigned int>& focus, std::vector<WINDOW*> winlist, std::vector<std::string> const& msglist, unsigned int& selected){
-	unsigned int ih(focus.back()==2?0:1);
-	unsigned int iw(focus.back()==2?10:0);
+void mvwprintwlist(WINDOW* win, unsigned int const& y, unsigned int const& x, unsigned int const& ih, unsigned int const& iw, std::vector<std::string> const& list){
+	for(unsigned int i(0); i<list.size();i++){ mvwprintw(win, y+i*ih, x+i*iw, list[i].c_str()); }
+	wnoutrefresh(win);
+}
 
-	WINDOW* win(winlist[focus.back()]);
-	std::string msg(msglist[focus.back()]);
+void mvwprintwlist(WINDOW* win, unsigned int const& y, unsigned int const& x, unsigned int const& ih, unsigned int const& iw, std::vector<unsigned int> const& list){
+	for(unsigned int i(0); i<list.size();i++){ mvwprintw(win, y+i*ih, x+i*iw, "%d",list[i]); }
+	wnoutrefresh(win);
+}
+
+bool select(std::vector<std::string> const& list, Tracking& track, std::vector<WINDOW*> winlist, std::vector<std::string> const& msglist, std::vector<unsigned int> geometry){
+	unsigned int ih(geometry[0]);
+	unsigned int iw(geometry[1]);
+	//unsigned int wh(geometry[2]);
+	//unsigned int ww(geometry[3]);
+	unsigned int fy(geometry[2]);
+	unsigned int fx(geometry[3]);
+	//unsigned int fw(5);
+
+	WINDOW* win(winlist[track.focus.back()]);
+	std::string msg(msglist[track.focus.back()]);
 
 	unsigned int nsel(list.size());
 	std::vector<unsigned int> sel(nsel);
 	for(unsigned int i(0); i<nsel;i++) { sel[i] = i; }
 
 	std::string cmp("");
-	unsigned int highlight(0);
+	unsigned int highlight(track.select.back());
 	unsigned int in(0);
 	bool keepon(true);
 	bool search(true);
 	while(keepon){
-		if(cmp == ""){ display_help(winlist[4],focus.back()); }
+		if(cmp == ""){ display_help(winlist[4],track.action.back()); }
 		wclear(win);
 		set_window_frame(win,msg,true);
 		for(unsigned int i(0); i<list.size();i++){
 			if(i == sel[highlight]){
-				wattron(win, A_REVERSE);
-				mvwprintw(win, 2+i*ih, 2+i*iw, list[i].c_str());
-				wattroff(win, A_REVERSE);
+				wattron(win, A_BOLD);
+				mvwprintw(win, fy+i*ih, fx+i*iw, list[i].c_str());
+				wattroff(win, A_BOLD);
 			} else {
-				mvwprintw(win, 2+i*ih, 2+i*iw, list[i].c_str());
+				mvwprintw(win, fy+i*ih, fx+i*iw, list[i].c_str());
 			}
 		}
 		wnoutrefresh(win);
@@ -85,28 +113,61 @@ bool select(std::vector<std::string> const& list, std::vector<unsigned int>& foc
 		in = wgetch(winlist[4]);
 		switch(in){
 			case 9: //TAB
-				switch(focus.back()){
-					case 1:
-						if(focus[1] == 2){ focus.pop_back(); }
-						else { focus.push_back(2); }
-						keepon = false;
-						break;
-					case 2:
-						if(focus[1] == 1){ focus.pop_back(); }
-						else { focus.push_back(1); }
-						keepon = false;
-						break;
+				if(track.action.back()<5){
+					set_window_frame(winlist[track.focus.back()],msglist[track.focus.back()],false);
+					switch(track.action.back()){
+						case 1:
+							track.action.push_back(2); 
+							track.focus.push_back(2);
+							keepon = false;
+							break;
+						case 3:
+							track.action.push_back(4); 
+							track.focus.push_back(1);
+							keepon = false;
+							break;
+						case 4:
+						case 2:
+							track.action.pop_back();
+							track.focus.pop_back();
+							keepon = false;
+							break;
+					}
+					track.select.back() = sel[highlight];
+					if(track.select.size()>=track.action.size()){ std::swap(track.select.back(),track.select.end()[-2]); } 
+					else { track.select.push_back(0); }
 				}
 				break;
 			case 10: //ENTER
-				switch(focus.back()){
+				set_window_frame(win,msg,false);
+				switch(track.action.back()){
 					case 0:
-						focus.push_back(1);
+						track.action.push_back(1);
+						track.focus.push_back(1);
 						break;
 					case 1:
-					case 2:
-						focus.push_back(3);
+						track.action.push_back(3);
+						track.focus.push_back(2);
 						break;
+					case 2:
+						track.action.push_back(7);
+						track.focus.push_back(2);
+						break;
+					case 3:
+						track.action.push_back(6);
+						track.focus.push_back(3);
+						break;
+					case 4:
+						track.action.push_back(5);
+						track.focus.push_back(3);
+						break;
+				}
+				if(track.select.size()>track.action.size()){
+					track.select.end()[-2] = track.select.back();
+					track.select.back() = sel[highlight];
+				} else {
+					track.select.back() = sel[highlight];
+					track.select.push_back(0);
 				}
 				keepon = false;
 				break;
@@ -128,7 +189,12 @@ bool select(std::vector<std::string> const& list, std::vector<unsigned int>& foc
 					cmp.pop_back();
 					search = true;
 				} else {
-					if(focus.size()){ focus.pop_back(); }
+					if(track.action.size()>1){
+						set_window_frame(winlist[track.focus.back()],msglist[track.focus.back()],false);
+						track.action.pop_back(); 
+						track.focus.pop_back();
+						track.select.pop_back();
+					}
 					keepon = false;
 				}
 				break;
@@ -156,59 +222,33 @@ bool select(std::vector<std::string> const& list, std::vector<unsigned int>& foc
 		}
 
 		wclear(winlist[4]);
-		mvwprintw(winlist[4], 0, 2, ( "Select : " + cmp ).c_str());
-		for(unsigned int i(0); i<sel.size();i++){
-			if(i==3){
-				mvwprintw(winlist[4], i+1, 17, "... (other choices)");
-				i=sel.size();
-			} else {
-				mvwprintw(winlist[4], i+1, 17, list[sel[i]].c_str());
+		if(sel.size()){
+			mvwprintw(winlist[4],1,2,("Select : " + cmp ).c_str());
+			for(unsigned int i(0); i<sel.size();i++){
+				if(i==3){
+					mvwprintw(winlist[4], i+2, 17, "... (other choices)");
+					i=sel.size();
+				} else {
+					mvwprintw(winlist[4], i+2, 17, list[sel[i]].c_str());
+				}
 			}
-		}
-		for(unsigned int i(0); i<focus.size();i++){
-			mvwprintw(winlist[4],2,i,"%d",focus[i]);
-		}
+		} else { mvwprintw(winlist[4],1,2, ("Select : "+cmp+" (No match found)").c_str() ); }
 		wnoutrefresh(winlist[4]);
 	}
-	selected = sel[highlight];
 
 	return true;
 }
 
-bool enter_points(unsigned int ss, Vector<double>& sp, std::vector<unsigned int>& focus, std::vector<WINDOW*> winlist, std::vector<std::string> const& msglist){
-	unsigned int ih(0);
-	unsigned int iw(0);
+bool fill_form(Vector<double>& sp, Tracking& track, std::vector<WINDOW*> winlist, std::vector<std::string> const& msglist, std::vector<unsigned int> geometry){
+	display_help(winlist[4], track.action.back()); 
+
+	unsigned int ih(geometry[0]);
+	unsigned int iw(geometry[1]);
+	unsigned int wh(geometry[2]);
+	unsigned int ww(geometry[3]);
+	unsigned int fy(geometry[4]);
+	unsigned int fx(geometry[5]);
 	unsigned int fw(5);
-	unsigned int fx(0);
-	unsigned int fy(0);
-
-	display_help(winlist[4], focus.back()); 
-	WINDOW* win(winlist[focus.back()]);
-	std::string msg(msglist[focus.back()]);
-
-	set_window_frame(win,msg,true);
-	curs_set(1);
-
-	WINDOW* win_form;
-	if(focus.size()==3){
-		iw = 2;
-		fx = 1;
-		fy = ss+2;
-		win_form = derwin(win, 1, sp.size()*fw*2, fy, fx);
-	} else {
-		ih = 1;
-		fx = 2*ss*fw+1;
-		fy = 2;
-		win_form = derwin(win, sp.size(), fw, fy, fx);
-	}
-
-	keypad(win_form,true);
-	for(unsigned int i(0); i<focus.size();i++){
-		mvwprintw(winlist[4],2,i,"%d",focus[i]);
-	}
-	mvwprintw(winlist[4],3,0,":%d-%d-%d-%d",ih,iw,sp.size(),ss);
-	wnoutrefresh(winlist[4]);
-	doupdate();
 
 	std::vector<FIELD*> fields(sp.size()+1);
 	for(unsigned int i(0);i<sp.size();i++){
@@ -221,6 +261,12 @@ bool enter_points(unsigned int ss, Vector<double>& sp, std::vector<unsigned int>
 	}
 	fields.back() = NULL;
 
+	std::string msg(msglist[track.focus.back()]);
+	WINDOW* win(winlist[track.focus.back()]);
+	set_window_frame(win,msg,true);
+	curs_set(1);
+
+	WINDOW* win_form(derwin(win,wh,ww,fy,fx));
 	FORM* form = new_form(&fields[0]);
 	set_form_win(form, win);
 	set_form_sub(form, win_form);
@@ -290,7 +336,9 @@ bool enter_points(unsigned int ss, Vector<double>& sp, std::vector<unsigned int>
 		mvwprintw(win, fy+i*ih, fx+i*iw*fw,"%5.2f",sp(i));
 	}
 
-	focus.pop_back();
+	set_window_frame(win,msg,false);
+	track.action.pop_back();
+	track.focus.pop_back();
 	return true;
 }
 
@@ -311,100 +359,141 @@ int main(){
 	students.push_back("Nathaniel Coupy");
 	students.push_back("Géraldine Ulrich");
 	students.push_back("Jacqueline Pirszel");
+	students.push_back("El Haidaoui-Brunet Jamila");
+	students.push_back("Vandermensbrugghe Julie");
 
 	std::vector<std::string> exa;
-	exa.push_back("Exa 1");
-	exa.push_back("Exa 2");
-	exa.push_back("TP 1");
+	exa.push_back("Test 23.11.2017");
+	exa.push_back("Test 1.1.2018");
+	exa.push_back("TP-01");
+	exa.push_back("TP-03");
 
-	Matrix<double> points(students.size(),3);
-	Vector<double> sp(3);
-	Rand<double> rnd(0,20);
-	for(unsigned int i(0);i<points.size();i++){
-		points.ptr()[i] = my::round_nearest(rnd(),100);
+	Rand<double> rndg(1,6);
+	Matrix<double> grades(students.size(),exa.size());
+	for(unsigned int i(0);i<grades.size();i++){
+		grades.ptr()[i] = my::round_nearest(rndg(),2);
 	}
 
-	std::vector<std::string> msglist = {"Classes","Student list","Exa","Note"};
+	std::vector<std::string> exo;
+	exo.push_back("Exo 1");
+	exo.push_back("Exo 2");
+	exo.push_back("Exo 3");
+	Rand<double> rndp(0,20);
+	Matrix<double> points(students.size(),exo.size());
+	for(unsigned int i(0);i<points.size();i++){
+		points.ptr()[i] = my::round_nearest(rndp(),100);
+	}
 
+	std::vector<std::string> msglist = {"Classes","Évaluations","Élèves","Note","Points"};
+
+	setlocale(LC_ALL,"");
 	initscr();
 	noecho();
 	curs_set(0);
 	start_color();
 	init_pair(1,COLOR_BLUE,COLOR_BLACK);
-	unsigned int cols1(20);
-	unsigned int cols2(60);
-	unsigned int rows1(5);
+	unsigned int cols1(15);
+	unsigned int cols2(45);
+	unsigned int rows1(6);
 	unsigned int rows2(30);
 
 	std::vector<WINDOW*> winlist;
-	winlist.push_back(newwin(rows1+rows2, cols1, 0,             0));
-	winlist.push_back(newwin(rows2,       cols2, rows1,         cols1+1));
-	winlist.push_back(newwin(rows1,       0,     0,             cols1+cols2+2));
-	winlist.push_back(newwin(rows2,       0,     rows1,         cols1+cols2+2));
-	winlist.push_back(newwin(rows1,       cols2, 0,             cols1+1));
+	winlist.push_back(newwin(rows1+rows2, cols1, 0,     0));
+	winlist.push_back(newwin(rows1,       0,     0,     cols1+cols2+2));
+	winlist.push_back(newwin(rows2,       cols2, rows1, cols1+1));
+	winlist.push_back(newwin(rows2,       0,     rows1, cols1+cols2+2));
+	winlist.push_back(newwin(rows1,       cols2, 0,     cols1+1));
+	winlist.push_back(newwin(7,0, rows1+rows2,0));
 
-	std::vector<unsigned int> focus(1,0);
-	for(unsigned int i(0);i<nfw;i++){ keypad(winlist[i],true); }
+	Tracking track;
+	track.action.push_back(0);
+	track.focus.push_back(0);
+	track.select.push_back(0);
+	for(unsigned int i(0);i<winlist.size();i++){ keypad(winlist[i],true); }
 
-	keypad(winlist[4],true);
+	Vector<double> sp;
 	bool keepon(true);
-	unsigned int selected(0);
+	unsigned int fw(5);
+	unsigned int iw(4);
+	unsigned int cs(iw*fw);
 	while(keepon){
-		switch(focus.back()){
-			case 0:
+		if(winlist.size()==6){
+			set_window_frame(winlist[5],"Debug",false);
+			mvwprintw(winlist[5],2,3,"Action:");
+			mvwprintw(winlist[5],3,3,"Focus:");
+			mvwprintw(winlist[5],4,3,"Select:");
+
+			mvwprintwlist(winlist[5],2,12,0,1,track.action);
+			mvwprintwlist(winlist[5],3,12,0,1,track.focus);
+			mvwprintwlist(winlist[5],4,12,0,1,track.select);
+			wnoutrefresh(winlist[5]);
+			wclear(winlist[5]);
+		}
+		switch(track.action.back()){
+			case 0://select class (->1)
 				for(unsigned int i(0);i<nfw;i++){
 					wclear(winlist[i]);
-					set_window_frame(winlist[i],msglist[i],i==focus.back());
-					wnoutrefresh(winlist[i]);
+					set_window_frame(winlist[i],msglist[i],i==track.action.back());
 				}
-				keepon = select(classes,focus,winlist,msglist,selected);
-				if(focus.back()){
-					for(unsigned int i(0);i<points.row();i++){
-						for(unsigned int j(0);j<points.col();j++){
-							mvwprintw(winlist[3],i+2, 1+j*10,"%5.2f",points(i,j));
+				keepon = select(classes,track,winlist,msglist,{1,0,2,2});
+				break;
+			case 1://select exa (->3) or switch to student (->2)
+				if(track.action.end()[-2]!=2){
+					for(unsigned int i(0);i<grades.row();i++){
+						for(unsigned int j(0);j<grades.col();j++){
+							mvwprintw(winlist[3],i+2,1+j*cs,"%5.2f",grades(i,j));
 						}
 					}
 					wnoutrefresh(winlist[3]);
-					set_window_frame(winlist[0],msglist[0],false);
-					wnoutrefresh(winlist[0]);
 				}
+				mvwprintwlist(winlist[2],2,2,1,0,students);
+				keepon = select(exa,track,winlist,msglist,{0,cs,2,2});
+				if(track.action.back()){ msglist[1] = exa[track.select.end()[-2]]; } 
+				else { msglist[1] = "Évaluation"; }
 				break;
-			case 1:
-				for(unsigned int i(0); i<exa.size();i++){
-					mvwprintw(winlist[2], 2, 2+i*10, exa[i].c_str());
-				}
-				wnoutrefresh(winlist[2]);
-
-				keepon = select(students,focus,winlist,msglist,selected);
-
+			case 2://select student (->7) or switch to exa (->1)
+				mvwprintwlist(winlist[1],2,2,0,cs,exa);
+				keepon = select(students,track,winlist,msglist,{1,0,2,2});
+				break;
+			case 3://select student (->6) or switch to exo (->4)
+				wclear(winlist[1]);
+				wclear(winlist[3]);
 				set_window_frame(winlist[1],msglist[1],false);
-				wnoutrefresh(winlist[1]);
-				break;
-			case 2:
-				for(unsigned int i(0); i<students.size();i++){
-					mvwprintw(winlist[1], 2+i, 2, students[i].c_str());
-				}
-				wnoutrefresh(winlist[1]);
-
-				keepon = select(exa,focus,winlist,msglist,selected);
-
-				set_window_frame(winlist[2],msglist[2],false);
-				wnoutrefresh(winlist[2]);
-				break;
-			case 3:
-				if(focus.size() == 3){
-					sp.set(points.col());
-					for(unsigned int i(0);i<sp.size();i++){ sp(i) = points(selected,i); }
-					keepon = enter_points(selected,sp,focus,winlist,msglist);
-					for(unsigned int i(0);i<sp.size();i++){ points(selected,i) = sp(i); }
-				} else if(focus.size() == 4){
-					sp.set(points.row());
-					for(unsigned int i(0);i<sp.size();i++){ sp(i) = points(i,selected); }
-					keepon = enter_points(selected,sp,focus,winlist,msglist);
-					for(unsigned int i(0);i<sp.size();i++){ points(i,selected) = sp(i); }
-				}
 				set_window_frame(winlist[3],msglist[3],false);
+				mvwprintwlist(winlist[1],2,2,0,cs,exo);
+				for(unsigned int i(0);i<points.row();i++){
+					for(unsigned int j(0);j<points.col();j++){
+						mvwprintw(winlist[3],i+2,1+j*cs,"%5.2f",points(i,j));
+					}
+				}
 				wnoutrefresh(winlist[3]);
+				wclear(winlist[1]);
+				keepon = select(students,track,winlist,msglist,{1,0,2,2});
+				break;
+			case 4://select exo (->5) or switch to student (->3)
+				mvwprintwlist(winlist[2],2,2,1,0,students);
+				keepon = select(exo,track,winlist,msglist,{0,cs,2,2});
+				break;
+			case 5:// enter points for exo then -> 4
+				track.select.pop_back();
+				sp.set(points.row());
+				for(unsigned int i(0);i<sp.size();i++){ sp(i) = points(i,track.select.back()); }
+				keepon = fill_form(sp,track,winlist,msglist,{1,0,sp.size(),fw,2,cs*track.select.back()+1});
+				for(unsigned int i(0);i<sp.size();i++){ points(i,track.select.back()) = sp(i); }
+				break;
+			case 6://enter points for student then -> 3
+				track.select.pop_back();
+				sp.set(points.col());
+				for(unsigned int i(0);i<sp.size();i++){ sp(i) = points(track.select.back(),i); }
+				keepon = fill_form(sp,track,winlist,msglist,{0,iw,1,cs*sp.size(),track.select.back()+2,1});
+				for(unsigned int i(0);i<sp.size();i++){ points(track.select.back(),i) = sp(i); }
+				break;
+			case 7:// print summary
+				mvwprintw(winlist[5],3,0,("should print "+students[track.select.back()]+" summary").c_str());
+				track.action.pop_back();
+				track.focus.pop_back();
+				track.select.pop_back();
+				keepon = true;
 				break;
 		}
 	}
