@@ -1,8 +1,8 @@
 EXEC=test
-#EXEC=test2
+EXEC=test2
 
 test_SRCS=test.cpp Header.cpp IOFiles.cpp RST.cpp
-test2_SRCS=test2.cpp
+test2_SRCS=test2.cpp Header.cpp IOFiles.cpp RST.cpp NCInterface.cpp
 
 JDLIB = ../lib
 BUILD = build
@@ -10,14 +10,14 @@ BUILD = build
 
 CXX = g++ -std=c++14
 
-OPTION = -fopenmp -lncurses -lform
+OPTION = -fopenmp
 ERRORS = -Wall -Wextra -pedantic
 
 VPATH = $(JDLIB) .
 MYLIB = $(addprefix -I,$(VPATH))
 
 CXXFLAGS = $(MYLIB) $(ERRORS) $(OPTION)
-LDFLAGS  = $(MYLIB) $(ERRORS) $(OPTION)
+LDFLAGS  = $(MYLIB) $(ERRORS) $(OPTION) -lncursesw -lformw
 
 all: OPTION += -O3 -DNDEBUG
 all:$(EXEC)

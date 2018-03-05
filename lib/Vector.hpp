@@ -119,16 +119,17 @@ class Vector{
 		void swap(unsigned int i, unsigned int j);
 
 		/*!Returns the size of the Vector*/
-		unsigned int size() const { return size_; }
+		unsigned int const& size() const { return size_; }
 		/*!Returns the pointer to the Vector*/
 		Type* ptr() const { return vec_; }
 
 		std::string header_def() const { return "Vector("+my::tostring(size_)+")"; }
 
-	private:
+	protected:
 		unsigned int size_ = 0; //!< number of rows
 		Type* vec_ = NULL;		//!< pointer to a static array
 
+	private:
 		/*!Copy-And-Swap Idiom*/
 		void swap_to_assign(Vector<Type>& v1,Vector<Type>& v2);
 };
@@ -418,7 +419,7 @@ template<typename Type>
 Type Vector<Type>::variance() const {
 	double m(mean());
 	double v(0.0);
-	for(unsigned int i(0);i<size_;i++){ v+=(vec_[i]-m)*(vec_[i]-m); }
+	for(unsigned int i(0);i<size_;i++){ v+=my::square(vec_[i]-m); }
 	return v/size_;
 }
 

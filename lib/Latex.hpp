@@ -7,11 +7,11 @@
 class Latex{
 	public:
 		Latex(std::string const& path, std::string const& filename, std::string const& documentclass, std::string const& options="");
+		Latex(Latex&&) = default;
 		~Latex() = default;
 		/*{Forbidden*/
 		Latex() = delete;
 		Latex(Latex const&) = delete;
-		Latex(Latex&&) = delete;
 		Latex& operator=(Latex);
 		/*}*/
 

@@ -1,8 +1,9 @@
 #include "Vector.hpp"
-#include "Rand.hpp"
 #include <ncurses.h>
 #include <form.h>
 #include <regex>
+
+#include "Rand.hpp"
 
 //int main(){
 	//std::vector<std::string> list;
@@ -72,7 +73,7 @@ void mvwprintwlist(WINDOW* win, unsigned int const& y, unsigned int const& x, un
 	wnoutrefresh(win);
 }
 
-bool select(std::vector<std::string> const& list, Tracking& track, std::vector<WINDOW*> winlist, std::vector<std::string> const& msglist, std::vector<unsigned int> geometry){
+bool select(std::vector<std::string> const& list, Tracking& track, std::vector<WINDOW*> winlist, std::vector<std::string> const& msglist, unsigned int const geometry[]){
 	unsigned int ih(geometry[0]);
 	unsigned int iw(geometry[1]);
 	//unsigned int wh(geometry[2]);
@@ -239,7 +240,7 @@ bool select(std::vector<std::string> const& list, Tracking& track, std::vector<W
 	return true;
 }
 
-bool fill_form(Vector<double>& sp, Tracking& track, std::vector<WINDOW*> winlist, std::vector<std::string> const& msglist, std::vector<unsigned int> geometry){
+bool fill_form(Vector<double>& sp, Tracking& track, std::vector<WINDOW*> winlist, std::vector<std::string> const& msglist, unsigned int const geometry[]){
 	display_help(winlist[4], track.action.back()); 
 
 	unsigned int ih(geometry[0]);
@@ -398,12 +399,12 @@ int main(){
 	unsigned int rows2(30);
 
 	std::vector<WINDOW*> winlist;
-	winlist.push_back(newwin(rows1+rows2, cols1, 0,     0));
-	winlist.push_back(newwin(rows1,       0,     0,     cols1+cols2+2));
-	winlist.push_back(newwin(rows2,       cols2, rows1, cols1+1));
-	winlist.push_back(newwin(rows2,       0,     rows1, cols1+cols2+2));
-	winlist.push_back(newwin(rows1,       cols2, 0,     cols1+1));
-	winlist.push_back(newwin(7,0, rows1+rows2,0));
+	winlist.push_back(newwin(rows1+rows2, cols1, 0,     0));//classes
+	winlist.push_back(newwin(rows1,       0,     0,     cols1+cols2+2));//exa/exo
+	winlist.push_back(newwin(rows2,       cols2, rows1, cols1+1));//students
+	winlist.push_back(newwin(rows2,       0,     rows1, cols1+cols2+2));//grades/points
+	winlist.push_back(newwin(rows1,       cols2, 0,     cols1+1));//entry
+	winlist.push_back(newwin(7,0, rows1+rows2,0));//debug
 
 	Tracking track;
 	track.action.push_back(0);
@@ -416,6 +417,11 @@ int main(){
 	unsigned int fw(5);
 	unsigned int iw(4);
 	unsigned int cs(iw*fw);
+	unsigned int const select_vertical_display[] = {1,0,2,2};
+	unsigned int const select_horizontal_display[] = {0,cs,2,2};
+	unsigned int fill_lign_display[] = {0,iw,1,0,0,1};
+	unsigned int fill_column_display[] = {1,0,0,fw,2,0};
+
 	while(keepon){
 		if(winlist.size()==6){
 			set_window_frame(winlist[5],"Debug",false);
@@ -435,7 +441,7 @@ int main(){
 					wclear(winlist[i]);
 					set_window_frame(winlist[i],msglist[i],i==track.action.back());
 				}
-				keepon = select(classes,track,winlist,msglist,{1,0,2,2});
+				keepon = select(classes,track,winlist,msglist,select_vertical_display);
 				break;
 			case 1://select exa (->3) or switch to student (->2)
 				if(track.action.end()[-2]!=2){
@@ -447,13 +453,13 @@ int main(){
 					wnoutrefresh(winlist[3]);
 				}
 				mvwprintwlist(winlist[2],2,2,1,0,students);
-				keepon = select(exa,track,winlist,msglist,{0,cs,2,2});
+				keepon = select(exa,track,winlist,msglist,select_horizontal_display);
 				if(track.action.back()){ msglist[1] = exa[track.select.end()[-2]]; } 
 				else { msglist[1] = "Évaluation"; }
 				break;
 			case 2://select student (->7) or switch to exa (->1)
 				mvwprintwlist(winlist[1],2,2,0,cs,exa);
-				keepon = select(students,track,winlist,msglist,{1,0,2,2});
+				keepon = select(students,track,winlist,msglist,select_vertical_display);
 				break;
 			case 3://select student (->6) or switch to exo (->4)
 				wclear(winlist[1]);
@@ -468,24 +474,28 @@ int main(){
 				}
 				wnoutrefresh(winlist[3]);
 				wclear(winlist[1]);
-				keepon = select(students,track,winlist,msglist,{1,0,2,2});
+				keepon = select(students,track,winlist,msglist,select_vertical_display);
 				break;
 			case 4://select exo (->5) or switch to student (->3)
 				mvwprintwlist(winlist[2],2,2,1,0,students);
-				keepon = select(exo,track,winlist,msglist,{0,cs,2,2});
+				keepon = select(exo,track,winlist,msglist,select_horizontal_display);
 				break;
 			case 5:// enter points for exo then -> 4
 				track.select.pop_back();
 				sp.set(points.row());
 				for(unsigned int i(0);i<sp.size();i++){ sp(i) = points(i,track.select.back()); }
-				keepon = fill_form(sp,track,winlist,msglist,{1,0,sp.size(),fw,2,cs*track.select.back()+1});
+				fill_column_display[2] = sp.size();
+				fill_column_display[5] = cs*track.select.back()+1;
+				keepon = fill_form(sp,track,winlist,msglist,fill_column_display);
 				for(unsigned int i(0);i<sp.size();i++){ points(i,track.select.back()) = sp(i); }
 				break;
 			case 6://enter points for student then -> 3
 				track.select.pop_back();
 				sp.set(points.col());
 				for(unsigned int i(0);i<sp.size();i++){ sp(i) = points(track.select.back(),i); }
-				keepon = fill_form(sp,track,winlist,msglist,{0,iw,1,cs*sp.size(),track.select.back()+2,1});
+				fill_lign_display[3] = cs*sp.size();
+				fill_lign_display[4] = track.select.back()+2;
+				keepon = fill_form(sp,track,winlist,msglist,fill_lign_display);
 				for(unsigned int i(0);i<sp.size();i++){ points(track.select.back(),i) = sp(i); }
 				break;
 			case 7:// print summary

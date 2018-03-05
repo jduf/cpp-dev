@@ -30,14 +30,16 @@ int main(int argc,char* argv[]){
 					if(argc==3){
 						if(option=="png"){ command(Linux::pdf2png(path + filename, path + filename),silent); }
 						else if(option=="jpg"){ command(Linux::pdf2png(path + filename, path + filename),silent); }
-						else { std::cerr<<__PRETTY_FUNCTION__<<" : unknown option (only possible is 'png' or 'jpg')"<<std::endl; }
+						else if(option!="debug"){ std::cerr<<__PRETTY_FUNCTION__<<" : unknown option (only possible options are 'png', 'jpg' or debug)"<<std::endl; }
 					}
 				} else { std::cerr<<__PRETTY_FUNCTION__<<" : can't compile latex file"<<std::endl; }
 			} else { std::cerr<<__PRETTY_FUNCTION__<<" : the .gp script contains mistakes"<<std::endl; }
 		} else { std::cerr<<__PRETTY_FUNCTION__<<" : the filename must have a '"<<ext<<"' extension"<<std::endl; }
 	} else { 
-		std::cerr<<argv[0]<<" : gnuplot2image [file.gp] [optional argument]"<<std::endl; 
+		std::cerr<<argv[0]<<" : gnuplot2image file.gp [optional argument]"<<std::endl; 
 		std::cerr<<std::string(std::string(argv[0]).size(),' ')<<" : the mandatory argument 'file.gp' is a Gnuplot script"<<std::endl;
-		std::cerr<<std::string(std::string(argv[0]).size(),' ')<<" : the optional argument 'png' or 'jpg' will generate a 'png' or 'jpg' image in addition to the default 'pdf' one"<<std::endl; 
+		std::cerr<<std::string(std::string(argv[0]).size(),' ')<<" : the optional argument can be 'png', 'jpg' OR 'debug'"<<std::endl; 
+		std::cerr<<std::string(std::string(argv[0]).size(),' ')<<" : if the optional argument is 'png' or 'jpg', a 'png' or 'jpg' image will be generated in addition to the default 'pdf' one"<<std::endl; 
+		std::cerr<<std::string(std::string(argv[0]).size(),' ')<<" : if the optional argument is 'debug', the compilation log will be displayed"<<std::endl; 
 	}
 }

@@ -154,6 +154,12 @@ namespace my{
 	inline double imag(std::complex<double> const& x){ return std::imag(x); }
 	/*}*/
 
+	/*double square(T)*/
+	/*{*/
+	template<typename Type>
+		inline Type square(Type const& x){ return x*x; }
+	/*}*/
+
 	/*double norm_squared(T)*/
 	/*{*/
 	inline double norm_squared(double const& x){ return x*x; }
@@ -330,6 +336,13 @@ namespace my{
 	inline std::string replace_in_string(std::string s, char const& c0, char const& c1){
 		std::replace(s.begin(),s.end(),c0,c1);
 		return s;
+	}
+
+	/*!trim leading and/or trailing space*/
+	inline std::string trim(std::string const& s, std::string const& whitespace = " \t"){
+		auto const s_begin(s.find_first_not_of(whitespace));
+		if (s_begin == std::string::npos){ return ""; }
+		return s.substr(s_begin, s.find_last_not_of(whitespace) - s_begin + 1);
 	}
 }
 
