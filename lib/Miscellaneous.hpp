@@ -326,7 +326,7 @@ namespace my{
 		return std::string(s.size(),' ');
 	}
 
-	/*!remove all given characher from string*/
+	/*!remove all given character from string*/
 	inline std::string tr(std::string s, char const& c){
 		s.erase(std::remove(s.begin(), s.end(),c), s.end());
 		return s;
@@ -343,6 +343,21 @@ namespace my{
 		auto const s_begin(s.find_first_not_of(whitespace));
 		if (s_begin == std::string::npos){ return ""; }
 		return s.substr(s_begin, s.find_last_not_of(whitespace) - s_begin + 1);
+	}
+
+	/*!Repeat input string n times*/
+	inline std::string repeat_string(std::size_t n, std::string const& str){
+		if(n==0){ return {}; }
+		if(n==1||str.empty()){ return str; }
+		if(str.size() == 1){ return std::string(n,str[0]); }
+
+		std::string result(str);
+		result.reserve(str.size()*n);
+		std::size_t m(2);
+		for(; m <= n; m *= 2){ result += result; }
+		n -= m/2;
+
+		return result.append(result.c_str(),n*str.size());
 	}
 }
 

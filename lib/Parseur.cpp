@@ -187,6 +187,7 @@ Parseur::~Parseur(){
 }
 
 bool Parseur::find(std::string const& pattern, unsigned int& i, bool const& lock_iffail) const {
+	searched_names_.push_back(pattern);
 	if(!locked_){
 		if(Container::find(pattern,i,lock_iffail)){
 			used_[i] = true;
@@ -206,5 +207,12 @@ bool Parseur::find(std::string const& pattern) const {
 
 void Parseur::lock(std::string const& arg){
 	locked_ = true;
-	std::cerr<<__PRETTY_FUNCTION__<<" : wrong argument '"<<arg<<"' : should be '-[iudsb]:name' : "<<std::endl;
+	std::cerr<<__PRETTY_FUNCTION__<<" : wrong argument '"<<arg<<"' : should be '-[iudsb]:name' or an option should be provided"<<std::endl;
+}
+
+void Parseur::help(){
+	std::cout<<"The parseur is expecting the following names:"<<searched_names_.size()<<std::endl;
+	for(auto const& n:searched_names_){
+		std::cout<<"    ->  "<<n<<std::endl;
+	}
 }

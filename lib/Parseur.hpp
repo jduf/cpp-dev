@@ -42,10 +42,13 @@ class Parseur: public Container {
 		/*!Returns type of argument (0=scalar,1=2=vector)*/
 		unsigned int get_type(unsigned int const& i) const { return type_[i]; }
 
+		void help();
+
 	private:
 		std::vector<unsigned int> type_;
 		mutable std::vector<bool> used_;
 		mutable bool locked_;
+		mutable std::vector<std::string> searched_names_;
 
 		template<typename Type>
 			void set_vector_from_list(std::string const& name, std::string const& val);

@@ -37,13 +37,26 @@ class Time{
 		/*!Returns the current sec*/
 		int sec() const { return time_->tm_sec; }
 		/*!Returns the date*/
-		std::string date(std::string s){
+		std::string date(std::string s="-"){
 			char tmp[20];
 			//std::strftime(tmp,20,"%G-%m-%d_%H:%M:%S",localtime(&tt_));
 			std::string format("%F_%H"+s+"%M"+s+"%S");
 			std::strftime(tmp,20,format.c_str(),localtime(&tt_));
 			return tmp;
 		}
+		std::string yyyymmdd(std::string s="-"){
+			char tmp[20];
+			std::string format("%G"+s+"%m"+s+"%d");
+			std::strftime(tmp,20,format.c_str(),localtime(&tt_));
+			return tmp;
+		}
+		std::string ddmmyyyy(std::string s="-"){
+			char tmp[20];
+			std::string format("%d"+s+"%m"+s+"%G");
+			std::strftime(tmp,20,format.c_str(),localtime(&tt_));
+			return tmp;
+		}
+
 
 		/*!Returns true if time limit (in second) has been reached*/
 		bool limit_reached(time_t const& limit) const
