@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <complex>
 #include <cmath>
@@ -10,6 +11,41 @@
 #include <algorithm>
 
 namespace my{
+	/*bool are_equal(T,T)*/
+	/*{*/
+	inline bool are_equal(double x, double y, double abs_tol=1e-14, double rel_tol=1e-14){
+		double diff(std::abs(x-y));
+		x = std::abs(x);
+		y = std::abs(y);
+		x = (x>y)?x:y;
+		return (diff<rel_tol*x) || (diff<abs_tol);
+	}
+
+	inline bool are_equal(std::complex<double> const& x, std::complex<double> const& y, double abs_tol=1e-14, double rel_tol=1e-14){
+		if(!are_equal(std::abs(x),std::abs(y),abs_tol,rel_tol)){ return false; }
+		if(!are_equal(x.real(),y.real(),abs_tol,rel_tol)){ return false; }
+		if(!are_equal(x.imag(),y.imag(),abs_tol,rel_tol)){ return false; }
+		return true;
+	}
+	/*}*/
+
+	/*round*/
+	/*{*/
+	inline double round_nearest(double const& d, unsigned int const decimal_place){
+		return roundf(d*decimal_place)/decimal_place;
+	}
+
+	inline double round_down(double const& d, unsigned int const decimal_place){
+		return floorf(d*decimal_place)/decimal_place;
+	}
+
+	inline double round_up(double const& d, unsigned int const decimal_place){
+		return ceil(d*decimal_place)/decimal_place;
+	}
+	/*}*/
+
+	/*tostring*/
+	/*{*/
 	template<typename Type>
 		std::string tostring(Type const& t){
 			std::ostringstream s;
@@ -17,6 +53,16 @@ namespace my{
 			return s.str();
 		}
 
+	template<typename Type>
+		std::string tostring(Type const& t, unsigned int const& precision){
+			std::ostringstream s;
+			s<<std::fixed<<std::setprecision(precision)<<t;
+			return s.str();
+		}
+	/*}*/
+
+	/*string2type*/
+	/*{*/
 	template<typename Type>
 		bool string2type(std::string const& s, Type& out){
 			std::stringstream ss(s);
@@ -33,6 +79,7 @@ namespace my{
 			my::string2type(s,t);
 			return t;
 		}
+	/*}*/
 
 	inline double get_double(std::string const& msg){
 		std::string token;
@@ -113,21 +160,6 @@ namespace my{
 		} else { return '?'; }
 	}
 
-	/*round*/
-	/*{*/
-	inline double round_nearest(double const& d, unsigned int const decimal_place){
-		return roundf(d*decimal_place)/decimal_place;
-	}
-
-	inline double round_down(double const& d, unsigned int const decimal_place){
-		return floorf(d*decimal_place)/decimal_place;
-	}
-
-	inline double round_up(double const& d, unsigned int const decimal_place){
-		return ceil(d*decimal_place)/decimal_place;
-	}
-	/*}*/
-
 	/*sign*/
 	/*{*/
 	template<typename Type> inline constexpr
@@ -175,24 +207,6 @@ namespace my{
 		if(std::abs(x.imag()) < precision ){ x.imag(0.0); }
 		if(std::abs(x.real()) < precision ){ x.real(0.0); }
 		return x;
-	}
-	/*}*/
-
-	/*bool are_equal(T,T)*/
-	/*{*/
-	inline bool are_equal(double x, double y, double abs_tol=1e-14, double rel_tol=1e-14){
-		double diff(std::abs(x-y));
-		x = std::abs(x);
-		y = std::abs(y);
-		x = (x>y)?x:y;
-		return (diff<rel_tol*x) || (diff<abs_tol);
-	}
-
-	inline bool are_equal(std::complex<double> const& x, std::complex<double> const& y, double abs_tol=1e-14, double rel_tol=1e-14){
-		if(!are_equal(std::abs(x),std::abs(y),abs_tol,rel_tol)){ return false; }
-		if(!are_equal(x.real(),y.real(),abs_tol,rel_tol)){ return false; }
-		if(!are_equal(x.imag(),y.imag(),abs_tol,rel_tol)){ return false; }
-		return true;
 	}
 	/*}*/
 

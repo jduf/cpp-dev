@@ -21,13 +21,13 @@ class Latex{
 		void command(std::string const& s);
 		void item(std::string const& s);
 
-		void histogram(std::vector<double> const& data, unsigned int const& nbins, double const& min, double const& max);
+		void histogram(std::vector<double> const& data, unsigned int const& nbins, double const& min, double const& max, std::string const& options="");
 
 		void operator=(std::string const& s);
 		void operator+=(std::string const& s);
 		
 		void save_file();
-		void pdflatex(bool const& silent);
+		void pdflatex(bool const& silent, bool const& clean);
 
 	protected:
 		std::string path_;		//!< path of the .gp, .png and .pdf files

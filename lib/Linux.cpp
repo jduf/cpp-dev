@@ -80,7 +80,7 @@ std::string Linux::latex(std::string const& path, std::string const& filename){
 }
 
 std::string Linux::pdflatex(std::string const& path, std::string const& filename){
-	return std::string(MY_BIN_PDFLATEX) + " -shell-escape" + " -output-directory " +path + " " + filename + ".tex";
+	return std::string(MY_BIN_PDFLATEX) + " -interaction=batchmode -shell-escape" + " -output-directory " +path + " " + filename + ".tex";
 }
 
 std::string Linux::rst2latex(std::string const& infile, std::string const& outfile){

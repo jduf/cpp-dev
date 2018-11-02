@@ -22,7 +22,24 @@ int main(){
 
 	//std::cout<<BLAS::dot(b.size(),a.ptr(),true,a.row(),1,b.ptr(),true,1,0)<<std::endl;
 	//
-	std::string s("2,1,3,4,1,2,1,3,4,1,2");
-	std::string ss("2,1");
-	std::cout<<my::count_substring(s,ss)<<std::endl;
+	//std::string s("2,1,3,4,1,2,1,3,4,1,2");
+	//std::string ss("2,1");
+	//std::cout<<my::count_substring(s,ss)<<std::endl;
+
+	std::cout<<my::tostring(1.234567890,5)<<std::endl;
+	std::cout<<my::tostring(1.34567890,5)<<std::endl;
+	std::cout<<my::tostring(1.4567890,5)<<std::endl;
+	std::cout<<my::tostring(1.567890,5)<<std::endl;
+	std::cout<<my::tostring(1.00890,1)<<std::endl;
+	std::cout<<my::tostring(1.00890,0)<<std::endl;
+	std::cout<<my::tostring(1.78,1)<<std::endl;
+	std::cout<<my::tostring(1.78,0)<<std::endl;
+	std::cout<<std::endl;
+
+	std::cout<<my::tostring(0,7)<<std::endl;
+	std::cout<<my::tostring(1.23,7)<<std::endl;
+	std::cout<<my::tostring(12.34,7)<<std::endl;
+	std::cout<<my::tostring(123.456,7)<<std::endl;
+	std::cout<<my::tostring(1234.5,7)<<std::endl;
+
 }
