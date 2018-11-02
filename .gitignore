@@ -1,6 +1,7 @@
 diffdir/diffdir
 gnuplot/gnuplot2image
 gnuplot/data2stems4gp
+gnuplot/gpctrparamcustom
 jdtools/jdhtml
 jdtools/jdread
 pstricks2pdf/pstricks2pdf

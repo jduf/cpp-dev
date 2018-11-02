@@ -5,7 +5,7 @@
 
 int main(){
 	Directory d;
-	d.search_files_ext(".jdbin","/home/jdufour/travail/cpp-dev/",false,false);
+	d.search_files_ext(".jdbin","/home/jdufour/travail/cpp-dev/",false,false,false);
 	std::string save_in("/home/jdufour/travail/cpp-dev/rst/output/");
 	std::string file;
 	Linux command;
