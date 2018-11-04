@@ -57,7 +57,6 @@ class Time{
 			return tmp;
 		}
 
-
 		/*!Returns true if time limit (in second) has been reached*/
 		bool limit_reached(time_t const& limit) const
 		{ return time(NULL)>limit+tt_; }
