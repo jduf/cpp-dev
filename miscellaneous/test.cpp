@@ -25,21 +25,25 @@ int main(){
 	//std::string s("2,1,3,4,1,2,1,3,4,1,2");
 	//std::string ss("2,1");
 	//std::cout<<my::count_substring(s,ss)<<std::endl;
+//
+	//std::cout<<my::tostring(1.234567890,5)<<std::endl;
+	//std::cout<<my::tostring(1.34567890,5)<<std::endl;
+	//std::cout<<my::tostring(1.4567890,5)<<std::endl;
+	//std::cout<<my::tostring(1.567890,5)<<std::endl;
+	//std::cout<<my::tostring(1.00890,1)<<std::endl;
+	//std::cout<<my::tostring(1.00890,0)<<std::endl;
+	//std::cout<<my::tostring(1.78,1)<<std::endl;
+	//std::cout<<my::tostring(1.78,0)<<std::endl;
+	//std::cout<<std::endl;
+//
+	//std::cout<<my::tostring(0,7)<<std::endl;
+	//std::cout<<my::tostring(1.23,7)<<std::endl;
+	//std::cout<<my::tostring(12.34,7)<<std::endl;
+	//std::cout<<my::tostring(123.456,7)<<std::endl;
+	//std::cout<<my::tostring(1234.5,7)<<std::endl;
+//
 
-	std::cout<<my::tostring(1.234567890,5)<<std::endl;
-	std::cout<<my::tostring(1.34567890,5)<<std::endl;
-	std::cout<<my::tostring(1.4567890,5)<<std::endl;
-	std::cout<<my::tostring(1.567890,5)<<std::endl;
-	std::cout<<my::tostring(1.00890,1)<<std::endl;
-	std::cout<<my::tostring(1.00890,0)<<std::endl;
-	std::cout<<my::tostring(1.78,1)<<std::endl;
-	std::cout<<my::tostring(1.78,0)<<std::endl;
-	std::cout<<std::endl;
-
-	std::cout<<my::tostring(0,7)<<std::endl;
-	std::cout<<my::tostring(1.23,7)<<std::endl;
-	std::cout<<my::tostring(12.34,7)<<std::endl;
-	std::cout<<my::tostring(123.456,7)<<std::endl;
-	std::cout<<my::tostring(1234.5,7)<<std::endl;
-
+	std::string in("alkdjsa lak jas ldf2 laj lksaflk jfallksa flk j ksjf lakjf kds lkajd jlkj fldsakj  alkj alkfjf lksajf alkjdsskljfdsasdh dslkf lakdsjl kalkdsjk jkdsfu f lsa kjdf alksaufdisa lksa jfadiufsaf skjlklksaf jlk jlkdsfjsa lkfjdsflkdsjf lkdjflksadjfldskjf slkfjalk jdlkjdslkfjsldkfj lkd lkd jlk dsakflkdsjlk jflkdsa jlkdfjd sfjdsafls akfjslkf jlkdjlkds ajflkdsj lkdsjfldsakjfsaijf dskflkdsalksnkds nkdsj");
+	my::wrap(in,100);
+	std::cout<<in<<std::endl;
 }

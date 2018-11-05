@@ -373,6 +373,25 @@ namespace my{
 
 		return result.append(result.c_str(),n*str.size());
 	}
+
+	/*!Wrap strings*/
+	inline std::string wrap(std::string in, unsigned int const& line_width){
+		size_t size(in.size());
+		size_t start(0);
+		size_t found(0);
+		while(start+line_width<size){
+			found = in.substr(start,line_width).find_last_of(' ');
+			if(found != std::string::npos){
+				in[start+found] = '\n';
+			} else {
+				found = in.substr(start).find(' ');
+				if(found != std::string::npos){ in[start+found] = '\n'; }
+				else { return in; }
+			}
+			start += found;
+		}	
+		return in;
+	}
 }
 
 namespace BLAS{
