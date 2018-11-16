@@ -21,7 +21,7 @@ class Latex{
 		void command(std::string const& s);
 		void item(std::string const& s);
 
-		void histogram(std::vector<double> const& data, unsigned int const& nbins, double const& min, double const& max, std::string const& options="");
+		void histogram(std::vector<double> const& data, unsigned int const& nbins, double const& min, double const& max);
 
 		void operator=(std::string const& s);
 		void operator+=(std::string const& s);

@@ -21,17 +21,13 @@ void Latex::command(std::string const& s){
 void Latex::item(std::string const& s){
 	latex_+="\\item " + s + "\n"; 
 }
-void Latex::histogram(std::vector<double> const& data, unsigned int const& nbins, double const& min, double const& max, std::string const& options){
-	latex_+= "\\begin{tikzpicture}\n";
-	latex_+= "\\begin{axis}[ ybar, "+options+"]\n";
+void Latex::histogram(std::vector<double> const& data, unsigned int const& nbins, double const& min, double const& max){
 	latex_+= "\\addplot +[ hist={bins="
 		+my::tostring(nbins)+ ", data min="
 		+my::tostring(min)+ ", data max=+"
 		+my::tostring(max)+ "} ] table [y index=0] {\n";
 	for(auto const& d:data){ latex_ += my::tostring(d) + "\n"; }
 	latex_+="};";
-	latex_+= "\\end{axis}\n";
-	latex_+= "\\end{tikzpicture}\n";
 }
 
 void Latex::operator=(std::string const& s){ latex_ = s + "\n"; }
