@@ -359,7 +359,7 @@ namespace my{
 		return s.substr(s_begin, s.find_last_not_of(whitespace) - s_begin + 1);
 	}
 
-	/*!Repeat input string n times*/
+	/*!repeat input string n times*/
 	inline std::string repeat_string(std::size_t n, std::string const& str){
 		if(n==0){ return {}; }
 		if(n==1||str.empty()){ return str; }
@@ -374,7 +374,7 @@ namespace my{
 		return result.append(result.c_str(),n*str.size());
 	}
 
-	/*!Wrap strings*/
+	/*!wrap strings*/
 	inline std::string wrap(std::string in, unsigned int const& line_width){
 		size_t size(in.size());
 		size_t start(0);
@@ -391,6 +391,11 @@ namespace my{
 			start += found;
 		}	
 		return in;
+	}
+
+	/*!compare string with locale settings (handles é,à,ü...*/
+	inline int compare_string_locale(std::string const& s1, std::string const& s2, std::locale const& l=std::locale("fr_CH.UTF-8")){
+		return std::use_facet<std::collate<char> >(l).compare(&s1[0], &s1[0] + s1.size(), &s2[0], &s2[0] + s2.size());
 	}
 }
 
