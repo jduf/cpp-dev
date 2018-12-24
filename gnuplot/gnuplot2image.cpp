@@ -35,11 +35,11 @@ int main(int argc,char* argv[]){
 				} else { std::cerr<<__PRETTY_FUNCTION__<<" : can't compile latex file"<<std::endl; }
 			} else { std::cerr<<__PRETTY_FUNCTION__<<" : the .gp script contains mistakes"<<std::endl; }
 		} else { std::cerr<<__PRETTY_FUNCTION__<<" : the filename must have a '"<<ext<<"' extension"<<std::endl; }
-	} else { 
-		std::cerr<<argv[0]<<" : gnuplot2image file.gp [optional argument]"<<std::endl; 
+	} else {
+		std::cerr<<argv[0]<<" : gnuplot2image file.gp [optional argument]"<<std::endl;
 		std::cerr<<std::string(std::string(argv[0]).size(),' ')<<" : the mandatory argument 'file.gp' is a Gnuplot script"<<std::endl;
-		std::cerr<<std::string(std::string(argv[0]).size(),' ')<<" : the optional argument can be 'png', 'jpg' OR 'debug'"<<std::endl; 
-		std::cerr<<std::string(std::string(argv[0]).size(),' ')<<" : if the optional argument is 'png' or 'jpg', a 'png' or 'jpg' image will be generated in addition to the default 'pdf' one"<<std::endl; 
-		std::cerr<<std::string(std::string(argv[0]).size(),' ')<<" : if the optional argument is 'debug', the compilation log will be displayed"<<std::endl; 
+		std::cerr<<std::string(std::string(argv[0]).size(),' ')<<" : the optional argument can be 'png', 'jpg' OR 'debug'"<<std::endl;
+		std::cerr<<std::string(std::string(argv[0]).size(),' ')<<" : if the optional argument is 'png' or 'jpg', a 'png' or 'jpg' image will be generated in addition to the default 'pdf' one"<<std::endl;
+		std::cerr<<std::string(std::string(argv[0]).size(),' ')<<" : if the optional argument is 'debug', the compilation log will be displayed"<<std::endl;
 	}
 }

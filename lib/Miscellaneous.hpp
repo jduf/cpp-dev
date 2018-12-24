@@ -98,13 +98,13 @@ namespace my{
 		return token;
 	}
 
-	inline bool get_yn(std::string const& msg){
+	inline bool get_yn(std::string const& msg, std::string const& y="y", std::string const& n="n"){
 		std::string token;
 		do{
-			std::cout<<msg<<" [y/n] ";
+			std::cout<<msg<<" ["<<y<<"/"<<n<<"]";
 			std::getline(std::cin,token);
-			if(token == "y"){ return true; }
-			if(token == "n"){ return false; }
+			if(token == y){ return true; }
+			if(token == n){ return false; }
 		} while(true);
 	}
 

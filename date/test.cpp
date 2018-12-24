@@ -12,7 +12,7 @@ int main(){
 	//std::cout<<d<<std::endl;
 	//d.set(29,2,2020);
 	//std::cout<<d<<std::endl;
-	//{ 
+	//{
 		//IOFiles w("test.jdbin",true,false);
 		//w<<d;
 	//}

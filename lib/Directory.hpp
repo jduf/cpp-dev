@@ -38,11 +38,13 @@ class Directory{
 		/*!Prints all the path_+filename_+extension_*/
 		void print(std::ostream& flux) const;
 		/*!Lists all directories stored in curr_dir*/
-		void list_dir(std::string curr_dir);
+		bool list_dir(std::string curr_dir);
 		/*!Finds all files matching keyword*/
-		void search_files(std::string const& keyword, std::string curr_dir, bool const& follow_link, bool const& recursive, bool const& hidden);
+		bool search_files(std::string const& keyword, std::string curr_dir, bool const& follow_link, bool const& recursive, bool const& hidden);
 		/*!Finds all files with extension "ext"*/
-		void search_files_ext(std::string const& ext, std::string curr_dir, bool const& follow_link, bool const& recursive, bool const& hidden);
+		bool search_files_ext(std::string const& ext, std::string curr_dir, bool const& follow_link, bool const& recursive, bool const& hidden);
+		/*!List all files with extension "ext"*/
+		bool list_all_files(std::string curr_dir, bool const& follow_link, bool const& recursive, bool const& hidden);
 		/*!Sorts by alphabetical order all the path_+filename_+extension_*/
 		void sort();
 

@@ -58,8 +58,8 @@ VectorOfStrings& VectorOfStrings::operator=(VectorOfStrings vos){
 /*{*/
 std::ostream& operator<<(std::ostream& flux, VectorOfStrings const& vos){
 	unsigned int size(vos.size());
-	for(unsigned int i(0);i<size;i++){ 
-		flux<<vos.ptr()[i]; 
+	for(unsigned int i(0);i<size;i++){
+		flux<<vos.ptr()[i];
 		if(i+1 != vos.size()){ flux<<std::endl; }
 	}
 	return flux;

@@ -13,7 +13,7 @@ int main(int argc, char* argv[]){
 			double dx(2.0*(xb-xa)/n);
 			unsigned int i(0);
 			while(-xb+i*dx<xb){
-				std::cout<<-xb+(i*dx)<<","; 
+				std::cout<<-xb+(i*dx)<<",";
 				i++;
 			}
 			std::cout<<xb<<std::endl;

@@ -7,7 +7,7 @@ void Directory::set(){
 	ext_.clear();
 }
 
-void Directory::search_files(std::string const& keyword, std::string curr_dir, bool const& follow_link, bool const& recursive, bool const& hidden){
+bool Directory::search_files(std::string const& keyword, std::string curr_dir, bool const& follow_link, bool const& recursive, bool const& hidden){
 	curr_dir = my::ensure_trailing_slash(curr_dir);
 	DIR* dir_point(opendir(curr_dir.c_str()));
 	if(dir_point){
@@ -38,11 +38,13 @@ void Directory::search_files(std::string const& keyword, std::string curr_dir, b
 			} else { std::cerr<<__PRETTY_FUNCTION__<<" : can't obtain information on the file '"<<name<<"'"<<std::endl; }
 			entry = readdir(dir_point);
 		}
+		closedir(dir_point);
+		return true;
 	} else { std::cerr<<__PRETTY_FUNCTION__<<" : can't open directory '"<<curr_dir<<"'"<<std::endl; }
-	closedir(dir_point);
+	return false;
 }
 
-void Directory::search_files_ext(std::string const& extension, std::string curr_dir, bool const& follow_link, bool const& recursive, bool const& hidden){
+bool Directory::search_files_ext(std::string const& extension, std::string curr_dir, bool const& follow_link, bool const& recursive, bool const& hidden){
 	curr_dir = my::ensure_trailing_slash(curr_dir);
 	DIR* dir_point(opendir(curr_dir.c_str()));
 	if(dir_point){
@@ -73,26 +75,73 @@ void Directory::search_files_ext(std::string const& extension, std::string curr_
 			} else { std::cerr<<__PRETTY_FUNCTION__<<" : can't obtain information on the file '"<<name<<"'"<<std::endl; }
 			entry = readdir(dir_point);
 		}
+		closedir(dir_point);
+		return true;
 	} else { std::cerr<<__PRETTY_FUNCTION__<<" : can't open directory '"<<curr_dir<<"'"<<std::endl; }
-	closedir(dir_point);
+	return false;
 }
 
-void Directory::list_dir(std::string curr_dir){
-	DIR* dir_point = opendir(curr_dir.c_str());
-	dirent* entry(readdir(dir_point));
-	struct stat st;
-	while(entry){
-		std::string dir(entry->d_name);
-		if(dir != "." && dir != ".." && !stat((curr_dir+dir).c_str(),&st)){
-			if(S_ISDIR(st.st_mode)){
-				path_.push_back(curr_dir);
-				filename_.push_back(dir);
-				ext_.push_back("/");
-			}
+bool Directory::list_all_files(std::string curr_dir, bool const& follow_link, bool const& recursive, bool const& hidden){
+	/*This method is very likely not well written nor relevant*/
+	curr_dir = my::ensure_trailing_slash(curr_dir);
+	DIR* dir_point(opendir(curr_dir.c_str()));
+	if(dir_point){
+		dirent* entry(readdir(dir_point));
+		struct stat st;
+		while(entry){
+			std::string name(entry->d_name);
+			if(!stat((curr_dir+name).c_str(),&st)){
+				switch (st.st_mode & S_IFMT) {
+					case S_IFDIR:
+						{
+							if(name != "." && name != ".."){
+								path_.push_back(curr_dir+name+"/");
+								filename_.push_back("");
+								ext_.push_back("");
+								if(recursive && (hidden?true:name[0] != '.')){
+									list_all_files(curr_dir+name+"/",follow_link,recursive,hidden);
+								}
+							}
+						}break;
+					case S_IFREG:
+						{
+							path_.push_back(curr_dir);
+							split_ext(name);
+						}break;
+					case S_IFLNK:
+						{ std::cerr<<__PRETTY_FUNCTION__<<" : behaviour undefined for link '"<<name<<"'"<<std::endl; }break;
+					default:
+						{ std::cerr<<__PRETTY_FUNCTION__<<" : '"<<name<< "' has unkown type"<<std::endl; }break;
+				}
+			} else { std::cerr<<__PRETTY_FUNCTION__<<" : can't obtain information on the file '"<<name<<"'"<<std::endl; }
+			entry = readdir(dir_point);
 		}
-		entry = readdir(dir_point);
+		closedir(dir_point);
+		return true;
+	} else { std::cerr<<__PRETTY_FUNCTION__<<" : can't open directory '"<<curr_dir<<"'"<<std::endl; }
+	return false;
+}
+
+bool Directory::list_dir(std::string curr_dir){
+	DIR* dir_point = opendir(curr_dir.c_str());
+	if(dir_point){
+		dirent* entry(readdir(dir_point));
+		struct stat st;
+		while(entry){
+			std::string dir(entry->d_name);
+			if(dir != "." && dir != ".." && !stat((curr_dir+dir).c_str(),&st)){
+				if(S_ISDIR(st.st_mode)){
+					path_.push_back(curr_dir);
+					filename_.push_back(dir);
+					ext_.push_back("/");
+				}
+			}
+			entry = readdir(dir_point);
+		}
+		closedir(dir_point);
+		return true;
 	}
-	closedir(dir_point);
+	return false;
 }
 
 void Directory::sort(){

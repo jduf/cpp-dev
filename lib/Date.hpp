@@ -32,7 +32,7 @@ class Date{
 		bool valid_ = true;
 		unsigned int day_ = 1;
 		unsigned int month_ = 1;
-		unsigned int year_ = 2000;
+		unsigned int year_ = 1;
 };
 
 std::ostream& operator<<(std::ostream& flux, Date const& date);

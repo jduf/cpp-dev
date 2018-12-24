@@ -48,7 +48,7 @@ void Date::set(unsigned int d, unsigned int m, unsigned int y){
 		case 10:
 		case 12:
 			month_ = m;
-			if(d>0 && d<32){ 
+			if(d>0 && d<32){
 				day_ = d;
 				year_ = y;
 				valid_ = true;
@@ -59,7 +59,7 @@ void Date::set(unsigned int d, unsigned int m, unsigned int y){
 		case 9:
 		case 11:
 			month_ = m;
-			if(d>0 && d<32){ 
+			if(d>0 && d<32){
 				day_ = d;
 				year_ = y;
 				valid_ = true;
@@ -72,14 +72,14 @@ void Date::set(unsigned int d, unsigned int m, unsigned int y){
 			else if (y%100) { dm = 29; }
 			else if (y%400) { dm = 28; }
 			else {  dm = 29;  }
-			if(d>0 && d<=dm){ 
+			if(d>0 && d<=dm){
 				day_ = d;
 				year_ = y;
 				valid_ = true;
 			}
 			break;
 	}
-	if(!valid_){ std::cerr<<__PRETTY_FUNCTION__<<" : "<<d<<"."<<m<<"."<<y<<" is not a valid Date"<<std::endl; } 
+	if(!valid_){ std::cerr<<__PRETTY_FUNCTION__<<" : "<<d<<"."<<m<<"."<<y<<" is not a valid Date"<<std::endl; }
 }
 
 std::string Date::ddmmyyyy(char split) const {
@@ -92,7 +92,7 @@ std::string Date::ddmmyyyy(char split) const {
 
 bool Date::operator<(Date const& d) const {
 	if(year_ > d.year_){ return false; }
-	if(year_ != d.year_){ return true; } 
+	if(year_ != d.year_){ return true; }
 	if(month_ > d.month_){ return false; }
 	if(month_ != d.month_){ return true; }
 	return day_ < d.day_;
@@ -100,7 +100,7 @@ bool Date::operator<(Date const& d) const {
 
 bool Date::operator>(Date const& d) const {
 	if(year_ < d.year_){ return false; }
-	if(year_ != d.year_){ return true; } 
+	if(year_ != d.year_){ return true; }
 	if(month_ < d.month_){ return false; }
 	if(month_ != d.month_){ return true; }
 	return day_ > d.day_;

@@ -152,7 +152,7 @@ Parseur::Parseur(unsigned int const& argc, char* argv[], std::vector<std::string
 				bool is_flag(false);
 				name = name.substr(1);
 				for(unsigned int j(0);j<flags.size();j++){
-					if(name == flags[j]){ 
+					if(name == flags[j]){
 						j = flags.size();
 						is_flag = true;
 					}
@@ -164,10 +164,10 @@ Parseur::Parseur(unsigned int const& argc, char* argv[], std::vector<std::string
 					if(i<argc){
 						std::string val(argv[i]);
 						if(val[0] == '-'){
-							std::cerr<<__PRETTY_FUNCTION__<<" : the value of option '-"<<name<<"' starts with an '-' :"<<val<<std::endl; 
+							std::cerr<<__PRETTY_FUNCTION__<<" : the value of option '-"<<name<<"' starts with an '-' :"<<val<<std::endl;
 							lock(name);
 						}
-						set(name,val); 
+						set(name,val);
 					}
 					else { std::cerr<<__PRETTY_FUNCTION__<<" : there is no argument to option '-"<<name<<"'"<<std::endl; }
 				}

@@ -97,8 +97,8 @@ std::string Gnuplot::histogram(Vector<double> const& data, double const& min, do
 	double data_average(0);
 	for(unsigned int i(0);i<data.size();i++){
 		for(unsigned int j(0);j<nbins;j++){
-			if(std::abs(data(i)-xbin(j))<=bin_width/2.0){ 
-				ybin(j)++; 
+			if(std::abs(data(i)-xbin(j))<=bin_width/2.0){
+				ybin(j)++;
 				data_average += data(i);
 				j=nbins;
 			}
