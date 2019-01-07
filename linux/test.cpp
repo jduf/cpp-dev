@@ -7,6 +7,7 @@ int main(){
 	//std::vector<double> a(1e9,1);
 	std::string path1("aa/bb/cc/kk/ff/ee/");
 	Linux command;
+	std::cout<<command.pwd()<<std::endl;
 	unsigned int N(1e2);
 	Time chrono;
 	chrono.set();

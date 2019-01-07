@@ -33,7 +33,26 @@ class Linux{
 		/*!Returns exit value of the last command*/
 		int status(){ return ev_; }
 		/*!Returns a string containing the current path*/
-		std::string pwd(){ return std::string(get_current_dir_name()) + '/'; }
+		std::string pwd(){ 
+			char bufA[216];
+			char* answer = getcwd(bufA, sizeof(bufA));
+			if(answer){ return std::string(answer)+"/"; }
+			else {
+				if(errno==ERANGE){ 
+					std::cerr<<__PRETTY_FUNCTION__<<" : pathname too long, triyng longer... ";
+					char bufB[512];
+					answer = getcwd(bufB, sizeof(bufB));
+					if(answer){ 
+						std::cerr<<"success"<<std::endl; 
+						return std::string(answer)+"/"; 
+					} else { std::cerr<<"failure"<<std::endl; }
+				} 
+			}
+			std::cerr<<__PRETTY_FUNCTION__<<": unhandled error"<<std::endl;
+			return "/tmp/";
+			/*The following doesn't work on MAC*/
+			//return std::string(get_current_dir_name()) + '/'; 
+		}
 
 		/*!Creates a directory*/
 		void mkdir(const char *directory, mode_t mode = 0755);

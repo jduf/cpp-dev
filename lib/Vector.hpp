@@ -290,7 +290,13 @@ Vector<Type> Vector<Type>::operator-() const {
 template<typename Type>
 Type Vector<Type>::operator*(Vector<Type> const& vec) const {
 	assert(size_ == vec.size_);
+#ifdef DEF_MYBLAS
 	return BLAS::dot(size_,vec_,true,1,0,vec.vec_,true,1,0);
+#else
+	Type tmp(0);
+	for(unsigned int i(0);i<size_;i++){ tmp += vec.vec_[i]*vec_[i]; }
+	return tmp;
+#endif
 }
 
 template<typename Type>

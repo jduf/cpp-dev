@@ -19,7 +19,7 @@ int main(int argc,char* argv[]){
 		std::string save_in("sim-info/");
 		L.mkpath(save_in.c_str());
 
-		D.search_files_ext(ext,L.pwd(),false,false);
+		D.search_files_ext(ext,L.pwd(),false,false,false);
 		D.sort();
 
 		std::string command("");

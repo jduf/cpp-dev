@@ -1,6 +1,7 @@
 /* @file test.cpp */
 
 #include "IOFiles.hpp"
+#include "MyBLAS.hpp"
 #include "Lapack.hpp"
 #include "Rand.hpp"
 #include "SymetricMatrix.hpp"
@@ -397,6 +398,10 @@ int main(){
 	Matrix<double> A(H-E(0)*O);
 	std::cout<<Lapack<double>(A,false,'G').det()<<std::endl;
 	/*}*/
+
+	Vector<double> a(3,2);
+	Vector<double> b(3,3);
+	std::cout<<a*b<<std::endl;
 }
 
 std::complex<double> projection(Matrix<double> const& O, Matrix<std::complex<double> > const& base, unsigned int bra, unsigned int ket){

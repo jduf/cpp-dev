@@ -2,6 +2,7 @@
 #define DEF_MLAPACK
 
 #include "Vector.hpp"
+#include "MyBLAS.hpp"
 
 /*{*/
 extern "C" void dsyev_( /*eigensystem of a real symmetric matrix*/

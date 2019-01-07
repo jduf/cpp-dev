@@ -8,7 +8,7 @@ BUILD = build
 
 CXX = g++ -std=c++14
 
-OPTION =
+OPTION = 
 ERRORS = -Wall -Wextra -pedantic
 
 VPATH = $(JDLIB) .
