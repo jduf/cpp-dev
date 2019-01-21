@@ -72,6 +72,16 @@ void Linux::mkpath(const char *path, mode_t mode){
 	if(ev_ == 0) { mkdir(path, mode); }
 	free(copypath);
 }
+
+std::string Linux::return_absolute(std::string const& path){
+	if(path[0]=='/'){ return path; }
+	if(path[0]=='~'){
+		const char *home;
+		if((home = getenv("HOME")) == NULL) { home = getpwuid(getuid())->pw_dir; }
+		return home+path.substr(1);
+	}
+	return pwd()+path;
+}
 /*}*/
 
 /*{methods returning a std::string that is then to by executed by system*/

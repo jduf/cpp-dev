@@ -5,11 +5,12 @@
 #pragma GCC warning "The macros defined in 'lib/config.mk' are essential, include this file in the makefile"
 #endif
 
-#include <cstdlib>
-#include <string>
-#include <unistd.h>
 #include <fstream>
 #include <iostream>
+#include <string>
+#include <cstdlib>
+#include <unistd.h>
+#include <pwd.h>
 #include "sys/stat.h"
 #include "string.h"
 
@@ -58,6 +59,8 @@ class Linux{
 		void mkdir(const char *directory, mode_t mode = 0755);
 		/*!Creates a path*/
 		void mkpath(const char *path, mode_t mode = 0755);
+		/*!Makes sure path/file starts from root*/
+		std::string return_absolute(std::string const& path);
 
 		static std::string latex    (std::string const& path, std::string const& filename);
 		static std::string pdflatex (std::string const& path, std::string const& filename);

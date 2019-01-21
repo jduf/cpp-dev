@@ -43,7 +43,30 @@ int main(){
 	//std::cout<<my::tostring(1234.5,7)<<std::endl;
 //
 
-	std::string in("alkdjsa lak jas ldf2 laj lksaflk jfallksa flk j ksjf lakjf kds lkajd jlkj fldsakj  alkj alkfjf lksajf alkjdsskljfdsasdh dslkf lakdsjl kalkdsjk jkdsfu f lsa kjdf alksaufdisa lksa jfadiufsaf skjlklksaf jlk jlkdsfjsa lkfjdsflkdsjf lkdjflksadjfldskjf slkfjalk jdlkjdslkfjsldkfj lkd lkd jlk dsakflkdsjlk jflkdsa jlkdfjd sfjdsafls akfjslkf jlkdjlkds ajflkdsj lkdsjfldsakjfsaijf dskflkdsalksnkds nkdsj");
-	my::wrap(in,100);
-	std::cout<<in<<std::endl;
+	//std::string in("alkdjsa lak jas ldf2 laj lksaflk jfallksa flk j ksjf lakjf kds lkajd jlkj fldsakj  alkj alkfjf lksajf alkjdsskljfdsasdh dslkf lakdsjl kalkdsjk jkdsfu f lsa kjdf alksaufdisa lksa jfadiufsaf skjlklksaf jlk jlkdsfjsa lkfjdsflkdsjf lkdjflksadjfldskjf slkfjalk jdlkjdslkfjsldkfj lkd lkd jlk dsakflkdsjlk jflkdsa jlkdfjd sfjdsafls akfjslkf jlkdjlkds ajflkdsj lkdsjfldsakjfsaijf dskflkdsalksnkds nkdsj");
+	//my::wrap(in,100);
+	//std::cout<<in<<std::endl;
+	//
+	std::string a("derien");
+	std::string b("dérien");
+	std::string c("dêrien");
+	std::string d("dèrien");
+	std::string e("de rien");
+	std::string f("a");
+	std::string g(" ");
+	std::cout<<my::compare_string_lexicographic(a,b)<<" "<<my::compare_string_locale(a,b)<<" "<<(a>b)<<std::endl;
+	std::cout<<my::compare_string_lexicographic(a,c)<<" "<<my::compare_string_locale(a,c)<<" "<<(a>c)<<std::endl;
+	std::cout<<my::compare_string_lexicographic(a,d)<<" "<<my::compare_string_locale(a,d)<<" "<<(a>d)<<std::endl;
+	std::cout<<my::compare_string_lexicographic(a,e)<<" "<<my::compare_string_locale(a,e)<<" "<<(a>e)<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<my::compare_string_lexicographic(b,c)<<" "<<my::compare_string_locale(b,c)<<" "<<(b>c)<<std::endl;
+	std::cout<<my::compare_string_lexicographic(b,d)<<" "<<my::compare_string_locale(b,d)<<" "<<(b>d)<<std::endl;
+	std::cout<<my::compare_string_lexicographic(b,e)<<" "<<my::compare_string_locale(b,e)<<" "<<(b>e)<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<my::compare_string_lexicographic(c,d)<<" "<<my::compare_string_locale(c,d)<<" "<<(c>d)<<std::endl;
+	std::cout<<my::compare_string_lexicographic(c,e)<<" "<<my::compare_string_locale(c,e)<<" "<<(c>e)<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<my::compare_string_lexicographic(d,e)<<" "<<my::compare_string_locale(d,e)<<" "<<(d>e)<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<my::compare_string_lexicographic(f,g)<<" "<<my::compare_string_locale(f,g)<<" "<<(f>g)<<std::endl;
 }
