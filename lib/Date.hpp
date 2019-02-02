@@ -12,7 +12,7 @@ class Date{
 		/*!Default destructor*/
 		~Date() = default;
 
-		void set(unsigned int d, unsigned int m, unsigned int y);
+		void set(unsigned int const& d, unsigned int const& m, unsigned int const& y, bool const& silent = false);
 
 		bool const& valid() const { return valid_; }
 		unsigned int const& day() const { return day_; }
@@ -27,6 +27,8 @@ class Date{
 		bool operator>=(Date const& d) const;
 		bool operator!=(Date const& d) const;
 		bool operator==(Date const& d) const;
+
+		std::string header_def() const { return ddmmyyyy('.'); }
 
 	private:
 		bool valid_ = true;

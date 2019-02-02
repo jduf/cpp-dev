@@ -2,7 +2,7 @@
 #include "Rand.hpp"
 #include <algorithm>
 
-bool sort(Date const& da, Date const& db){ return (da<db); }
+bool sort(Date const& da, Date const& db){ return (da>db); }
 
 int main(){
 	//Date d;
@@ -32,4 +32,9 @@ int main(){
 	}
 	std::sort(list.begin(),list.end(),sort);
 	for(auto& l:list){ std::cout<<l<<std::endl; }
+
+	Date a,b;
+	a.set(1,2,2019);
+	b.set(20,1,2019);
+	std::cout<<(a>b)<<std::endl;
 }

@@ -15,11 +15,13 @@ std::ostream& operator<<(std::ostream& flux, Date const& date){
 }
 
 std::istream& operator>>(std::istream& flux, Date& date){
-	unsigned int d;
-	unsigned int y;
-	unsigned int m;
-	flux>>d>>m>>y;
-	date.set(d,m,y);
+	std::string input;
+	std::getline(flux,input);
+	std::vector<std::string> tmp(my::string_split(input,'.'));
+	if(tmp.size()==3 && tmp[2].size() == 4){
+		date.set(my::string2type<unsigned int>(tmp[0]),my::string2type<unsigned int>(tmp[1]),my::string2type<unsigned int>(tmp[2]));
+	} else { date.set(0,0,0,true); }
+	flux.clear();
 	return flux;
 }
 
@@ -37,7 +39,7 @@ IOFiles& operator>>(IOFiles& r, Date& date){
 }
 /*}*/
 
-void Date::set(unsigned int d, unsigned int m, unsigned int y){
+void Date::set(unsigned int const& d, unsigned int const& m, unsigned int const& y, bool const& silent){
 	valid_ = false;
 	switch(m){
 		case 1:
@@ -79,7 +81,7 @@ void Date::set(unsigned int d, unsigned int m, unsigned int y){
 			}
 			break;
 	}
-	if(!valid_){ std::cerr<<__PRETTY_FUNCTION__<<" : "<<d<<"."<<m<<"."<<y<<" is not a valid Date"<<std::endl; }
+	if(!valid_ && !silent){ std::cerr<<__PRETTY_FUNCTION__<<" : "<<d<<"."<<m<<"."<<y<<" is not a valid Date"<<std::endl; }
 }
 
 std::string Date::ddmmyyyy(char split) const {
