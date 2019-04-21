@@ -92,6 +92,14 @@ std::string Date::ddmmyyyy(char split) const {
 		"Invalid date";
 }
 
+std::string Date::yyyymmdd(char split) const {
+	return valid_?
+		my::tostring(year_) + split +
+		(month_<10?"0":"") + my::tostring(month_) + split +
+		(day_<10?"0":"") + my::tostring(day_):
+		"Invalid date";
+}
+
 bool Date::operator<(Date const& d) const {
 	if(year_ > d.year_){ return false; }
 	if(year_ != d.year_){ return true; }

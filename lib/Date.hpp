@@ -20,6 +20,7 @@ class Date{
 		unsigned int const& year() const { return year_; }
 
 		std::string ddmmyyyy(char split='.') const;
+		std::string yyyymmdd(char split='.') const;
 
 		bool operator<(Date const& d) const;
 		bool operator<=(Date const& d) const;
