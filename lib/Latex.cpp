@@ -44,7 +44,7 @@ void Latex::pdflatex(bool const& silent, bool const& clean){
 	if(command.status()){ std::cerr<<__PRETTY_FUNCTION__<<" : Linux::pdflatex("<<path_<<","<<filename_<<") returned an error ("<<command.status()<<")"<<std::endl; }
 	else {
 		if(clean){
-			command("rm " + path_ + filename_ + ".aux " + path_ + filename_ + ".log " + path_ + filename_ + ".tex ",silent);
+			command("rm " + path_ + filename_ + ".aux " + path_ + filename_ + ".log " + path_ + filename_ + ".toc " + path_ + filename_ + ".out "+ path_ + filename_ + ".tex ",silent);
 			if(command.status()){ std::cerr<<__PRETTY_FUNCTION__<<" : failed to remove auxiliary tex files"<<std::endl; }
 		}
 	}
