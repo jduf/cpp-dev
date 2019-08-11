@@ -125,4 +125,3 @@ bool Date::operator!=(Date const& d) const {
 bool Date::operator<=(Date const& d) const { return !((*this) > d); }
 bool Date::operator>=(Date const& d) const { return !((*this) < d); }
 bool Date::operator==(Date const& d) const { return !((*this)!= d); }
-

@@ -7,10 +7,16 @@ class Date{
 	public:
 		/*!Default constructor*/
 		Date() = default;
+		/*!Default copy constructor*/
+		Date(Date const&) = default;
+		/*!Default move constructor*/
+		Date(Date&&) = default;
 		/*!Read constructor*/
 		Date(IOFiles& r);
 		/*!Default destructor*/
 		~Date() = default;
+		/*!Default assignment operator*/
+		Date& operator=(Date const&) = default;
 
 		void set(unsigned int const& d, unsigned int const& m, unsigned int const& y, bool const& silent = false);
 

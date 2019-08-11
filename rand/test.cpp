@@ -16,6 +16,8 @@ void check_array();
 
 void check_gaussian();
 
+void check_uuid();
+
 class TMP{
 	public:
 		TMP():rnd_(0.0,1.0){}
@@ -38,7 +40,8 @@ int main(){
 	//check_array();
 	//small_double();
 	
-	check_gaussian();
+	//check_gaussian();
+	check_uuid();
 }
 
 void check_basic(){
@@ -225,4 +228,14 @@ void check_gaussian(){
 		std::cout<<std::setprecision(6)<<rnd()<<std::endl;
 	}
 
+}
+
+void check_uuid(){
+	UUID u;
+	std::cout<<u()<<std::endl;
+	std::cout<<u()<<std::endl;
+	std::cout<<u()<<std::endl;
+	std::cout<<u()<<std::endl;
+	std::cout<<u()<<std::endl;
+	std::cout<<u()<<std::endl;
 }

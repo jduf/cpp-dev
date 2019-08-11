@@ -3,6 +3,7 @@
 
 #include <random>
 #include <cassert>
+#include <sstream>
 
 /*{Description*/
 /*!Random number generator that uses <random> of c++14.
@@ -131,5 +132,32 @@ class RandGaussian{
 	private:
 		mutable std::mt19937_64 mt_;
 		mutable std::normal_distribution<>  dist_;
+};
+
+class UUID{
+	public:
+		UUID():
+			mt_(std::random_device()()),
+			dis_(0,255){}
+
+		std::string operator()() const {
+			std::stringstream ss;
+			std::stringstream hexstream;
+			hexstream << std::hex;
+			unsigned int j(0);
+			for(unsigned int i(0); i<16; i++){
+				hexstream << int(static_cast<unsigned char>(dis_(mt_)));
+				auto hex = hexstream.str(); 
+				hexstream.str(std::string());
+				ss << (hex.length() < 2 ? '0' + hex : hex);
+				if(i==dash_[j]){ ss << '-'; j++; }
+			}        
+			return ss.str();
+		}
+
+	private:
+		mutable std::mt19937_64 mt_;
+		mutable std::uniform_int_distribution<> dis_;
+		unsigned int const dash_[4] = {3,5,7,9};
 };
 #endif
