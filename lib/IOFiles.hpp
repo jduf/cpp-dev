@@ -37,6 +37,9 @@ class IOFiles{
 		template<typename Type>
 			IOFiles& operator>>(Type& t){ read(&t,1,sizeof(Type)); return (*this); }
 		IOFiles& operator>>(std::string& t);
+		template<typename Type>
+			IOFiles& operator>>(std::vector<Type>& t);
+		IOFiles& operator>>(std::vector<std::string>& t);
 		/*Allows to extract personal classes or data*/
 		template<typename Type>
 			void read(Type* t, unsigned int const& N, size_t const& type_size);
@@ -51,6 +54,9 @@ class IOFiles{
 		template<typename Type>
 			IOFiles& operator<<(Type const& t){ write(&t,1,sizeof(Type)); return (*this); }
 		IOFiles& operator<<(std::string const& t);
+		template<typename Type>
+			IOFiles& operator<<(std::vector<Type> const& t);
+		IOFiles& operator<<(std::vector<std::string> const& t);
 		/*Allows to write personal classes or data*/
 		template<typename Type>
 			void write(Type* t, unsigned int const& N, size_t const& type_size);
@@ -106,6 +112,21 @@ Type IOFiles::read(){
 }
 
 template<typename Type>
+IOFiles& IOFiles::operator>>(std::vector<Type>& t){
+	if(open_ && !write_){
+		if (binary_){
+			size_t size(0);
+			file_.read(reinterpret_cast<char*>(&size),sizeof(size_t));
+			t.resize(size);
+			file_.read(reinterpret_cast<char*>(&t[0]),size*sizeof(Type));
+		} else { 
+			for(auto& i:t){ file_>>i; }
+		}
+	} else { std::cerr<<__PRETTY_FUNCTION__<<" : can't read from "<<filename_<<std::endl; }
+	return (*this);
+}
+
+template<typename Type>
 void IOFiles::write(Type* t, unsigned int const& N, size_t const& type_size){
 	if(open_ && write_){
 		if (binary_){ file_.write((char*)(t),N*type_size); }
@@ -119,5 +140,20 @@ void IOFiles::write(std::string const& var, Type const& val){
 		(*this)<<val;
 		header_->add(var,val);
 	} else { std::cerr<<__PRETTY_FUNCTION__<<" : can't write in "<<filename_<<std::endl; }	
+}
+
+template<typename Type>
+IOFiles& IOFiles::operator<<(std::vector<Type> const& t){
+	if(open_ && write_){
+		if (binary_){
+			size_t size(t.size());
+			file_.write(reinterpret_cast<const char*>(&size),sizeof(size_t));
+			file_.write(reinterpret_cast<const char*>(&t[0]),size*sizeof(Type));
+		} else { 
+			for(auto const& i:t){ file_<<i<<" "; }
+			file_<<std::flush;
+		}
+	} else { std::cerr<<__PRETTY_FUNCTION__<<" : can't write in "<<filename_<<std::endl; }
+	return (*this);
 }
 #endif

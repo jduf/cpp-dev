@@ -4,32 +4,50 @@
 
 void write_bin(){
 	std::cout<<"écriture d'un fichier binaire"<<std::endl;
+	double a(12.2);
 	Matrix<double> M(5,3,2.5);
 	std::complex<double> c(1.2,2);
-	Vector<std::complex<double> > v(3,c);
-	double a(12.2);
 	std::string slt("salut",false);
+	Vector<std::complex<double> > v(3,c);
+	std::vector<double> stdv(5,1.3);
+	std::vector<std::string> stds;
+	stds.push_back("hello");
+	stds.push_back("ça");
+	stds.push_back("va");
 	IOFiles write("data.jdbin",true,false);
 	write<<a<<M<<c<<slt;
 	write.write("Vector",v);
+	write<<stdv<<stds;
 }
 
 void read_bin(){
 	std::cout<<"lecture d'un fichier binaire"<<std::endl;
 	IOFiles read("data.jdbin",false,false);
-	Matrix<double> M;
-	Vector<std::complex<double> > v;
-	std::complex<double> c;
 	double a;
+	Matrix<double> M;
+	std::complex<double> c;
 	std::string slt;
+	Vector<std::complex<double> > v;
+	std::vector<double> stdv;
+	std::vector<std::string> stds;
 	read>>a>>M>>c>>slt;
 	v = read.read<Vector<std::complex<double> > >();
+	read>>stdv;
+	stds = read.read<std::vector<std::string> >();
 	std::cout<<read.get_header()<<std::endl;
 	std::cout<<a<<std::endl;
 	std::cout<<M<<std::endl;
 	std::cout<<c<<std::endl;
 	std::cout<<slt<<std::endl;
 	std::cout<<v<<std::endl;
+	for(auto const& s:stdv){
+		std::cout<<s<<" ";
+	}
+	std::cout<<std::endl;
+	for(auto const& s:stds){
+		std::cout<<s<<" ";
+	}
+	std::cout<<std::endl;
 }
 
 void write_txt(){

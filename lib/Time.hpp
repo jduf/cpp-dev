@@ -37,10 +37,10 @@ class Time{
 		/*!Returns the current sec*/
 		int sec() const { return time_->tm_sec; }
 		/*!Returns the date*/
-		std::string date(std::string s="-"){
+		std::string date(std::string s1="_",std::string s2="-"){
 			char tmp[20];
 			//std::strftime(tmp,20,"%G-%m-%d_%H:%M:%S",localtime(&tt_));
-			std::string format("%F_%H"+s+"%M"+s+"%S");
+			std::string format("%F"+s1+"%H"+s2+"%M"+s2+"%S");
 			std::strftime(tmp,20,format.c_str(),localtime(&tt_));
 			return tmp;
 		}

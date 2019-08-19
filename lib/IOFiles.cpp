@@ -89,6 +89,24 @@ IOFiles& IOFiles::operator>>(std::string& t){
 	return (*this);
 }
 
+IOFiles& IOFiles::operator>>(std::vector<std::string>& t){
+	if(open_ && !write_){
+		if (binary_){
+			size_t size(0);
+			file_.read(reinterpret_cast<char*>(&size),sizeof(size_t));
+			t.resize(size);
+			for(auto& i:t){ 
+				file_.read((char*)(&size),sizeof(unsigned int));
+				i.resize(size);
+				file_.read(&i[0],size);
+			}
+		} else { 
+			std::cerr<<__PRETTY_FUNCTION__<<" : can't read std::vector<std::string> from text file "<<filename_<<std::endl; 
+		}
+	} else { std::cerr<<__PRETTY_FUNCTION__<<" : can't read from "<<filename_<<std::endl; }
+	return (*this);
+}
+
 IOFiles& IOFiles::operator<<(std::string const& t){
 	if(open_ && write_){
 		if (binary_){
@@ -99,6 +117,24 @@ IOFiles& IOFiles::operator<<(std::string const& t){
 	} else { std::cerr<<__PRETTY_FUNCTION__<<" : can't write in "<<filename_<<std::endl; }
 	return (*this);
 }
+
+IOFiles& IOFiles::operator<<(std::vector<std::string> const& t){
+	if(open_ && write_){
+		if (binary_){
+			size_t size(t.size());
+			file_.write(reinterpret_cast<const char*>(&size),sizeof(size_t));
+			for(auto const& i:t){ 
+				size = i.size();
+				file_.write((char*)(&size),sizeof(unsigned int));
+				file_.write(i.c_str(),size);
+			}
+		} else { 
+			std::cerr<<__PRETTY_FUNCTION__<<" : can't write std::vector<std::string> in text file "<<filename_<<std::endl; 
+		}
+	} else { std::cerr<<__PRETTY_FUNCTION__<<" : can't write in "<<filename_<<std::endl; }
+	return (*this);
+}
+
 /*}*/
 
 /*public methods*/
