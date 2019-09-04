@@ -37,23 +37,23 @@ class Time{
 		/*!Returns the current sec*/
 		int sec() const { return time_->tm_sec; }
 		/*!Returns the date*/
-		std::string date(std::string s1="_",std::string s2="-"){
+		std::string date(std::string s1="_",std::string s2="-") const {
 			char tmp[20];
-			//std::strftime(tmp,20,"%G-%m-%d_%H:%M:%S",localtime(&tt_));
+			//std::strftime(tmp,20,"%G-%m-%d_%H:%M:%S",tmp_);
 			std::string format("%F"+s1+"%H"+s2+"%M"+s2+"%S");
-			std::strftime(tmp,20,format.c_str(),localtime(&tt_));
+			std::strftime(tmp,20,format.c_str(),time_);
 			return tmp;
 		}
-		std::string yyyymmdd(std::string s="-"){
+		std::string yyyymmdd(std::string s="-") const {
 			char tmp[20];
 			std::string format("%G"+s+"%m"+s+"%d");
-			std::strftime(tmp,20,format.c_str(),localtime(&tt_));
+			std::strftime(tmp,20,format.c_str(),time_);
 			return tmp;
 		}
-		std::string ddmmyyyy(std::string s="-"){
+		std::string ddmmyyyy(std::string s="-") const {
 			char tmp[20];
 			std::string format("%d"+s+"%m"+s+"%G");
-			std::strftime(tmp,20,format.c_str(),localtime(&tt_));
+			std::strftime(tmp,20,format.c_str(),time_);
 			return tmp;
 		}
 
