@@ -3,7 +3,7 @@
 ###############################################
 EXEC=test
 
-test_SRCS=test.cpp MailCurlSMTP.cpp
+test_SRCS=test.cpp MailCurlSMTP.cpp RST.cpp Header.cpp IOFiles.cpp
 
 JDLIB = ../lib
 BUILD = build

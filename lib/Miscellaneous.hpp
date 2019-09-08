@@ -397,5 +397,27 @@ namespace my{
 	inline int compare_string_locale(std::string const& s1, std::string const& s2, std::locale const& l=std::locale("fr_CH.UTF-8")){
 		return std::use_facet<std::collate<char> >(l).compare(&s1[0], &s1[0] + s1.size(), &s2[0], &s2[0] + s2.size());
 	}
+
+	/*convert string to its representative string of hex numbers*/
+	inline std::string string2hex(std::string const& str, bool capital = false){
+		std::string hexstr(str.size() * 2,'x');
+		const size_t a = capital ? 'A' - 1 : 'a' - 1;
+		for (size_t i = 0, c = str[0] & 0xFF; i < hexstr.size(); c = str[i / 2] & 0xFF){
+			hexstr[i++] = c > 0x9F ? (c / 16 - 9) | a : c / 16 | '0';
+			hexstr[i++] = (c & 0xF) > 9 ? (c % 16 - 9) | a : c % 16 | '0';
+		}
+		return hexstr;
+	}
+
+	/*convert string of hex numbers to its equivalent string*/
+	inline std::string hex2string(std::string const& hexstr){
+		std::string str((hexstr.size() + 1) / 2,'x');
+
+		for (size_t i = 0, j = 0; i < str.size(); i++, j++){
+			str[i] = (hexstr[j] & '@' ? hexstr[j] + 9 : hexstr[j]) << 4, j++;
+			str[i] |= (hexstr[j] & '@' ? hexstr[j] + 9 : hexstr[j]) & 0xF;
+		}
+		return str;
+	}
 }
 #endif
